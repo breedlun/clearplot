@@ -22,11 +22,11 @@
     }
 
     .figure:hover img {
-        -webkit-filter: blur(2px);
-        -moz-filter: blur(2px);
-        -o-filter: blur(2px);
-        -ms-filter: blur(2px);
-        filter: blur(2px);
+        -webkit-filter: blur(1px);
+        -moz-filter: blur(1px);
+        -o-filter: blur(1px);
+        -ms-filter: blur(1px);
+        filter: blur(1px);
         opacity:1.0;
         filter:alpha(opacity=100); /* For IE8 and earlier */
     }
@@ -37,8 +37,8 @@
         left: 0;
         width: 170px;
         height: 170px;
-        background: #000;
-        color: #fff;
+        background: #BFD1D4;
+        color: #000000;
         visibility: hidden;
         opacity: 0;
         z-index: 100;

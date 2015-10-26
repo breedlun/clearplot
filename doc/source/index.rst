@@ -12,7 +12,7 @@ Clearplot creates publication quality plots using matplotlib.  At the moment, th
 Although the documentation has detailed descriptions of the clearplot syntax, probably the best way to get started is to look at the `examples <./examples/index.html>`_.
 
 Contents
-========
+--------
 
 .. toctree::
 	:maxdepth: 4
@@ -39,7 +39,10 @@ Primary Features
 - Plots saved as pdfs are designed to be opened and easily edited in Adobe Illustrator or Inkscape.
 - Uses a pleasing, easy to read font, TeXGyreHeros-txfonts, which was constructed to match the sans-serif Latin letters and the Greek letters in the txfonts (and newtx) package for LaTeX.  This means one can easily use a font for plots that matches the font in LaTeX generated equations.
 
-Bug Fixes and Modifications
----------------------------
+Bug Fixes
+---------
+Please `submit <https://github.com/breedlu/clearplot/issues/new>`_ any bugs you encounter to the Github issue tracker.
 
-Please let me (breedlu@sandia.gov) know when you find any bugs, so I can squash them.  Feel free to modify the code yourself, but please rename clearplot to something else if you changed more than a simple setting.  I would rather not have multiple versions of clearplot floating around. If you have a neat feature to add, let me know and I might incorporate it into the code. 
+Feature Requests and Enhancements
+---------------------------------
+We encourage you to `submit <https://github.com/breedlu/clearplot/issues/new>`_ your feature requests to the Github issue tracker.  We should warn you, however, we can be quite particular, so please do not take it the wrong way if we do not chose to implement your feature.  Similarly, please make sure to `submit <https://github.com/breedlu/clearplot/issues/new>`_ your feature requests before creating a pull request.  It is best to discuss before you code anything up.
