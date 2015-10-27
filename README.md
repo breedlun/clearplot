@@ -33,11 +33,11 @@ Installation
 <!--To install the released version, just do
 
     pip install clearplot
--->
+
 You may instead want to use the development version from Github, by running
 
     pip install git+git://github.com/breedlun/clearplot.git#egg=clearplot
-
+-->
 
 Testing
 -------
