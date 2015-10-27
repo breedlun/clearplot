@@ -52,14 +52,17 @@ clean:
 
 gh-pages:
 	git checkout gh-pages
+	cd ..
 	rm -rf build _sources _static
 	git checkout master $(GH_PAGES_SOURCES)
 	git reset HEAD
+	cd doc
 	make html
-	mv -fv build/html/* ./
-	rm -rf $(GH_PAGES_SOURCES) build
+	mv -fv build/html/* ./..
+	cd ..
+	rm -rf $(GH_PAGES_SOURCES) doc/build
 	git add -A
-	git ci -m "Generated gh-pages for `git log master -l --pretty=short--abbrev-commit`" && git push origin gh-pages ; git checkout master
+	git commit -m "Generated gh-pages for `git log master -1 --pretty=short--abbrev-commit`" && git push origin gh-pages ; git checkout master
 	
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
