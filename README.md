@@ -5,12 +5,12 @@ Clearplot creates publication quality plots using matplotlib.  The emphasis is o
 Documentation
 -------------
 
-Detailed documentation is available [here](http://breedlun.github.io/clearplot).
+Detailed documentation is available [here](http://clearplot.readthedocs.org/en/latest/).
 
 Examples
 --------
 
-The documentation contains an [example gallery](http://breedlun.github.io/clearplot/examples) with scripts demonstrating how to generate several types of plots.
+The documentation contains an [example gallery](http://clearplot.readthedocs.org/en/latest/examples/) with scripts demonstrating how to generate several types of plots.
 
 Citing
 ------
