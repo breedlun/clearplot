@@ -41,8 +41,8 @@ Primary Features
 
 Bug Fixes
 ---------
-Please `submit <https://github.com/breedlu/clearplot/issues/new>`_ any bugs you encounter to the Github issue tracker.
+Please `submit <https://github.com/breedlun/clearplot/issues/new>`_ any bugs you encounter to the Github issue tracker.
 
 Feature Requests and Enhancements
 ---------------------------------
-We encourage you to `submit <https://github.com/breedlu/clearplot/issues/new>`_ your feature requests to the Github issue tracker.  We should warn you, however, we can be quite particular, so please do not take it the wrong way if we do not chose to implement your feature.  Similarly, please make sure to `submit <https://github.com/breedlu/clearplot/issues/new>`_ your feature requests before creating a pull request.  It is best to discuss before you code anything up.
+We encourage you to `submit <https://github.com/breedlun/clearplot/issues/new>`_ your feature requests to the Github issue tracker.  We should warn you, however, we can be quite particular, so please do not take it the wrong way if we do not chose to implement your feature.  Similarly, please make sure to `submit <https://github.com/breedlun/clearplot/issues/new>`_ your feature requests before creating a pull request.  It is best to discuss before you code anything up.
