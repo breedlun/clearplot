@@ -6,7 +6,6 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = build
-GH_PAGES_SOURCES = doc/source doc/Makefile
 
 # User-friendly check for sphinx-build
 ifeq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 1)
@@ -49,20 +48,6 @@ help:
 
 clean:
 	rm -rf $(BUILDDIR)/*
-
-gh-pages:
-	git checkout gh-pages
-	cd ..
-	rm -rf build _sources _static
-	git checkout master $(GH_PAGES_SOURCES)
-	git reset HEAD
-	cd doc
-	make html
-	mv -fv build/html/* ./..
-	cd ..
-	rm -rf $(GH_PAGES_SOURCES) doc/build
-	git add -A
-	git commit -m "Generated gh-pages for `git log master -1 --pretty=short--abbrev-commit`" && git push origin gh-pages ; git checkout master
 	
 html:
 	$(SPHINXBUILD) -b html $(ALLSPHINXOPTS) $(BUILDDIR)/html
