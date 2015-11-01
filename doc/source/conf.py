@@ -14,8 +14,15 @@
 
 import sys
 import os
+import mock
 
 sys.path.insert(0, os.path.join(os.path.abspath(__file__),'..','..','clearplot'))
+
+MOCK_MODULES = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.patches', \
+	'matplotlib.path', 'matplotlib.lines', 'matplotlib.text', 'matplotlib.transforms', \
+	'matplotlib.artist', 'cpickle']
+for mod_name in MOCK_MODULES:
+	sys.modules[mod_name] = mock.Mock()
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
