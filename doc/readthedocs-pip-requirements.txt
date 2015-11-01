@@ -1,4 +1,2 @@
-numpy>=1.7
-matplotlib==1.4.1
 numpydoc>=0.5
 Sphinx>=1.2.2
