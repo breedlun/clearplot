@@ -817,13 +817,13 @@ class Axes(_Data_Axes_Base):
             self.color_ndx = self.shared_y_ax.color_ndx
             self.marker_color_ndx = self.shared_y_ax.marker_color_ndx
             self.err_color_ndx = self.shared_y_ax.err_color_ndx
-#        if self.linked_x_ax is not None:
-##            self._ui_x_lim = self.linked_x_ax.x_lim
-##            self._ui_x_tick = self.linked_x_ax.x_tick
+        if link_x_ax is not None:
+            self._ui_x_lim = link_x_ax.x_lim
+            self._ui_x_tick = link_x_ax.x_tick
 #            self._set_x_lim_and_tick(self.linked_x_ax.x_lim, self.linked_x_ax.x_tick)
-#        if self.linked_y_ax is not None:
-##            self._ui_y_lim = self.linked_y_ax.y_lim
-##            self._ui_y_tick = self.linked_y_ax.y_tick
+        if link_y_ax is not None:
+            self._ui_y_lim = link_y_ax.y_lim
+            self._ui_y_tick = link_y_ax.y_tick
 #            self._set_y_lim_and_tick(self.linked_y_ax.y_lim, self.linked_y_ax.y_tick)
         
 #        #Set the axis scaling.  (This appears to change the limits and tick 
@@ -878,7 +878,7 @@ class Axes(_Data_Axes_Base):
 
     @x_lim.setter
     def x_lim(self, lim):
-        #Copy the limits in case `lim` changes later
+        #(Copy the limits in case `lim` changes later)
         self._ui_x_lim = lim[:]
         tick = self._ui_x_tick
         [lim, tick] = self._select_and_set_x_lim_and_tick(lim, tick)
@@ -912,7 +912,7 @@ class Axes(_Data_Axes_Base):
         data_lims = []
         data_lims.append(self.mpl_ax.xaxis.get_data_interval())
         for la in self.linked_x_ax:
-            data_lims.append(la.mpl_ax.xaxis.get_data_interval())
+            data_lims.append(la.mpl_ax.xaxis.get_data_interval()) 
         data_lims = _np.array(data_lims)
         data_lim = [_np.min(data_lims[:,0]), _np.max(data_lims[:,1])]
         #Automatically select candidates for the limits and tick mark spacing
@@ -1684,8 +1684,11 @@ class Axes(_Data_Axes_Base):
         #The legend command normally works without explicitly specifying which 
         #curves to label, but the dashed lines that mark zero cause it to get
         #confused, so I found I had to explicitly specify the curves to label.
-        legend = _plt.legend(data_obj, raw_labels, loc = loc, \
+        legend = self.mpl_ax.legend(data_obj, raw_labels, loc = loc, \
             bbox_to_anchor = ax_coord, **kwargs)
+        #We must add the artist to the axes, so that the next call to legend()
+        #creates a new legend instead of overwriting the old one.
+        self.mpl_ax.add_artist(legend)
         return(legend)
 
     def add_arrowhead(self, x, cs, orient, length = 7.0, aspect_ratio = 2.5, \

@@ -75,7 +75,8 @@ fig.auto_adjust_layout()
 fig.save('Test5-multiple_x_axes-linked_y_axes')
 
 #Verfication that multiple legends can be added to a plot
-[fig, ax] = pf.plot('', [0,1], [0,1], 'x', 'y', legend = ['P'])
+[fig, ax] = pf.plot('', [0,1], [0,1], 'x', 'y', legend = ['P'], \
+    legend_loc = 'upper left')
 ax.plot_markers([0.25, 0.75], [0.25, 0.75], shapes = '+', sizes = 10, \
     edge_widths = 2)
 ax.add_marker_legend(['A'], loc = 'lower right')
@@ -262,6 +263,26 @@ y19f = [0,0.6]
 ax.add_legend(['\Omega_1', '\Omega_2', '\Omega_2', '\Omega_3', '\Omega_3', '\Omega_3']);
 fig.save('Test19-duplicate_legend_labels')
 
+#Verification that limits and ticks can be set on the first set of axes
+#and do not get reset by the second set of axes.
+fig = figure.Figure()
+ax1 = fig.add_axes()
+x20a = np.linspace(0,10,10)
+y20a = np.linspace(0,1,10)
+x20b = x20a
+y20b = np.linspace(0,20,10)
+ax1.x_label = ['x1']
+ax1.y_label = ['y1']
+ax1.plot(x20a, y20a)
+ax1.x_tick = 1
+ax1.x_lim = [0, 5]
+ax1.y_tick = 0.5
+ax2 = fig.add_axes(link_x_ax = ax1)
+ax2.y_label = ['y2']
+ax2.y_tick = 5
+ax2.plot(x20b, y20b)
+fig.auto_adjust_layout()
+fig.save('Test20-linked_x_ax_with_specified_ticks_and_lims')
 
 ############################
 ## Features in development #

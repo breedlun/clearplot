@@ -8,7 +8,6 @@ import numpy as _np
 from matplotlib.lines import Line2D as _mpl_Line2D
 from matplotlib.patches import Polygon as _mpl_Polygon
 import matplotlib.text as _mpl_text
-from matplotlib.transforms import TransformedBbox, Affine2D
 import clearplot as _cp
 import axes as _axes
 import color_bar as _color_bar
@@ -127,8 +126,8 @@ class Figure(object):
 
         if bbox_filtered:
             _bbox = _mpl.transforms.Bbox.union(bbox_filtered)
-            trans = Affine2D().scale(1.0 / self.mpl_fig.dpi)
-            bbox_extra = TransformedBbox(_bbox, trans)
+            trans = _mpl.transforms.Affine2D().scale(1.0 / self.mpl_fig.dpi)
+            bbox_extra = _mpl.transforms.TransformedBbox(_bbox, trans)
             bbox_inches = _mpl.transforms.Bbox.union([bbox_inches, bbox_extra])
 
         bbox_inches = bbox_inches.padded(self.tight_bbox_pad/25.4)      
