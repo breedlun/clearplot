@@ -18,9 +18,9 @@ import mock
 
 sys.path.insert(0, os.path.join(os.path.abspath(__file__),'..','..','clearplot'))
 
-autodoc_mock_imports = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.patches', \
-	'matplotlib.path', 'matplotlib.lines', 'matplotlib.text', 'matplotlib.transforms', \
-	'matplotlib.artist', 'cpickle']
+# autodoc_mock_imports = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.patches', \
+# 	'matplotlib.path', 'matplotlib.lines', 'matplotlib.text', 'matplotlib.transforms', \
+# 	'matplotlib.artist', 'cpickle']
 
 # MOCK_MODULES = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.patches', \
 # 	'matplotlib.path', 'matplotlib.lines', 'matplotlib.text', 'matplotlib.transforms', \
