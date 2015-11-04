@@ -1,2 +1,1 @@
-numpydoc>=0.5
 Sphinx>=1.3
