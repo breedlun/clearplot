@@ -46,7 +46,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
     'sphinx.ext.pngmath',
-    'numpydoc',
+#     'numpydoc',
 ]
 
 #Sphinx does not autodocument class __init__ methods, by default.  I tried
