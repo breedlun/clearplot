@@ -1175,16 +1175,18 @@ class Axes(_Data_Axes_Base):
             x = _np.copy(line.full_x_data)
             y = _np.copy(line.full_y_data)
             #Clip the copy and update the curve with the clipped data
+            #Clip the x data first
             [x_c, y_c] = self._clip_data(x, y, \
-                self.x_lim, self.x_tick, line.get_linestyle())
+                self.x_lim, self.x_tick, self.x_scale, line.get_linestyle())
             line.set_xdata(x_c)
             line.set_ydata(y_c)
+            #Clipd the y data second
             [y_c, x_c] = self._clip_data(y_c, x_c, \
-                self.y_lim, self.y_tick, line.get_linestyle())
+                self.y_lim, self.y_tick, self.y_scale, line.get_linestyle())
             line.set_xdata(x_c)
             line.set_ydata(y_c)
              
-    def _clip_data(self, x, y, lims, tick, line_style):
+    def _clip_data(self, x, y, lims, tick, ax_scale, line_style):
         """Clips data to limits"""
 
         #If clip_on = True in ax.plot(), then each curve has it's own 
@@ -1201,9 +1203,16 @@ class Axes(_Data_Axes_Base):
         with _np.errstate(invalid = 'ignore'):
             lgcs = [x < lims[0], x > lims[1]]
         #Don't clip data if the max or min is just slightly beyond the limit
-        if (lims[0] - _np.nanmin(x)) < tick * self.exceed_lim:
+        #(The distance beyond the limit must be calculated differently if 
+        #axis has a log scale instead of a normal linear scale.)
+        if ax_scale == 'log':
+            diff = [_np.log10(lims[0]) - _np.log10(_np.nanmin(x)), \
+                _np.log10(_np.nanmax(x)) - _np.log10(lims[1])]
+        else:
+            diff = [lims[0] - _np.nanmin(x), _np.nanmax(x) - lims[1]]
+        if diff[0] < tick * self.exceed_lim:
             lgcs[0] = _np.array([False] * len(x), bool)
-        if (_np.nanmax(x) - lims[1]) < tick * self.exceed_lim:
+        if diff[1] < tick * self.exceed_lim:
             lgcs[1] = _np.array([False] * len(x), bool)
         #Cycle thru the limits
         for lgc, lim in zip(lgcs, lims):
