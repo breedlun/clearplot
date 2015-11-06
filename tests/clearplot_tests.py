@@ -301,6 +301,25 @@ pf.plot('Test21-cropping_algorithm-log_axes', \
     [x21a, x21b], [y21a, y21b], \
     x_scale = 'log', y_scale = 'log', \
     x_lim = [1.0e-12, 1.0e-7], y_lim = [1.0e7, 1.0e12])
+    
+#Verification that a linear scaled y-axis can share a x-axis with a log scaled
+#y-axis.
+x22a = np.linspace(0, 5, 10)
+y22a = np.linspace(0, 5, 10)
+x22b = np.linspace(1, 4, 10)
+y22b = 10.0**x22b
+fig = figure.Figure()
+ax1 = fig.add_axes()
+ax1.x_label = ['x1']
+ax1.y_label = ['y1']
+ax1.plot(x22a, y22a)
+ax2 = fig.add_axes(share_x_ax = ax1)
+ax2.y_scale = 'log'
+ax2.y_label = ['y2']
+ax2.plot(x22b, y22b)
+fig.auto_adjust_layout()
+fig.save('Test22-shared_x_ax_with_linear_and_log_y_axes')
+
 
 
 ############################

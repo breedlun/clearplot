@@ -923,27 +923,38 @@ class Axes(_Data_Axes_Base):
         #unequal number of tick marks on the first y-axis and the second 
         #y-axis.  This is not good, and should be rectified if possible.
         if self.shared_y_ax is not None:
+            #Find the possible limits and tick mark spacings for the x-axis 
+            #whose corresponding y-axis is being shared
             s_data_lim = self.shared_y_ax.mpl_ax.xaxis.get_data_interval()
             [s_lim_c, s_tick_c, s_n_tick_c] = _utl.find_candidate_lim_and_tick(\
                 self.shared_y_ax._ui_x_lim, self.shared_y_ax._ui_x_tick, \
                 s_data_lim, self.shared_y_ax.x_scale, \
                 self.shared_y_ax.exceed_lim)
+            #Find the differences between the number of tick marks on the two
+            #x-axes
             abs_diff = _np.zeros([len(n_tick_c), len(s_n_tick_c)])
             for i, n_tick in enumerate(n_tick_c):
                 abs_diff[i,:] = _np.abs(s_n_tick_c - n_tick)
+            #Select the limits and tick mark spacing combo with the smallest
+            #difference in the number of tick marks
             [a,b] = _np.where(abs_diff == min(abs_diff))
             a = a[0]
             b = b[0]
-            tick = tick_c[a]    
+            tick = tick_c[a]
+            n_tick = n_tick_c[a]
             s_tick = s_tick_c[b]
+            s_n_tick = s_n_tick_c[b]
+            #If there is a combo that has the same number of tick marks, select
+            #it.  If not then adjust the limits, tick mark spacing, or the 
+            #physical distance between the tick marks.
             if abs_diff[a,b] < 1e-10:
                 lim = lim_c[a,:]
                 s_lim = s_lim_c[b,:]
             else:
                 [lim, tick_mm, s_lim] = self._adjust_shared_lim( \
-                    self._ui_x_lim, lim_c[a,:], tick, self.x_tick_mm, \
-                    self.shared_y_ax._ui_x_lim, s_lim_c[b,:], s_tick, \
-                    self.shared_y_ax.x_tick_mm)
+                    self._ui_x_lim, lim_c[a,:], tick, self.x_tick_mm, n_tick, \
+                    self.x_scale, self.shared_y_ax._ui_x_lim, s_lim_c[b,:], s_tick, \
+                    self.shared_y_ax.x_tick_mm, s_n_tick, self.shared_y_ax.x_scale)
                 self._x_tick_mm = tick_mm
                 self.x_label_obj._tick_mm = tick_mm 
             self.shared_y_ax._set_x_lim_and_tick(s_lim, s_tick)
@@ -1039,27 +1050,36 @@ class Axes(_Data_Axes_Base):
         #unequal number of tick marks on the first y-axis and the second 
         #y-axis.  This is not good, and should be rectified if possible.
         if self.shared_x_ax is not None:
+            #Find the possible limits and tick mark spacings for the y-axis 
+            #whose corresponding x-axis is being shared
             s_data_lim = self.shared_x_ax.mpl_ax.yaxis.get_data_interval()
             [s_lim_c, s_tick_c, s_n_tick_c] = _utl.find_candidate_lim_and_tick(\
                 self.shared_x_ax._ui_y_lim, self.shared_x_ax._ui_y_tick, \
                 s_data_lim, self.shared_x_ax.y_scale, \
                 self.shared_x_ax.exceed_lim)
+            #Select the limits and tick mark spacing combo with the smallest
+            #difference in the number of tick marks
             abs_diff = _np.zeros([len(n_tick_c), len(s_n_tick_c)])
             for i, n_tick in enumerate(n_tick_c):
                 abs_diff[i,:] = _np.abs(s_n_tick_c - n_tick)
             [a,b] = _np.where(abs_diff == min(abs_diff))
             a = a[0]
             b = b[0]
-            tick = tick_c[a]    
+            tick = tick_c[a]
+            n_tick = n_tick_c[a]
             s_tick = s_tick_c[b]
+            s_n_tick = s_n_tick_c[b]
+            #If there is a combo that has the same number of tick marks, select
+            #it.  If not then adjust the limits, tick mark spacing, or the 
+            #physical distance between the tick marks.
             if abs_diff[a,b] < 1e-10:
                 lim = lim_c[a,:]
                 s_lim = s_lim_c[b,:]
             else:
                 [lim, tick_mm, s_lim] = self._adjust_shared_lim( \
-                    self._ui_y_lim, lim_c[a,:], tick, self.y_tick_mm, \
-                    self.shared_x_ax._ui_y_lim, s_lim_c[b,:], s_tick, \
-                    self.shared_x_ax.y_tick_mm)
+                    self._ui_y_lim, lim_c[a,:], tick, self.y_tick_mm, n_tick, \
+                    self.y_scale, self.shared_x_ax._ui_y_lim, s_lim_c[b,:], s_tick, \
+                    self.shared_x_ax.y_tick_mm, s_n_tick, self.shared_x_ax.y_scale)
                 self._y_tick_mm = tick_mm
                 self.y_label_obj._tick_mm = tick_mm 
             self.shared_x_ax._set_y_lim_and_tick(s_lim, s_tick)
@@ -1098,68 +1118,75 @@ class Axes(_Data_Axes_Base):
         self._line_at_zero(lim, tick, [0.0, 1.0], [0.0, 0.0], \
             self.mpl_ax.transAxes, self.mpl_ax.transData)
         
-    def _adjust_shared_lim(self, ui_lim, lim, tick, tick_mm, \
-        s_ui_lim, s_lim, s_tick, s_tick_mm):
+    def _adjust_shared_lim(self, ui_lim, lim, tick, tick_mm, n_tick, ax_scale, \
+        s_ui_lim, s_lim, s_tick, s_tick_mm, n_s_tick, s_ax_scale):
         """
         Adjusts x/y axis limits for axes with shared y/x axes.  This method
         kinda works, but perhaps it could be better.
         """
-        n_tick = (lim[1] - lim[0]) / tick
-        n_s_tick = (s_lim[1] - s_lim[0]) / s_tick
-        length_diff = n_tick * tick_mm - n_s_tick * s_tick_mm
-        if length_diff > 1e-12 and 'auto' in s_ui_lim:
-            #If the current axes are longer than the shared, adjust the shared.
-            n_tick_diff = _np.floor(length_diff / s_tick_mm + 1e-12)
-            ndx_list = _np.where(_np.array(s_ui_lim) == 'auto')[0]
-            if len(ndx_list) > 1:
-                #If both limits are 'auto' selected and one limit is 
-                #currently at 0, then attempt to preserve it.  Otherwise,
-                #adjust the top limit.
-                if s_lim[1] == 0.0:
-                    s_lim[0] = s_lim[0] - n_tick_diff * s_tick
+        #Define a function to decide which limit to adjust on a given axis, 
+        #and to perform the adjustment
+        def select_and_adjust_lim(ui_lim, lim, length_diff, tick, ax_scale):
+            #Define a function to adjust the limits            
+            def adjust_lim(lmt, n_tick_diff, tick, sign, ax_scale):
+                if ax_scale == 'log':
+                    lmt = 10.0**(_np.log10(lmt) + sign * n_tick_diff * tick)
                 else:
-                    s_lim[1] = s_lim[1] + n_tick_diff * s_tick
-            else:
-                #Adjust whichever limit is automatically selected.
-                ndx = ndx_list[0]
-                if ndx == 0:
-                    s_lim[0] = s_lim[0] - n_tick_diff * s_tick
-                else:
-                    s_lim[1] = s_lim[1] + n_tick_diff * s_tick
-        elif length_diff < -1e-12 and 'auto' in ui_lim:
-            #If the current axes are shorter than the shared, adjust the 
-            #current.
-            n_tick_diff = -_np.floor(length_diff / tick_mm + 1e-12)
+                    lmt = lmt + sign * n_tick_diff * tick
+                return(lmt)
+            
+            #Find which, if any, limits are to be automatically selected
             ndx_list = _np.where(_np.array(ui_lim) == 'auto')[0]
             if len(ndx_list) > 1:
                 #If both limits are 'auto' selected and one limit is 
                 #currently at 0, then attempt to preserve it.  Otherwise,
                 #adjust the top limit.
                 if lim[1] == 0.0:
-                    lim[0] = lim[0] - n_tick_diff * tick
+                    lim[0] = adjust_lim(lim[0], n_tick_diff, tick, -1.0, ax_scale)
                 else:
-                    lim[1] = lim[1] + n_tick_diff * tick
+                    lim[1] = adjust_lim(lim[1], n_tick_diff, tick, 1.0, ax_scale)
             else:
                 #Adjust whichever limit is automatically selected.
                 ndx = ndx_list[0]
                 if ndx == 0:
-                    lim[0] = lim[0] - n_tick_diff * tick
+                    lim[0] = adjust_lim(lim[0], n_tick_diff, tick, -1.0, ax_scale)
                 else:
-                    lim[1] = lim[1] + n_tick_diff * tick
+                    lim[1] = adjust_lim(lim[1], n_tick_diff, tick, 1.0, ax_scale)
+            return(lim)
+            
+            
+        length_diff = n_tick * tick_mm - n_s_tick * s_tick_mm
+        if length_diff > 1e-12 and 'auto' in s_ui_lim:
+            #If the current axes are longer than the shared, adjust the shared.
+            n_tick_diff = _np.floor(length_diff / s_tick_mm + 1e-12)
+            s_lim = select_and_adjust_lim(s_ui_lim, s_lim, length_diff, s_tick, s_ax_scale)
+        elif length_diff < -1e-12 and 'auto' in ui_lim:
+            #If the current axes are shorter than the shared, adjust the 
+            #current.
+            n_tick_diff = -_np.floor(length_diff / tick_mm + 1e-12)
+            lim = select_and_adjust_lim(ui_lim, lim, length_diff, tick, ax_scale)
+        
+        #Define a function to calculate the number of tick marks along an axis
+        def calc_n_tick(lim, tick, ax_scale):
+            if ax_scale == 'log':
+                n_tick = (_np.log10(lim[1]) - _np.log10(lim[0])) / tick
+            else:
+                n_tick = (lim[1] - lim[0]) / tick
+            return(n_tick)
         #If physical tick mark spacings are different, then it may be 
         #impossible to make the lengths agree by only adjusting the number of
         #tick marks.  So we need to check if lengths are still different.
-        n_tick = (lim[1] - lim[0]) / tick
-        n_s_tick = (s_lim[1] - s_lim[0]) / s_tick
+        n_tick = calc_n_tick(lim, tick, ax_scale)
+        n_s_tick = calc_n_tick(s_lim, s_tick, s_ax_scale)
         length_diff = n_tick * tick_mm - n_s_tick * s_tick_mm
         #Adjust physical tick mark spacing as a last resort
         if abs(length_diff) > 1E-12:
             tick_mm = n_s_tick * s_tick_mm / n_tick
             print """Warning: There are two sets of axes that share a 
-                x / y axis.  The specified limits, tick mark spacing, and 
-                physical distance between tick marks result in unequal 
-                y / x axis lengths.  The physical distance between tick 
-                marks has been adjusted to force the y / x axis lengths 
+                x / y axis.  The auto selected (or specified) limits, tick mark
+                spacing, and physical distance between tick marks resulted in 
+                unequal  y / x axis lengths.  The physical distance between 
+                tick marks has been adjusted to force the y / x axis lengths 
                 to be equal, which may make the plot aesthetics suffer."""
         return(lim, tick_mm, s_lim)
 
