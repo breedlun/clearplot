@@ -40,6 +40,11 @@ try:
     print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
 except ImportError:
     print "no matplotlib"
+try:
+    import clearplot
+    print "clearplot: %s, %s" % (clearplot.__version__, clearplot.__file__)
+except ImportError:
+    print "no clearplot"
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -59,7 +64,7 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
     'sphinx.ext.pngmath',
-#     'numpydoc',
+	'numpydoc',
 ]
 
 #Sphinx does not autodocument class __init__ methods, by default.  I tried
