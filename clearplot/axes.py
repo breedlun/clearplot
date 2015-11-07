@@ -818,12 +818,12 @@ class Axes(_Data_Axes_Base):
             self.marker_color_ndx = self.shared_y_ax.marker_color_ndx
             self.err_color_ndx = self.shared_y_ax.err_color_ndx
         if link_x_ax is not None:
-            self._ui_x_lim = link_x_ax.x_lim
-            self._ui_x_tick = link_x_ax.x_tick
+            self._ui_x_lim = link_x_ax._ui_x_lim
+            self._ui_x_tick = link_x_ax._ui_x_tick
 #            self._set_x_lim_and_tick(self.linked_x_ax.x_lim, self.linked_x_ax.x_tick)
         if link_y_ax is not None:
-            self._ui_y_lim = link_y_ax.y_lim
-            self._ui_y_tick = link_y_ax.y_tick
+            self._ui_y_lim = link_y_ax._ui_y_lim
+            self._ui_y_tick = link_y_ax._ui_y_tick
 #            self._set_y_lim_and_tick(self.linked_y_ax.y_lim, self.linked_y_ax.y_tick)
         
 #        #Set the axis scaling.  (This appears to change the limits and tick 
