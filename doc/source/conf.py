@@ -35,11 +35,11 @@ try:
     print "numpy: %s, %s" % (numpy.__version__, numpy.__file__)
 except ImportError:
     print "no numpy"
-try:
-    import matplotlib
-    print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
-except ImportError:
-    print "no matplotlib"
+# try:
+#     import matplotlib
+#     print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
+# except ImportError:
+#     print "no matplotlib"
 # try:
 #     import matplotlib.pyplot
 #     print "matplotlib.pyplot imported"
@@ -69,8 +69,14 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
     'sphinx.ext.pngmath',
-	'numpydoc',
+    'sphinx.ext.napoleon',
+	#'numpydoc',
 ]
+
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+napoleon_include_special_with_doc = False
+napoleon_use_param = True
 
 #Sphinx does not autodocument class __init__ methods, by default.  I tried
 #setting the `autoclass_content = 'both'` option, which did document the 
