@@ -22,31 +22,26 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__),'..','..'))
 # 	'matplotlib.path', 'matplotlib.lines', 'matplotlib.text', 'matplotlib.transforms', \
 # 	'matplotlib.artist', 'cpickle']
 
-# MOCK_MODULES = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.patches', \
-# 	'matplotlib.path', 'matplotlib.lines', 'matplotlib.text', 'matplotlib.transforms', \
-# 	'matplotlib.artist']
-# for mod_name in MOCK_MODULES:
-# 	sys.modules[mod_name] = mock.Mock()
-
-# print "python exec:", sys.executable
-# print "sys.path:", sys.path
-# try:
-#     import numpy
-#     print "numpy: %s, %s" % (numpy.__version__, numpy.__file__)
-# except ImportError:
-#     print "no numpy"
-# try:
-#     import matplotlib
-#     print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
-#     import matplotlib.pyplot
-#     print "matplotlib.pyplot imported"
-# except ImportError:
-#     print "no matplotlib"
-# try:
-#     import clearplot
-#     print "clearplot: %s, %s" % (clearplot.__version__, clearplot.__file__)
-# except ImportError:
-#     print "no clearplot"
+#Print imports to the screen so that it is easier to troubleshoot issues
+print "python exec:", sys.executable
+print "sys.path:", sys.path
+try:
+    import numpy
+    print "numpy: %s, %s" % (numpy.__version__, numpy.__file__)
+except ImportError:
+    print "no numpy"
+try:
+    import matplotlib
+    print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
+    import matplotlib.pyplot
+    print "matplotlib.pyplot imported"
+except ImportError:
+    print "no matplotlib"
+try:
+    import clearplot
+    print "clearplot: %s, %s" % (clearplot.__version__, clearplot.__file__)
+except ImportError:
+    print "no clearplot"
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -67,7 +62,6 @@ extensions = [
     'sphinx.ext.coverage',
     'sphinx.ext.pngmath',
     'sphinx.ext.napoleon',
-	#'numpydoc',
 ]
 
 napoleon_google_docstring = False
