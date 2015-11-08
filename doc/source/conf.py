@@ -35,16 +35,13 @@ try:
     print "numpy: %s, %s" % (numpy.__version__, numpy.__file__)
 except ImportError:
     print "no numpy"
-# try:
-#     import matplotlib
-#     print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
-# except ImportError:
-#     print "no matplotlib"
-# try:
-#     import matplotlib.pyplot
-#     print "matplotlib.pyplot imported"
-# except ImportError:
-#     print "no matplotlib.pyplot"
+try:
+    import matplotlib
+    print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
+    import matplotlib.pyplot
+    print "matplotlib.pyplot imported"
+except ImportError:
+    print "no matplotlib"
 try:
     import clearplot
     print "clearplot: %s, %s" % (clearplot.__version__, clearplot.__file__)
