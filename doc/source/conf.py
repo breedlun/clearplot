@@ -40,11 +40,11 @@ try:
     print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
 except ImportError:
     print "no matplotlib"
-try:
-    import matplotlib.pyplot
-    print "matplotlib.pyplot imported"
-except ImportError:
-    print "no matplotlib.pyplot"
+# try:
+#     import matplotlib.pyplot
+#     print "matplotlib.pyplot imported"
+# except ImportError:
+#     print "no matplotlib.pyplot"
 try:
     import clearplot
     print "clearplot: %s, %s" % (clearplot.__version__, clearplot.__file__)
