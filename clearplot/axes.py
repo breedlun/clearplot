@@ -160,7 +160,7 @@ class _Axes_Base(object):
             `cs_1` for further information.
         kwargs:
             Keyword arguments to matplotlib's annotate function.  See the
-            `matplotlib documentation <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.annotate>`_
+            `matplotlib documentation <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.annotate>`__
             for further details
             
         Returns
@@ -381,7 +381,7 @@ class _Data_Axes_Base(_Axes_Base):
             lower left of the image, with positive y being upwards.
         im_interp : string, optional
             Image interpolation method.  See the `matplotlib documentation
-            <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.imshow>`_
+            <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.imshow>`__
             for acceptable values.
         c_map : string, optional
             Image color map.
@@ -2211,7 +2211,7 @@ class Axes(_Data_Axes_Base):
             Width of curves in points.
         marker_shapes : list of strings, optional
             Shapes of markers.  See the `matplotlib documentation 
-            <http://matplotlib.org/api/markers_api.html>`_ for valid shapes.
+            <http://matplotlib.org/api/markers_api.html>`__ for valid shapes.
         marker_sizes : list of floats or ints, optional
             Sizes of markers, in points.
         marker_colors : list of 1x3 lists, optional
@@ -2287,7 +2287,7 @@ class Axes(_Data_Axes_Base):
             y-coordinates of markers
         shapes : list of strings, optional
             Shapes of markers.  See the `matplotlib documentation 
-            <http://matplotlib.org/api/markers_api.html>`_ for valid shapes.
+            <http://matplotlib.org/api/markers_api.html>`__ for valid shapes.
         sizes : list of floats or ints, optional
             Sizes of markers, in points.
         colors : list of 1x3 lists, optional
@@ -2601,7 +2601,7 @@ class Axes(_Data_Axes_Base):
             Colors of caps.  RGB values should be between 0 and 1.
         flier_shapes : list of strings, optional
             Shapes of fliers.  See the `matplotlib documentation 
-            <http://matplotlib.org/api/markers_api.html>`_ for valid shapes.
+            <http://matplotlib.org/api/markers_api.html>`__ for valid shapes.
         flier_sizes : list of floats, optional
             Size of fliers in points.
         flier_colors : list of 1x3 lists, optional

@@ -41,8 +41,10 @@ class Axis_Label(object):
     @property
     def position(self):
         """
-        Sets/gets the axis label position.  Input a 1x2 numpy array in mm 
-        units to alter the axis label position.
+        Sets/gets the axis label position.  If the axis label has an arrow, 
+        then the position is the arrow tip.  Otherwise the position is the 
+        lower left most item in the axis label.  Input a 1x2 numpy array, in mm 
+        units, to alter the axis label position. 
         """
         return(self._pos)
         
@@ -53,7 +55,7 @@ class Axis_Label(object):
         pos_pt = pos * 72.0/25.4
         #If the axis label has an arrow, then the arrow tip is the reference
         #point that `pos` applies to.  Otherwise the reference point is the
-        #location of the label itself.
+        #location of the lower left most item in the axis label.
         if self.arrow_bool:
             ref_pt = self.arrow.xy
             self.arrow.xy = pos_pt
@@ -121,6 +123,7 @@ class Axis_Label(object):
         #Save the input string
         self.str_list = str_list
         #Initialize the storage list
+        #(The first item in the list should be the bottom left-most annotation)
         self.anno = []
         #Calculate font size in mm units
         font_size_mm = font_size * 25.4/72.0    
@@ -208,13 +211,11 @@ class Axis_Label(object):
             #(I originally attempted to specify the font via the keyword 
             #"fontname =", but that does not work when using mathtext.  You must 
             #specify the font using the "mpl.rcParams['mathtext.XXX'] = " command.)
-            self.anno[:0] = [self.parent_ax.annotate('$' + str_list[0] + '$', x, 
+            self.anno.append(self.parent_ax.annotate('$' + str_list[0] + '$', x, 
                 'axes mm', fontsize = font_size, verticalalignment = 'bottom', \
-                horizontalalignment = 'center')]
-    #        #Visualize the baseline
-    #        line = _Line2D([x_a-0.02, x_a + 0.02], [y_t, y_t], linewidth = 1, color = [0,0,0], transform = fig.transFigure)
-    #        fig.lines.append(line)
-    #        label.append(line)
+                horizontalalignment = 'center'))
+#            #Visualize the baseline
+#            self.parent_ax.add_line(_np.array([[x[0]-5.0, x[1]], [x[0] + 5.0, x[1]]]))
     
     def place_label(self):
         """
@@ -224,24 +225,35 @@ class Axis_Label(object):
         bboxes = []
         font_sizes = []
         for obj in self.anno:
-            #Find the width and height of text
+            #Find the width and height of text, relative to the lower left 
+            #corner of the figure window
             bboxes.append(ax.parent_fig.get_obj_bbox(obj))
             #Find the font size
             font_sizes.append(obj.get_fontsize())
         #Find the total width and height of the text (without any arrows)
         bbox = _mpl.transforms.Bbox.union(bboxes)
+        #Translate the bounding box to be relative to the lower left corner of
+        #the axes
+        bbox = bbox.translated(-ax.position[0], -ax.position[1])
         #Get the font size in mm units
         font_size = max(font_sizes)
         font_size_mm = font_size * 25.4/72.0
         
-        #Get the bounding box of the data axes 
+        #Get the bounding box of the data axes, relative to the lower left 
+        #corner of the figure window
         #(Use get_tight_bbox and get_bbox to get the dimensions with and 
         #without tick mark labels.)
         ax_tgt_bbox = ax.tight_bbox
+        #Translate the bounding box to be relative to the lower left corner of
+        #the axes
+        ax_tgt_bbox = ax_tgt_bbox.translated(-ax.position[0], -ax.position[1])
         #Get data axis size
         ax_size = ax.size
         #Get the position of the label
         x_0 = self.position
+        
+#        #Visualize the baseline
+#        self.parent_ax.add_line(_np.array([[x_0[0]-5.0, x_0[1]], [x_0[0] + 5.0, x_0[1]]]))
     
 #            #Verify that you have captured the bounding boxes
 #            from matplotlib.patches import Rectangle
@@ -287,10 +299,13 @@ class Axis_Label(object):
             else:
                 #Second y-axis (on right side)
                 x_t1[0] = ax_tgt_bbox.x1
-            #Find the first tick mark in figure units
+            #Find the first tick mark in mm
             mm_per_data_units = ax_size[1]/_np.diff(ax.mpl_ax.get_ylim())[0]
             x_t1[1] = mm_per_data_units * \
                 (ax.mpl_ax.get_yticks()[0] - ax.mpl_ax.get_ylim()[0])
+    
+#        #Visualize the first tick
+#        self.parent_ax.add_line(_np.array([[x_t1[0], x_t1[1]], [x_t1[0] + 5.0, x_t1[1]]]))
     
         if self.arrow_bool:
             #Find the number of tick marks (not including the first one)
@@ -343,7 +358,7 @@ class Axis_Label(object):
                 dx = _np.array([-horiz_dist_from_1st_tick + \
                     (xticks[-1] - xticks[0]) * mm_per_data_units / 2.0 - bbox.width/2.0, \
                     - height_above_ax_bndry -  3.0/8.0 * font_size_mm])
-            elif len(self.mpl_ax.get_shared_x_axes().get_siblings(self.mpl_ax)) == 1:
+            elif ax.mpl_ax.yaxis.get_label_position() == 'left':
                 #Vertical label for first y-axis (on left side)
                 yticks = ax.mpl_ax.get_yticks()
                 width_right_of_ax_bndry = bbox.x1 - x_t1[0]

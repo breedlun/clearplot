@@ -1,16 +1,17 @@
 Version History
 ===============
 
-clearplot version 1.0 (originally BRplot version 3.0)
+clearplot version 1.0
 
-1. Restructured BRplot to give it an object oriented interface.  The functional interface still exists for generating standard plots, but the object oriented interface is helpful for creating custom, specialized, or complicated plots.  The primary changes are a BRplot figure object and axes object.  When the figure/axes objects is created, it also instantiates a matplotlib figure/axes object inside of it, which is easily accessed by typing fig.mpl_fig / ax.mpl_ax.
-2. Transitioned from documenting BRplot with only docstrings to using Sphinx-doc to generate html documentation.
-3. Added the ability to link one x/y axis to another x/y axis in the same figure window so that the axes have the same limits and tick mark spacing.  This allows one to easily stack sets of axes vertically/horizontally in a figure window, and keep the x/y axes synchronized.
-4. Improved the automatic limit and tick mark selection for plots with multiple x axes or multiple y axes.
-5. Added the ability to create violin plots, which provide an easy way to compare several statistical distributions.
-6. Reorganized BRplot from a single python module into a package.
-7. Switched from the TkAgg backend to the Qt4Agg backend.  The Qt4Agg backend seems to let you change the figure window size at will, while TkAgg acts quite strangely.  (For further details, see `this post <http://stackoverflow.com/questions/26050709/matplotlib-trouble-reducing-figure-size-with-tkagg-backend>`_ and `this post <https://github.com/matplotlib/matplotlib/issues/3584>`_.)
-8. Curve legends and marker legends automatically eliminate any duplicate labels.
+1. Renamed BRplot to clearplot and made it publicly available for the first time.
+2. Reorganized BRplot from a single python module into a package.
+3. Transitioned from documenting BRplot with only docstrings to using Sphinx-doc to generate html documentation.
+4. Restructured package to give it an object oriented interface.  The functional interface still exists for generating standard plots, but the object oriented interface is helpful for creating custom, specialized, or complicated plots.  The primary changes are the figure object and axes object.  When the figure/axes objects is created, it also instantiates a matplotlib figure/axes object inside of it, which is easily accessed by typing fig.mpl_fig / ax.mpl_ax. 
+5. Added the ability to link one x/y axis to another x/y axis in the same figure window so that the axes have the same limits and tick mark spacing.  This allows one to easily stack sets of axes vertically/horizontally in a figure window, and keep the x/y axes synchronized.
+6. Improved the automatic limit and tick mark selection for plots with multiple x axes or multiple y axes.
+7. Added the ability to create violin plots, which provide an easy way to compare several statistical distributions. 
+8. Switched from the TkAgg backend to the Qt4Agg backend.  The Qt4Agg backend seems to let you change the figure window size at will, while TkAgg acts quite strangely.  (For further details, see `this post <http://stackoverflow.com/questions/26050709/matplotlib-trouble-reducing-figure-size-with-tkagg-backend>`__ and `this post <https://github.com/matplotlib/matplotlib/issues/3584>`__.)
+9. Curve legends and marker legends automatically eliminate any duplicate labels.
 
 BRplot version 2.0
 
@@ -23,7 +24,7 @@ BRplot version 2.0
 7.  Altered the legend keyword arguments to make it easier to place legends.  Also, users can now pass any matplotlib legend keyword through to the legend method.
 8.  Added the ability to specify a list of LaTeX strings for tick mark labels.
 9.  Made pdf the default file type rather than the only file type for saving figures.  Now users can input a file name with a file extension that matplotlib recognizes, and the file will be saved as the file type corresponding to the file extension.
-10. Fixed a bug that caused the placement of axis labels to be off by about 10% of the width and height of the label.  In BRplot, axis labels are first placed, then their bounding boxes are measured using the current renderer, and finally they are moved to the correct location.  Unfortunately, BRplot was inadvertently using the wrong renderer when it measured the text bounding box.  Several placement settings were designed around this incorrect renderer, so most of the time things looked just fine.  However, the placement settings were unable to compensate for long text strings, which is what revealed this bug.  BRplot should now use the correct renderer, and place axis labels correctly.  For further information, see `this post <http://stackoverflow.com/questions/22667224/matplotlib-get-text-bounding-box-independent-of-backend/22689498#22689498>`_.
+10. Fixed a bug that caused the placement of axis labels to be off by about 10% of the width and height of the label.  In BRplot, axis labels are first placed, then their bounding boxes are measured using the current renderer, and finally they are moved to the correct location.  Unfortunately, BRplot was inadvertently using the wrong renderer when it measured the text bounding box.  Several placement settings were designed around this incorrect renderer, so most of the time things looked just fine.  However, the placement settings were unable to compensate for long text strings, which is what revealed this bug.  BRplot should now use the correct renderer, and place axis labels correctly.  For further information, see `this post <http://stackoverflow.com/questions/22667224/matplotlib-get-text-bounding-box-independent-of-backend/22689498#22689498>`__.
 11. It is now possible to turn off the axis arrows.
 12. Improved the auto settings for im_plot() and im_show().
 13. Improved the organization of the examples and tests.
@@ -32,7 +33,7 @@ BRplot version 2.0
 
 BRplot version 1.0
 
-1.	Made the figure window appear on top of all other windows instead of behind everything.  This turned out to be quite tricky.  See `this post <http://stackoverflow.com/questions/20025077/how-do-i-display-a-matplotlib-figure-window-on-top-of-all-other-windows-in-spyde>`_ for further details
+1.	Made the figure window appear on top of all other windows instead of behind everything.  This turned out to be quite tricky.  See `this post <http://stackoverflow.com/questions/20025077/how-do-i-display-a-matplotlib-figure-window-on-top-of-all-other-windows-in-spyde>`__ for further details
 2.	Took the default values for the keyword arguments out of the function definition line.  Now the keyword arguments are parsed inside the function.  This makes the function definition line much cleaner.
 3.	The function im_plot() can now display a color bar.
 4.	The function im_show() was added to display a sequence of images.

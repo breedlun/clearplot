@@ -33,6 +33,9 @@ except ImportError:
 try:
     import matplotlib
     print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
+    #For some reason, I have to import matplotlib.pyplot here, or else I get errors that
+    #there is no module named 'sip' when ReadTheDocs tries to import matplotlib.pyplot 
+    #inside of clearplot
     import matplotlib.pyplot
     print "matplotlib.pyplot imported"
 except ImportError:

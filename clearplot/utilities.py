@@ -58,8 +58,8 @@ def set_im_interp(im_interp, im_obj, ax):
         Image interpolation type.  If 'auto', then algorithm choses either 
         'nearest' or 'none'.  If the image is blown up, then it uses 'nearest'.
         If the image is scaled down then it uses 'none'.  See
-        `this matplotlib example <http://matplotlib.org/examples/images_contours_and_fields/interpolation_methods.html>`_
-        and `this matplotlib example <http://matplotlib.org/examples/images_contours_and_fields/interpolation_none_vs_nearest.html>`_ 
+        `this matplotlib example <http://matplotlib.org/examples/images_contours_and_fields/interpolation_methods.html>`__
+        and `this matplotlib example <http://matplotlib.org/examples/images_contours_and_fields/interpolation_none_vs_nearest.html>`__ 
         for further details.
     im_obj : image object
         Image to set the interpolation type on.
@@ -99,12 +99,12 @@ class Offset_From(object):
         """
         Parameters
         ----------
-        artist: Artist, Bounding Box, or Transform
+        artist : Artist, Bounding Box, or Transform
             object to offset from
-        ref_pt: 1x2 list
+        ref_pt : 1x2 list
             Point on the object to offset from.  Must be specified in 
             normalized bounding box coordinates of the object.
-        units: 'points', 'pixels', or 'mm'
+        units : 'points', 'pixels', or 'mm'
             Units for the offset
         """
         self._artist = artist
@@ -216,18 +216,18 @@ def cycle_thru_list(list_obj, i):
 
 def raw_string(txt):
     """
-    Python automatically converts escape characters (ex: \n), which causes
+    Python automatically converts escape characters (i.e. \\n), which causes
     problems when inputing latex strings since they are full of backslashes.  
     This function returns a raw string representation of text
     
     Parameters
     ----------
-    txt: string
+    txt : string
         string that possibly contains escape characters
     
     Returns
     -------
-    new_text: string
+    new_text : string
         same as 'text' but without any escape characters
     """
     escape_dict={'\a':r'\a',
@@ -259,12 +259,12 @@ def flatten(a):
 
     Parameters
     ----------
-    l: list
+    l : list
         list to be flattened
     
     Returns
     -------
-    flat_l: list
+    flat_l : list
         flattened list
     """
     flat_l = []
@@ -282,15 +282,15 @@ def convert_err_to_nested_numpy_arrays(g):
     
     Parameters
     ----------
-    a: list
+    a : list
         Nested list of arbitrary depth that may or may not have numpy arrays at
         the bottom
     
     Returns
     -------
-    a: list
+    a : list
         Nested list of numpy arrays.
-    not_numpy: boolean
+    not_numpy : boolean
         Used during the recurssion process.  Not intended for the end user.
     """
     #Initialize variables used in the recursion process
@@ -330,12 +330,12 @@ def find_depth(a):
     
     Parameters
     ----------
-    a: list or numpy array
+    a : list or numpy array
         list or array of arbitrary depth
     
     Returns
     -------
-    depth: integer
+    depth : integer
         depth of list
     """
     if isinstance(a, (list, tuple)):
@@ -352,12 +352,12 @@ def find_list_depth(a):
     
     Parameters
     ----------
-    a: list
+    a : list
         list of arbitrary depth
     
     Returns
     -------
-    depth: integer
+    depth : integer
         depth of list
     """
     if isinstance(a, (list, tuple)):
@@ -372,9 +372,9 @@ def adjust_depth(a, proper_depth):
     
     Parameters
     ----------
-    a: list or numpy array
+    a : list or numpy array
         List or array to be modified
-    proper_depth: integer
+    proper_depth : integer
         Depth that `a` will be returned with
     
     Returns
@@ -400,9 +400,9 @@ def adjust_list_depth(a, proper_depth):
     
     Parameters
     ----------
-    a: list or any other object
+    a : list or any other object
         List to be modified
-    proper_depth: integer
+    proper_depth : integer
         Depth that `a` will be returned with
 
     Returns

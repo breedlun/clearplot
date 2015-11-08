@@ -64,7 +64,6 @@
     }
     </style>
 
-.. _examples:
 
 Examples
 ========
@@ -78,6 +77,8 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 	
 	./basic/basic.rst
 	
+	./no_axis_arrows/no_axis_arrows.rst
+	
 	./two_curves-legend/two_curves-legend.rst
 	
 	./two_curves-labels-no_units/two_curves-labels-no_units.rst
@@ -85,6 +86,8 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 	./two_y_axes/two_y_axes.rst
 	
 	./log_log_plot/log_log_plot.rst
+	
+	./arrows-custom_tick_labels/arrows-custom_tick_labels.rst
 	
 	./vertically_stacked/vertically_stacked.rst
 	
