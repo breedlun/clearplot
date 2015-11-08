@@ -28,25 +28,25 @@ sys.path.insert(0, os.path.join(os.path.dirname(__file__),'..','..'))
 # for mod_name in MOCK_MODULES:
 # 	sys.modules[mod_name] = mock.Mock()
 
-print "python exec:", sys.executable
-print "sys.path:", sys.path
-try:
-    import numpy
-    print "numpy: %s, %s" % (numpy.__version__, numpy.__file__)
-except ImportError:
-    print "no numpy"
-try:
-    import matplotlib
-    print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
-    import matplotlib.pyplot
-    print "matplotlib.pyplot imported"
-except ImportError:
-    print "no matplotlib"
-try:
-    import clearplot
-    print "clearplot: %s, %s" % (clearplot.__version__, clearplot.__file__)
-except ImportError:
-    print "no clearplot"
+# print "python exec:", sys.executable
+# print "sys.path:", sys.path
+# try:
+#     import numpy
+#     print "numpy: %s, %s" % (numpy.__version__, numpy.__file__)
+# except ImportError:
+#     print "no numpy"
+# try:
+#     import matplotlib
+#     print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
+#     import matplotlib.pyplot
+#     print "matplotlib.pyplot imported"
+# except ImportError:
+#     print "no matplotlib"
+# try:
+#     import clearplot
+#     print "clearplot: %s, %s" % (clearplot.__version__, clearplot.__file__)
+# except ImportError:
+#     print "no clearplot"
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
