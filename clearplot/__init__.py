@@ -6,7 +6,7 @@
 __version__ = '1.0'
 
 import matplotlib as _mpl
-import _sys
+import sys as _sys
 
 #==============================================================================
 # Check Upon Import
