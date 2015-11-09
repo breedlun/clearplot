@@ -133,7 +133,7 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./basic/basic.html>
+    <a href=./no_axis_arrows/no_axis_arrows.html>
     <img src=../_images/no_axis_arrows.png>
     <span class='figure-label'>
     <p>No Axis Arrows</p>
