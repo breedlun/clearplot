@@ -5,35 +5,36 @@
 import matplotlib as _mpl
 import numpy as _np
 
-#==============================================================================
-# Circle Box
-#============================================================================== 
-
-class _Circle_Box_Style(_mpl.patches.BoxStyle._Base):
-    """
-    A circle box style to be used with annotations
-    """
-    def __init__(self, pad=0.1):
-        self.pad = pad
-        super(_Circle_Box_Style, self).__init__()
-
-    def transmute(self, x0, y0, width, height, mutation_size):
-        # padding
-        pad = mutation_size * self.pad
-        # center
-        cx, cy = x0+.5*width, y0+.5*height 
-        # width and height with padding added.
-        width, height = width + 2.*pad, height + 2.*pad,
-        # get radius
-        radius = (width**2 + height**2)**.5 * .5
-        # Generate path of the circle
-        cir_path = _mpl.path.Path.unit_circle()
-        vertices = radius*cir_path.vertices + (cx, cy)
-        path = _mpl.path.Path(vertices, cir_path.codes)
-
-        return path
-        
-_mpl.patches.BoxStyle._style_list['circle'] = _Circle_Box_Style
+##==============================================================================
+## Circle Box
+##============================================================================== 
+#
+#class _Circle_Box_Style(_mpl.patches.BoxStyle._Base):
+#    """
+#    A circle box style to be used with annotations
+#    """
+#    def __init__(self, pad=0.1):
+#        self.pad = pad
+#        super(_Circle_Box_Style, self).__init__()
+#
+#    def transmute(self, x0, y0, width, height, mutation_size):
+#        # padding
+#        pad = mutation_size * self.pad
+#        # center
+#        cx, cy = x0+.5*width, y0+.5*height 
+#        # width and height with padding added.
+#        width, height = width + 2.*pad, height + 2.*pad,
+#        # get radius
+#        radius = (width**2 + height**2)**.5 * .5
+#        print "radius = " + str(radius)
+#        # Generate path of the circle
+#        cir_path = _mpl.path.Path.unit_circle()
+#        vertices = radius*cir_path.vertices + (cx, cy)
+#        path = _mpl.path.Path(vertices, cir_path.codes)
+#
+#        return path
+#        
+#_mpl.patches.BoxStyle._style_list['circle'] = _Circle_Box_Style
 
 #==============================================================================
 # Slick Arrow

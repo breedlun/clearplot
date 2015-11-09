@@ -13,7 +13,7 @@ xb = xa
 yb = np.log(xb + 1.0)
 
 [fig, ax] = pf.plot('', [xa, xb], [ya, yb], \
-    ['\overline{\omega}_{x}'], ['\overline{\Omega}'])
-ax.label_curves(['\overline{\Omega}_1', '\overline{\Omega}_2'], \
+    ['\omega_{x}'], ['\Omega'])
+ax.label_curves(['\Omega_1', '\Omega_2'], \
     ndx = [500, 530], angles = [120, -60])
 fig.save('two_curves-labels-no_units.png')

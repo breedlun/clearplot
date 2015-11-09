@@ -104,7 +104,7 @@ y5a = np.sqrt(x5a)
 x5b = x5a
 y5b = np.log(x5a + 1.0)
 [fig, ax] = pf.plot('', [x5a, x5b], [y5a, y5b])
-ax.label_curves(['\overline{\Omega}_1', '\overline{\Omega}_2'], pick = 'text')
+ax.label_curves(['\Omega_1', '\Omega_2'], pick = 'text')
 fig.save('Test9-manually_picked_label_text')
 
 #Verification that manually picking the root of the label works properly
@@ -113,7 +113,7 @@ y6a = y5a
 x6b = x5b
 y6b = y5b
 [fig, ax] = pf.plot('', [x6a, x6b], [y6a, y6b])
-ax.label_curves(['\overline{\Omega}_1', '\overline{\Omega}_2'], pick = 'root', \
+ax.label_curves(['\Omega_1', '\Omega_2'], pick = 'root', \
     angles = [120, -60]);
 fig.save('Test10-manually_picked_label_root')
 

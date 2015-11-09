@@ -1332,7 +1332,6 @@ class Axes(_Data_Axes_Base):
         
     @x_tick_list.setter
     def x_tick_list(self, tick_list):
-        tick_list = _np.array(tick_list)
         self._ui_x_tick_list = tick_list
         tick_list = _utl.gen_tick_list(tick_list, self.x_lim, self.x_tick, self.x_scale)
         self.mpl_ax.set_xticks(tick_list)
@@ -1348,7 +1347,6 @@ class Axes(_Data_Axes_Base):
         
     @y_tick_list.setter
     def y_tick_list(self, tick_list):
-        tick_list = _np.array(tick_list)
         self._ui_y_tick_list = tick_list
         tick_list = _utl.gen_tick_list(tick_list, self.y_lim, self.y_tick, self.y_scale)
         self.mpl_ax.set_yticks(tick_list)
@@ -1459,7 +1457,7 @@ class Axes(_Data_Axes_Base):
 
     @property
     def x_label(self):
-        """Sets/gets the x axis label.  Supply a 1x2 list of strings (in LaTeX 
+        """Gets/sets the x axis label.  Supply a 1x2 list of strings (in LaTeX 
         syntax) to specify the axis label text and axis units.  The units will 
         automatically be wrapped in paranthesises.  Supply a 1x1 list with a
         single string to create a label without any units."""
@@ -1474,7 +1472,7 @@ class Axes(_Data_Axes_Base):
     
     @property
     def y_label(self):
-        """Sets/gets the y axis label.  Supply a 1x2 list of strings (in LaTeX 
+        """Gets/sets the y axis label.  Supply a 1x2 list of strings (in LaTeX 
         syntax) to specify the axis label text and axis units.  The units will 
         automatically be wrapped in paranthesises.  Supply a 1x1 list with a 
         single string to create a label without any units."""
@@ -2049,7 +2047,7 @@ class Axes(_Data_Axes_Base):
         angle_cand = _np.array([30, 60, 120, 150, -150, -120, -60, -30])
         
         if (style is 'balloon') or (style is 'balloons'):
-            l_bbox = dict(boxstyle='circle', fc = [1,1,1])
+            l_bbox = dict(boxstyle='circle', fc = [1,1,1], pad = 0.2)
         else:
             l_bbox = None    
         

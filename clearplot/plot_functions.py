@@ -801,7 +801,7 @@ def show_im(filename, im_seq, **kwargs):
                     size = font_size * scale_plot, \
                     va = 'center', ha = 'center', \
                     fontname = 'sans-serif', \
-                    bbox=dict(boxstyle='circle', fc = 'none'))
+                    bbox=dict(boxstyle='circle', fc = 'none', pad = 0.2))
             x0 = x1
         #Put a gap between each image sequence
         x0 = x0 + pix_gap

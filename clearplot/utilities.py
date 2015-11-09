@@ -601,32 +601,6 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, ax_scale, exceed_lim)
         if ui_tick == 'auto':
             tick_c = _np.array([1])        
             
-#        #Automatically round limits to the closest power of 10
-#        #Select the proper range of powers of 10
-#        def power_of_ten(x):
-#            return 10 ** x
-#        power_of_ten_vec = _np.vectorize(power_of_ten)
-#        if _np.all(lim > 0):
-#            x_range = power_of_ten_vec(_np.arange(-10, 10.1, 1))
-#        elif _np.all(lim < 0):
-#            x_range = -power_of_ten_vec(_np.arange(-10, 10.1, 1))
-#        else:
-#            raise ValueError("""You cannot have a logarithmic axis that spans 
-#                across negative and positive numbers""")
-#        #Initialize the limit candidates with the user input limits
-#        lim_c = _np.array([lim])        
-#        #If limits were not specified, round limits to match tick mark spacing
-#        if ui_lim[0] == 'auto':
-#            below_list = x_range[x_range - data_lim[0] <= 0]
-#            lim_c[0][0] = below_list[-1]
-#        #If limits were not specified, round limits to match tick mark spacing
-#        if ui_lim[1] == 'auto':
-#            above_list = x_range[x_range - data_lim[1] >= 0]
-#            lim_c[0][1] = above_list[0]
-#        #Calculate the number of tick marks
-#        n_tick_c = (_np.log10(lim_c[0][1]) - _np.log10(lim_c[0][0])) / tick_c
-            
-            
         #Initialize the limit candidates with the user input limits
         lim_c = _np.array([lim])      
         #Automatically round limits to the closest power of 10
@@ -730,7 +704,7 @@ def gen_tick_list(ui_tick_list, lim, tick, scale):
     tick_list : list of floats
         List of tick mark values
     """
-    if 'auto' in ui_tick_list:
+    if ui_tick_list is 'auto':
         #Set the list of tick marks
         if scale == 'log':
             #(range omits the last entry so we need to nudge it a bit)
