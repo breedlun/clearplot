@@ -6,13 +6,19 @@
 __version__ = '1.0'
 
 import matplotlib as _mpl
+import _sys
 
 #==============================================================================
 # Check Upon Import
 #============================================================================== 
 
-#Define the minimimum version of matplotlib
+#Define the minimimum version of matplotlib 
 min_mpl_version = '1.4.0'
+if 'sphinx' in _sys.modules:
+    #Sphinx just documents the package, so it isn't necessary to have some 
+    #of the newer features of matplotlib
+    min_mpl_version = '1.3.0'
+    print "Warning: Clearplot detected that sphinx was loaded, so it is allowing an older version of matplotlib.  Normally matplotlib " + min_mpl_version + " or greater is required."
  
 def _parse_version_string(v):
     """Attempts to converts a version string to a tuple of integers."""
