@@ -5,11 +5,11 @@
 
 Clearplot
 =========
-Clearplot creates publication quality plots using matplotlib.  The motivation behind the project was a desire to create lucid plots with a certain style, like the example below.
+Clearplot creates publication quality plots using matplotlib.  The project began as an effort to create lucid plots with a certain style, like the example below.
 
 .. image:: Necking_Example.png
 
-In addition to changing the style, clearplot revamps the user interface, and adds a few new features.  Although the documentation has detailed descriptions of the clearplot syntax, probably the best way to get started is to look at the `examples <./examples/index.html>`_.
+Over time, we have also revamped matplotlib's user interface, and added a few new features.  Although the documentation has detailed descriptions of the clearplot syntax, probably the best way to get started is to look at the `examples <./examples/index.html>`_.
 
 Contents
 --------

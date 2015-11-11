@@ -189,6 +189,17 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 .. raw:: html
 
     <div class='figure align-center'>
+    <a href=./arrows-custom_tick_labels/arrows-custom_tick_labels.html>
+    <img src=../_images/arrows-custom_tick_labels.png>
+    <span class='figure-label'>
+    <p>Arrows - Custom Tick Labels</p>
+    </span>
+    </a>
+    </div>
+    
+.. raw:: html
+
+    <div class='figure align-center'>
     <a href=./vertically_stacked/vertically_stacked.html>
     <img src=../_images/vertically_stacked.png>
     <span class='figure-label'>
