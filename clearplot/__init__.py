@@ -17,7 +17,7 @@ min_mpl_version = '1.4.0'
 if 'sphinx' in _sys.modules:
     #Sphinx just documents the package, so it isn't necessary to have some 
     #of the newer features of matplotlib
-    print "Warning: Clearplot detected that sphinx was loaded, so it is allowing an older version of matplotlib.  Normally matplotlib " + min_mpl_version + " or greater is required."
+    print "Warning: Clearplot detected that sphinx was loaded.  Sphinx just documents the package, so clearplot will allow older versions of matplotlib to be loaded.  Normally matplotlib " + min_mpl_version + " or greater is required."
     min_mpl_version = '1.3.0'
  
 def _parse_version_string(v):
