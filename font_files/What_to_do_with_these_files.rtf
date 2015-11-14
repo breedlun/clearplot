@@ -11,9 +11,9 @@
 Note: If a font directory has a Source_Fonts directory, the source fonts can be ignored.  \
 \
 \pard\tx220\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li720\fi-720\pardirnatural
-\ls1\ilvl0\cf0 {\listtext	1.	}Find where Matplotlib stores its data.  Bring up a python interpreter.  At the prompt type the following two commands: \cb2 >>> import matplotlib\cb1  \cb2 >>> matplotlib.matplotlib_fname()\cb1 . You should get something like: \cb2 [username]/Library/Enthought/Canopy_64bit/User/lib/python2.7/site-packages/matplotlib/mpl-data/matplotlibrc\cb1 \
+\ls1\ilvl0\cf0 {\listtext	1.	}Find where Matplotlib stores its data.  Bring up a python interpreter.  At the prompt type the following three commands: \cb2 >>> import matplotlib\cb1  \cb2 >>> matplotlib.matplotlib_fname()\cb1  \cb2 >>> matplotlib.get_cachedir()\cb1  On a mac you should get something like: \cb2 '/Users/[username]/Library/Enthought/Canopy_64bit/User/lib/python2.7/site-packages/matplotlib/mpl-data/matplotlibrc'\cb1  and \cb2 '/Users/[username]/.matplotlib'\cb1 .\
 {\listtext	2.	}Place the .ttf font files in: [username]/Library/Enthought/Canopy_64bit/User/lib/python2.7/site-packages/matplotlib/mpl-data/fonts/ttf/\
-{\listtext	3.	}Go to ~/.matplotlib/ and delete fontList.cache.  Next time matplotlib is imported the cache file will be rebuilt.\
+{\listtext	3.	}Go to /Users/[username]/.matplotlib and delete fontList.cache.  Next time matplotlib is imported the cache file will be rebuilt.\
 {\listtext	4.	}Install the fonts on your system so they can be accessed by other applications like Adobe Illustrator and Inkscape.  \
 \pard\tx940\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\li1440\fi-1440\pardirnatural
 \ls1\ilvl1\cf0 {\listtext	\uc0\u8259 	}For Adobe Illustrator on a Mac, you can simply open the Font Book application (/Applications/Utilities/Font Book) and "drag and drop" the font files into the Font Book window.  \

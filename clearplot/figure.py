@@ -31,7 +31,7 @@ class Figure(object):
             Dots per mm
         """
         self._ui_size = size
-        if size == 'auto':
+        if size is 'auto':
             size_inch = _np.array(_mpl.rcParams['figure.figsize'])
         else:
             size_inch = _np.array(size) / 25.4
@@ -453,15 +453,15 @@ class Figure(object):
             Padding on edges of figure, in mm.
         """
         #Only adjust figure if the size has not been specified
-        if self._ui_size == 'auto':
+        if self._ui_size is 'auto':
             fig_bbox = self.tight_bbox
             #Collect the user input axes positions
             ui_ax_pos_auto = []
             for ax in self.axes:
-                ui_ax_pos_auto.append(ax._ui_pos == 'auto')
+                ui_ax_pos_auto.append(ax._ui_pos is 'auto')
             #Treat the colorbars as if they were axes
             for bar in self.color_bars:
-                ui_ax_pos_auto.append(bar._ui_pos == 'auto')
+                ui_ax_pos_auto.append(bar._ui_pos is 'auto')
             if False not in ui_ax_pos_auto:
                 #If the axes positions have not been specified then move the 
                 #axes all by the same amount, and resize the figure window.

@@ -16,18 +16,13 @@ import sys
 import os
 import mock
 
-sys.path.insert(0, os.path.join(os.path.abspath(__file__),'..','..','clearplot'))
+sys.path.insert(0, os.path.join(os.path.dirname(__file__),'..','..'))
 
 # autodoc_mock_imports = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.patches', \
 # 	'matplotlib.path', 'matplotlib.lines', 'matplotlib.text', 'matplotlib.transforms', \
 # 	'matplotlib.artist', 'cpickle']
 
-# MOCK_MODULES = ['numpy', 'matplotlib', 'matplotlib.pyplot', 'matplotlib.patches', \
-# 	'matplotlib.path', 'matplotlib.lines', 'matplotlib.text', 'matplotlib.transforms', \
-# 	'matplotlib.artist']
-# for mod_name in MOCK_MODULES:
-# 	sys.modules[mod_name] = mock.Mock()
-
+#Print imports to the screen so that it is easier to troubleshoot issues
 print "python exec:", sys.executable
 print "sys.path:", sys.path
 try:
@@ -38,8 +33,18 @@ except ImportError:
 try:
     import matplotlib
     print "matplotlib: %s, %s" % (matplotlib.__version__, matplotlib.__file__)
+    #For some reason, I have to import matplotlib.pyplot here, or else I get errors that
+    #there is no module named 'sip' when ReadTheDocs tries to import matplotlib.pyplot 
+    #inside of clearplot
+    import matplotlib.pyplot
+    print "matplotlib.pyplot imported"
 except ImportError:
     print "no matplotlib"
+try:
+    import clearplot
+    print "clearplot: %s, %s" % (clearplot.__version__, clearplot.__file__)
+except ImportError:
+    print "no clearplot"
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -59,8 +64,13 @@ extensions = [
     'sphinx.ext.autosummary',
     'sphinx.ext.coverage',
     'sphinx.ext.pngmath',
-#     'numpydoc',
+    'sphinx.ext.napoleon',
 ]
+
+napoleon_google_docstring = False
+napoleon_numpy_docstring = True
+napoleon_include_special_with_doc = False
+napoleon_use_param = True
 
 #Sphinx does not autodocument class __init__ methods, by default.  I tried
 #setting the `autoclass_content = 'both'` option, which did document the 

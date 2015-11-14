@@ -64,7 +64,6 @@
     }
     </style>
 
-.. _examples:
 
 Examples
 ========
@@ -78,6 +77,8 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 	
 	./basic/basic.rst
 	
+	./no_axis_arrows/no_axis_arrows.rst
+	
 	./two_curves-legend/two_curves-legend.rst
 	
 	./two_curves-labels-no_units/two_curves-labels-no_units.rst
@@ -85,6 +86,8 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 	./two_y_axes/two_y_axes.rst
 	
 	./log_log_plot/log_log_plot.rst
+	
+	./arrows-custom_tick_labels/arrows-custom_tick_labels.rst
 	
 	./vertically_stacked/vertically_stacked.rst
 	
@@ -123,6 +126,17 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
     <img src=../_images/basic.png>
     <span class='figure-label'>
     <p>Basic</p>
+    </span>
+    </a>
+    </div>
+
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./no_axis_arrows/no_axis_arrows.html>
+    <img src=../_images/no_axis_arrows.png>
+    <span class='figure-label'>
+    <p>No Axis Arrows</p>
     </span>
     </a>
     </div>
@@ -168,6 +182,17 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
     <img src=../_images/log_log_plot.png>
     <span class='figure-label'>
     <p>Log Log Plot</p>
+    </span>
+    </a>
+    </div>
+    
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./arrows-custom_tick_labels/arrows-custom_tick_labels.html>
+    <img src=../_images/arrows-custom_tick_labels.png>
+    <span class='figure-label'>
+    <p>Arrows - Custom Tick Labels</p>
     </span>
     </a>
     </div>

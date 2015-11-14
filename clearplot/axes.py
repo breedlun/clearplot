@@ -160,7 +160,7 @@ class _Axes_Base(object):
             `cs_1` for further information.
         kwargs:
             Keyword arguments to matplotlib's annotate function.  See the
-            `matplotlib documentation <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.annotate>`_
+            `matplotlib documentation <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.annotate>`__
             for further details
             
         Returns
@@ -381,7 +381,7 @@ class _Data_Axes_Base(_Axes_Base):
             lower left of the image, with positive y being upwards.
         im_interp : string, optional
             Image interpolation method.  See the `matplotlib documentation
-            <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.imshow>`_
+            <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.imshow>`__
             for acceptable values.
         c_map : string, optional
             Image color map.
@@ -1332,7 +1332,6 @@ class Axes(_Data_Axes_Base):
         
     @x_tick_list.setter
     def x_tick_list(self, tick_list):
-        tick_list = _np.array(tick_list)
         self._ui_x_tick_list = tick_list
         tick_list = _utl.gen_tick_list(tick_list, self.x_lim, self.x_tick, self.x_scale)
         self.mpl_ax.set_xticks(tick_list)
@@ -1348,7 +1347,6 @@ class Axes(_Data_Axes_Base):
         
     @y_tick_list.setter
     def y_tick_list(self, tick_list):
-        tick_list = _np.array(tick_list)
         self._ui_y_tick_list = tick_list
         tick_list = _utl.gen_tick_list(tick_list, self.y_lim, self.y_tick, self.y_scale)
         self.mpl_ax.set_yticks(tick_list)
@@ -1459,7 +1457,7 @@ class Axes(_Data_Axes_Base):
 
     @property
     def x_label(self):
-        """Sets/gets the x axis label.  Supply a 1x2 list of strings (in LaTeX 
+        """Gets/sets the x axis label.  Supply a 1x2 list of strings (in LaTeX 
         syntax) to specify the axis label text and axis units.  The units will 
         automatically be wrapped in paranthesises.  Supply a 1x1 list with a
         single string to create a label without any units."""
@@ -1474,7 +1472,7 @@ class Axes(_Data_Axes_Base):
     
     @property
     def y_label(self):
-        """Sets/gets the y axis label.  Supply a 1x2 list of strings (in LaTeX 
+        """Gets/sets the y axis label.  Supply a 1x2 list of strings (in LaTeX 
         syntax) to specify the axis label text and axis units.  The units will 
         automatically be wrapped in paranthesises.  Supply a 1x1 list with a 
         single string to create a label without any units."""
@@ -2012,8 +2010,8 @@ class Axes(_Data_Axes_Base):
         """
         
         #Preprocess the label text
-        if text == 'auto':
-            if ndx == 'auto':
+        if text is 'auto':
+            if ndx is 'auto':
                 raise IOError("""Text and ndx cannot both be 'auto'""")
             else:
                 text = range(1, len(ndx) + 1)
@@ -2049,7 +2047,7 @@ class Axes(_Data_Axes_Base):
         angle_cand = _np.array([30, 60, 120, 150, -150, -120, -60, -30])
         
         if (style is 'balloon') or (style is 'balloons'):
-            l_bbox = dict(boxstyle='circle', fc = [1,1,1])
+            l_bbox = dict(boxstyle='circle', fc = [1,1,1], pad = 0.2)
         else:
             l_bbox = None    
         
@@ -2135,7 +2133,7 @@ class Axes(_Data_Axes_Base):
                             (delta_mm[0, ndx]**2.0 + delta_mm[1, ndx]**2.0)**0.5
                         lengths[n] = _np.round(lengths[n], decimals = 2)
             else:
-                if ndx[n] == 'auto':
+                if ndx[n] is 'auto':
                     ndx[n] = _np.round(len(yi) / 2.0)
             #Convert input angle from degrees to radians
             a = angles[n] * _np.pi/180.0
@@ -2211,7 +2209,7 @@ class Axes(_Data_Axes_Base):
             Width of curves in points.
         marker_shapes : list of strings, optional
             Shapes of markers.  See the `matplotlib documentation 
-            <http://matplotlib.org/api/markers_api.html>`_ for valid shapes.
+            <http://matplotlib.org/api/markers_api.html>`__ for valid shapes.
         marker_sizes : list of floats or ints, optional
             Sizes of markers, in points.
         marker_colors : list of 1x3 lists, optional
@@ -2287,7 +2285,7 @@ class Axes(_Data_Axes_Base):
             y-coordinates of markers
         shapes : list of strings, optional
             Shapes of markers.  See the `matplotlib documentation 
-            <http://matplotlib.org/api/markers_api.html>`_ for valid shapes.
+            <http://matplotlib.org/api/markers_api.html>`__ for valid shapes.
         sizes : list of floats or ints, optional
             Sizes of markers, in points.
         colors : list of 1x3 lists, optional
@@ -2601,7 +2599,7 @@ class Axes(_Data_Axes_Base):
             Colors of caps.  RGB values should be between 0 and 1.
         flier_shapes : list of strings, optional
             Shapes of fliers.  See the `matplotlib documentation 
-            <http://matplotlib.org/api/markers_api.html>`_ for valid shapes.
+            <http://matplotlib.org/api/markers_api.html>`__ for valid shapes.
         flier_sizes : list of floats, optional
             Size of fliers in points.
         flier_colors : list of 1x3 lists, optional
@@ -2789,7 +2787,7 @@ class Axes(_Data_Axes_Base):
         #to disregard c_obj.set_clim() and c_bar.set_clim().
         #Round is needed so that the contour line labels match up exactly with 
         #the levels.
-        if cl_levels == 'auto':
+        if cl_levels is 'auto':
             cl_levels = _np.round(_np.arange(c_lim[0], \
                 c_lim[1] + c_tick/100.0, c_tick/4.0), 12)
         else:
@@ -2801,7 +2799,7 @@ class Axes(_Data_Axes_Base):
             cl_levels = _np.round(_np.sort(cl_levels), 12)
         
         #Define the contour line labels
-        if cl_labels == 'auto':
+        if cl_labels is 'auto':
             cl_labels = cl_levels[::2]
         else:
             cl_labels = _np.round(cl_labels, 12)
@@ -2810,7 +2808,7 @@ class Axes(_Data_Axes_Base):
         if plot_type not in ['filled', 'image', 'lines']:
             raise IOError("Did not recognize the plot type")    
         
-        if cl_width == 'auto':
+        if cl_width is 'auto':
             #Define the contour line width
             if plot_type == 'filled':
                 cl_width = 0.5
@@ -2819,10 +2817,10 @@ class Axes(_Data_Axes_Base):
             else:
                 cl_width = 2
         
-        if cl_colors == 'auto':
+        if cl_colors is 'auto':
             #If only showing contour lines, then color lines according to the 
             #colormap.  Otherwise make the lines black.
-            if plot_type == 'lines':
+            if plot_type is 'lines':
                 cl_colors = None
             else:
                 cl_colors = [[0, 0, 0]]
@@ -2830,9 +2828,9 @@ class Axes(_Data_Axes_Base):
             cl_colors = _utl.adjust_depth(cl_colors, 2)
         
         #Generate background
-        if plot_type == 'filled':
+        if plot_type is 'filled':
             b_obj = self.mpl_ax.contourf(x, y, z, cl_levels, cmap = c_map)
-        elif plot_type == 'image':
+        elif plot_type is 'image':
             #Verify that x and y data are appropriate for the 'image' plot type
             dx = _np.diff(x, axis = 1)
             avg_dx = _np.mean(dx)
@@ -2861,7 +2859,7 @@ class Axes(_Data_Axes_Base):
             b_obj.set_clip_path(clip_patch)
             
         #Generate contour lines
-        if plot_type == 'lines':
+        if plot_type is 'lines':
             cl_obj = self.mpl_ax.contour(x, y, z, cl_levels, cmap = c_map, \
                 linewidths = cl_width, linestyles = cl_style)
             b_obj = None
