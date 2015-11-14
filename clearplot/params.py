@@ -49,11 +49,7 @@ _mpl.rcParams['legend.handletextpad'] = 0.25
 
 #Font settings
 _mpl.rcParams['font.family'] = 'sans-serif'
-#Matplotlib 1.3.1 has a bug where 'Bitstream Vera Sans' is automatically 
-#selected if it is anywhere in the list, so I have removed it for now.
-#See http://matplotlib.1069221.n5.nabble.com/font-setting-in-matplotlib-1-3-1-td42662.html
-#for further details.
-_mpl.rcParams['font.sans-serif'] = ['TeXGyreHerosTXfonts'] 
+_mpl.rcParams['font.sans-serif'] = ['TeXGyreHerosTXfonts', 'Bitstream Vera Sans'] 
 _mpl.rcParams['mathtext.rm'] = 'sans'
 _mpl.rcParams['mathtext.sf'] = 'sans'
 _mpl.rcParams['mathtext.it'] = 'sans:italic'
