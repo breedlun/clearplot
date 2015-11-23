@@ -4,14 +4,17 @@ Version History
 clearplot version 1.0
 
 1. Renamed BRplot to clearplot and made it publicly available for the first time.
-2. Reorganized BRplot from a single python module into a package.
-3. Transitioned from documenting BRplot with only docstrings to using Sphinx-doc to generate html documentation.
-4. Restructured package to give it an object oriented interface.  The functional interface still exists for generating standard plots, but the object oriented interface is helpful for creating custom, specialized, or complicated plots.  The primary changes are the figure object and axes object.  When the figure/axes objects is created, it also instantiates a matplotlib figure/axes object inside of it, which is easily accessed by typing fig.mpl_fig / ax.mpl_ax. 
-5. Added the ability to link one x/y axis to another x/y axis in the same figure window so that the axes have the same limits and tick mark spacing.  This allows one to easily stack sets of axes vertically/horizontally in a figure window, and keep the x/y axes synchronized.
-6. Improved the automatic limit and tick mark selection for plots with multiple x axes or multiple y axes.
-7. Added the ability to create violin plots, which provide an easy way to compare several statistical distributions. 
-8. Switched from the TkAgg backend to the Qt4Agg backend.  The Qt4Agg backend seems to let you change the figure window size at will, while TkAgg acts quite strangely.  (For further details, see `this post <http://stackoverflow.com/questions/26050709/matplotlib-trouble-reducing-figure-size-with-tkagg-backend>`__ and `this post <https://github.com/matplotlib/matplotlib/issues/3584>`__.)
-9. Curve legends and marker legends automatically eliminate any duplicate labels.
+
+BRplot version 3.0
+
+1. Reorganized BRplot from a single python module into a package.
+2. Transitioned from documenting BRplot with only docstrings to using Sphinx-doc to generate html documentation.
+3. Restructured package to give it an object oriented interface.  The functional interface still exists for generating standard plots, but the object oriented interface is helpful for creating custom, specialized, or complicated plots.  The primary changes are the figure object and axes object.  When the figure/axes objects is created, it also instantiates a matplotlib figure/axes object inside of it, which is easily accessed by typing fig.mpl_fig / ax.mpl_ax. 
+4. Added the ability to link one x/y axis to another x/y axis in the same figure window so that the axes have the same limits and tick mark spacing.  This allows one to easily stack sets of axes vertically/horizontally in a figure window, and keep the x/y axes synchronized.
+5. Improved the automatic limit and tick mark selection for plots with multiple x axes or multiple y axes.
+6. Added the ability to create violin plots, which provide an easy way to compare several statistical distributions. 
+7. Switched from the TkAgg backend to the Qt4Agg backend.  The Qt4Agg backend seems to let you change the figure window size at will, while TkAgg acts quite strangely.  (For further details, see `this post <http://stackoverflow.com/questions/26050709/matplotlib-trouble-reducing-figure-size-with-tkagg-backend>`__ and `this post <https://github.com/matplotlib/matplotlib/issues/3584>`__.)
+8. Curve legends and marker legends automatically eliminate any duplicate labels.
 
 BRplot version 2.0
 

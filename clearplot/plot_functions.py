@@ -150,7 +150,8 @@ def plot(filename, x, y, x_label = None, y_label = None, **kwargs):
     
     #Generate legend
     if legend != None:
-        ax.add_legend(legend, legend_loc, legend_outside_ax, **legend_kwargs)
+        ax.add_legend(legend, loc = legend_loc, \
+        outside_ax = legend_outside_ax, **legend_kwargs)
 
 #    # Catch unexpected keyword arguments
 #    if kwargs:
@@ -262,7 +263,8 @@ def plot_bars(filename, x, y, x_label = None, y_label = None, **kwargs):
     
     #Generate legend
     if legend != None:
-        ax.add_bar_legend(legend, legend_loc, legend_outside_ax, **legend_kwargs)
+        ax.add_bar_legend(legend, loc = legend_loc, \
+        outside_ax = legend_outside_ax, **legend_kwargs)
 
     #Update canvas
     fig.auto_adjust_layout()

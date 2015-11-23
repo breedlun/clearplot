@@ -1611,66 +1611,122 @@ class Axes(_Data_Axes_Base):
         """
         self.mpl_ax.set_title(text)
 
-    def add_legend(self, legend, loc = 'best', outside_ax = False, **kwargs):
+    def add_legend(self, labels = None, curves = 'auto', loc = 'best', \
+        outside_ax = False, **kwargs):
         """
         Adds a legend to label curves plotted with ax.plot()
+        
+        Parameters
+        ----------
+        labels : list of strings, optional
+            Label strings
+        curves : list of curve objects, optional
+            Curves that will be labeled
+        loc : string, optional
+            Location of legend.  Valid options include, 'best', 'upper left',
+            'upper center, 'upper right', 'center left', 'center', 
+            'center right', 'lower left', 'lower center', 'lower right'.
+        outside_ax : bool, optional
+            Specifies whether to place the legend outside the axes.
+                
+        Returns
+        -------
+        legend : legend object
         """
-        #Collect the curve attributes and labels into a series of rows
-        c_data = []
-        for curve, label in zip(self.curves, legend):
-            color = curve.get_color()
-            c_data.append([label, color[0], color[1], color[2], \
-                curve.get_linestyle(), curve.get_linewidth(), \
-                ])
-            if curve.get_marker() is not None:
-                #We only care that two curves have different marker colors if
-                #the curves have markers.
-                e_color = curve.get_markeredgecolor()
-                f_color = curve.get_markerfacecolor()
-                c_data[-1].extend([curve.get_marker(), \
-                    curve.get_markersize(), curve.get_markeredgewidth(), \
-                    e_color[0], e_color[1], e_color[2], \
-                    f_color[0], f_color[1], f_color[2]])
-        #Isolate the unique curve and label combinations, so that we
-        #don't get duplicate labels in the legend
-        [u_c_data, u_ndx] = _utl.get_unique_rows(c_data)
-        curves = _np.array(self.curves)[u_ndx]
-        labels = _np.array(legend)[u_ndx]
+        if curves is 'auto':
+            #Collect the curve attributes and labels into a series of rows
+            c_data = []
+            for curve, label in zip(self.curves, labels):
+                color = curve.get_color()
+                c_data.append([label, color[0], color[1], color[2], \
+                    curve.get_linestyle(), curve.get_linewidth(), \
+                    ])
+                if curve.get_marker() is not None:
+                    #We only care that two curves have different marker colors if
+                    #the curves have markers.
+                    e_color = curve.get_markeredgecolor()
+                    f_color = curve.get_markerfacecolor()
+                    c_data[-1].extend([curve.get_marker(), \
+                        curve.get_markersize(), curve.get_markeredgewidth(), \
+                        e_color[0], e_color[1], e_color[2], \
+                        f_color[0], f_color[1], f_color[2]])
+            #Isolate the unique curve and label combinations, so that we
+            #don't get duplicate labels in the legend
+            [u_c_data, u_ndx] = _utl.get_unique_rows(c_data)
+            curves = _np.array(self.curves)[u_ndx]
+            labels = _np.array(labels)[u_ndx]
         #Create the legend
         legend = self._add_legend(curves, labels, loc, outside_ax, **kwargs)
         return(legend)
     
-    def add_marker_legend(self, legend, loc = 'best', outside_ax = False, \
-        **kwargs):
+    def add_marker_legend(self, labels = None, markers = 'auto', loc = 'best', \
+        outside_ax = False, **kwargs):
         """
         Adds a legend to label markers plotted with ax.plot_markers()
+                
+        Parameters
+        ----------
+        labels : list of strings, optional
+            Label strings
+        markers : list of marker objects, optional
+            Markers that will be labeled
+        loc : string, optional
+            Location of legend.  Valid options include, 'best', 'upper left',
+            'upper center, 'upper right', 'center left', 'center', 
+            'center right', 'lower left', 'lower center', 'lower right'.
+        outside_ax : bool, optional
+            Specifies whether to place the legend outside the axes.
+                
+        Returns
+        -------
+        legend : legend object
         """
-        #Collect the marker attributes and labels into a series of rows
-        m_data = []
-        for marker, label in zip(self.markers, legend):
-            e_color = marker.get_markeredgecolor()
-            f_color = marker.get_markerfacecolor()
-            m_data.append([label, marker.get_marker(), e_color[0], e_color[1], e_color[2], \
-                f_color[0], f_color[1], f_color[2], marker.get_markeredgewidth(), \
-                marker.get_markersize()])
-        #Isolate the unique marker and label combinations, so that we
-        #don't get duplicate labels in the legend
-        [u_m_data, u_ndx] = _utl.get_unique_rows(m_data)
-        markers = _np.array(self.markers)[u_ndx]
-        labels = _np.array(legend)[u_ndx]
+        if markers is 'auto':
+            #Collect the marker attributes and labels into a series of rows
+            m_data = []
+            for marker, label in zip(self.markers, labels):
+                e_color = marker.get_markeredgecolor()
+                f_color = marker.get_markerfacecolor()
+                m_data.append([label, marker.get_marker(), e_color[0], e_color[1], e_color[2], \
+                    f_color[0], f_color[1], f_color[2], marker.get_markeredgewidth(), \
+                    marker.get_markersize()])
+            #Isolate the unique marker and label combinations, so that we
+            #don't get duplicate labels in the legend
+            [u_m_data, u_ndx] = _utl.get_unique_rows(m_data)
+            markers = _np.array(self.markers)[u_ndx]
+            labels = _np.array(labels)[u_ndx]
         #Create the legend
         legend = self._add_legend(markers, labels, loc, outside_ax, **kwargs)
         return(legend)
             
-    def add_bar_legend(self, legend, loc = 'best', outside_ax = False, \
-        **kwargs):
+    def add_bar_legend(self, labels = None, bars = 'auto', loc = 'best', \
+        outside_ax = False, **kwargs):
         """
         Adds a legend to label markers plotted with ax.plot_bars()
+                
+        Parameters
+        ----------
+        labels : list of strings, optional
+            Label strings
+        bars : list of bar objects, optional
+            Bars that will be labeled
+        loc : string, optional
+            Location of legend.  Valid options include, 'best', 'upper left',
+            'upper center, 'upper right', 'center left', 'center', 
+            'center right', 'lower left', 'lower center', 'lower right'.
+        outside_ax : bool, optional
+            Specifies whether to place the legend outside the axes.
+            
+        Returns
+        -------
+        legend : legend object
         """
-        legend = self._add_legend(self.bars, legend, loc, outside_ax, **kwargs)
+        if bars is 'auto':
+            bars = self.bars
+        legend = self._add_legend(bars, labels, loc, outside_ax, **kwargs)
         return(legend)
             
-    def _add_legend(self, data_obj, legend, loc, outside_ax, **kwargs):
+    def _add_legend(self, data_obj, labels, loc, outside_ax, **kwargs):
         """
         Places a legend on the axes
         """
@@ -1680,7 +1736,7 @@ class Axes(_Data_Axes_Base):
         #reference.  The [:] causes python to pass a copy.  This way you can 
         #reuse the labels list for a future plot without stripping the 
         #$ delimiters.)
-        raw_labels = _utl.flatten(legend[:])
+        raw_labels = _utl.flatten(labels[:])
         for i, el in enumerate(raw_labels):
             if el[0] is not '$':
                 raw_labels[i] = '$' + _utl.raw_string(el) + '$'
@@ -1905,14 +1961,14 @@ class Axes(_Data_Axes_Base):
             print """arrow_ndx = """
             print ndx
             
-    def label_curves(self, text, **kwargs):
+    def label_curves(self, labels, **kwargs):
         """
         Labels curves, either at interactively picked points or at user 
         specified locations.
         
         Parameters
         ----------
-        text : string or list of strings
+        labels : string or list of strings
             Label strings (in LaTeX format)
         ndx : integer or list of integers, optional
             list of indices that specify the location of the leader line root
@@ -1949,7 +2005,7 @@ class Axes(_Data_Axes_Base):
         pick = kwargs.pop('pick', False)
         style = kwargs.pop('style', 'normal')
         font_size = kwargs.pop('font_size', 14)
-        self._add_labels(text, ndx, angles, lengths, style, pick, font_size, \
+        self._add_labels(labels, ndx, angles, lengths, style, pick, font_size, \
             True, self.curves)
         
     def label_curve(self, **kwargs):
@@ -1967,7 +2023,7 @@ class Axes(_Data_Axes_Base):
             Curve to label.  Either `curve` or both `x` and `y` must be 
             specified
             
-        See Axes.label_curve for descriptions of other input parameters
+        See Axes.label_curves for descriptions of other input parameters
         
         Returns
         -------
@@ -1981,7 +2037,7 @@ class Axes(_Data_Axes_Base):
         x = kwargs.pop('x', None)
         y = kwargs.pop('y', None)
         curve = kwargs.pop('curve', None)
-        text = kwargs.pop('text', 'auto')
+        labels = kwargs.pop('labels', 'auto')
         ndx = kwargs.pop('ndx', 'auto')
         angles = kwargs.pop('angles', 'auto')
         lengths = kwargs.pop('lengths', [12])
@@ -2001,24 +2057,24 @@ class Axes(_Data_Axes_Base):
             if not flag:
                 raise IOError("ERROR: x and y data do not correspond to an existing curve")
         
-        self._add_labels(text, ndx, angles, lengths, style, pick, font_size, \
+        self._add_labels(labels, ndx, angles, lengths, style, pick, font_size, \
             False, [self.curves[i]])
     
-    def _add_labels(self, text, ndx, angles, lengths, style, pick, font_size, \
+    def _add_labels(self, labels, ndx, angles, lengths, style, pick, font_size, \
         labeling_curves, curves):
         """Places mutliple labels on a single curve or one label on each curve
         """
         
         #Preprocess the label text
-        if text is 'auto':
+        if labels is 'auto':
             if ndx is 'auto':
                 raise IOError("""Text and ndx cannot both be 'auto'""")
             else:
-                text = range(1, len(ndx) + 1)
-                text = map(lambda x: str(x), text)
+                labels = range(1, len(ndx) + 1)
+                labels = map(lambda x: str(x), labels)
         
         #Preprocess lists
-        text = _utl.adjust_depth(text, 1)
+        labels = _utl.adjust_depth(labels, 1)
         ndx = _utl.adjust_depth(ndx, 1)
         angles = _utl.adjust_depth(angles, 1)
         lengths = _utl.adjust_depth(lengths, 1)
@@ -2055,21 +2111,21 @@ class Axes(_Data_Axes_Base):
         def extend_list(l, N):
             l = l + [l[0]] * (N - len(l))
             return(l)    
-        N = len(text)
+        N = len(labels)
         ndx = extend_list(ndx, N)
         angles = extend_list(angles, N)
         lengths = extend_list(lengths, N)
 
-        for n, t in enumerate(text):
+        for n, t in enumerate(labels):
             #Convert the label text to raw LaTeX format
-            text[n] = '$' + _utl.raw_string(t) + '$'
+            labels[n] = '$' + _utl.raw_string(t) + '$'
     
         if labeling_curves:       
             c = -1
         else:
             c = 0
         i = 0
-        for n, t in enumerate(text):
+        for n, t in enumerate(labels):
             #Specify the text that will be printed to the console if labels are 
             #manually picked
             if labeling_curves:
@@ -2139,12 +2195,12 @@ class Axes(_Data_Axes_Base):
             a = angles[n] * _np.pi/180.0
             #Only bother doing the following steps if a label position 
             #was selected and label text was specified
-            if not any(map(lambda x: x is None, [text[n], ndx[n]])):
+            if not any(map(lambda x: x is None, [labels[n], ndx[n]])):
                 #Convert from polar coordinates to rectangular coordinates
                 offset_pos = lengths[n] * _np.array([_np.cos(a), _np.sin(a)])
                 #Create the annotation
                 root = [xi[ndx[n]], yi[ndx[n]]]
-                l_obj = self.annotate(text[n], offset_pos, 'offset mm', \
+                l_obj = self.annotate(labels[n], offset_pos, 'offset mm', \
                     x_2 = root, cs_2 = 'data', \
                     size = font_size, va = 'center', ha = 'center', \
                     fontname = 'sans-serif', bbox = l_bbox, \

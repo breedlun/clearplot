@@ -20,11 +20,11 @@ ax1.plot([xa, xb], [ya, yb])
 ax1.x_label = ['A', 'mm^2']
 ax1.y_label = ['\alpha,\,\beta', 'kJ']
 ax1.y_lim = [-1,'auto']
-ax1.add_legend(['\alpha', '\beta'], 'upper left')
+ax1.add_legend(['\alpha', '\beta'], loc = 'upper left')
 
 ax2 = fig.add_axes(share_x_ax = ax1)
 ax2.plot([xc], [yc], line_colors = [0,0,1])
-ax2.add_legend(['\gamma'], 'upper right')
+ax2.add_legend(['\gamma'], loc = 'upper right')
 ax2.y_lim = [-20, 80]
 ax2.y_label = ['\gamma','\mu m']
 
