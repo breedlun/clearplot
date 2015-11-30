@@ -685,7 +685,7 @@ def show_im(filename, im_seq, **kwargs):
     scale_gap = kwargs.pop('scale_gap', 1)
     scale_plot = kwargs.pop('scale_plot', 1)
     c_bar = kwargs.pop('c_bar', False)
-    c_map = kwargs.pop('c_map', _cp.params.c_maps['rainbow'])
+    c_map = kwargs.pop('c_map', _cp.colors.c_maps['rainbow'])
     c_lim = kwargs.pop('c_lim', ['auto','auto'])
     c_tick = kwargs.pop('c_tick', 'auto')
     c_orient = kwargs.pop('c_orient', 'v')

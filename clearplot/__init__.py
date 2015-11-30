@@ -54,6 +54,7 @@ import params
 # Import for Convenience
 #============================================================================== 
 
+import colors
 import figure
 import axes
 import color_bar

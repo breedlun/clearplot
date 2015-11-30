@@ -420,7 +420,7 @@ class _Data_Axes_Base(_Axes_Base):
             else:
                 #Set the color map and limits for an image full of values
                 if c_map == 'auto':
-                    c_map = _cp.params.c_maps['rainbow']
+                    c_map = _cp.colors.c_maps['rainbow']
                 #(Hard code auto tick spacing because the color bar tick 
                 #spacing will be recalculated when the color bar is added to 
                 #the figure.)
@@ -434,7 +434,7 @@ class _Data_Axes_Base(_Axes_Base):
 #                    raise ValueError("""The red, green, and blue channels in RGB 
 #                    images should contain values between 0 and 1.""")
                 if c_map == 'auto':
-                    c_map = _cp.params.c_maps['rainbow']
+                    c_map = _cp.colors.c_maps['rainbow']
                 im_type = 'RGB'
             else:
                 raise ValueError(im_error)
@@ -2281,13 +2281,13 @@ class Axes(_Data_Axes_Base):
             can be added to the marker legend
         """
         curve_colors = kwargs.pop('curve_colors', \
-            _utl.cycle_thru_list(_cp.params.colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.color_ndx))
         curve_styles = kwargs.pop('curve_styles', ['-'])
         curve_widths = kwargs.pop('curve_widths', [2]) 
         marker_shapes = kwargs.pop('marker_shapes', [None])
         marker_sizes = kwargs.pop('marker_sizes', [6])
         marker_colors = kwargs.pop('marker_colors', \
-            _utl.cycle_thru_list(_cp.params.colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.color_ndx))
         marker_edge_widths = kwargs.pop('marker_edge_widths', [1.0])
         marker_edge_colors = kwargs.pop('marker_edge_colors', [[0,0,0]])
         
@@ -2360,7 +2360,7 @@ class Axes(_Data_Axes_Base):
         shapes = kwargs.pop('shapes', ['o'])
         sizes = kwargs.pop('sizes', [6])
         colors = kwargs.pop('colors', \
-            _utl.cycle_thru_list(_cp.params.colors, self.marker_color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.marker_color_ndx))
         edge_widths = kwargs.pop('edge_widths', [1.0])
         edge_colors = kwargs.pop('edge_colors', [[0,0,0]])   
           
@@ -2430,7 +2430,7 @@ class Axes(_Data_Axes_Base):
         x_err = kwargs.pop('x_err', [None])
         y_err = kwargs.pop('y_err', [None])
         colors = kwargs.pop('colors', \
-            _utl.cycle_thru_list(_cp.params.dark_colors, self.err_color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['dark'], self.err_color_ndx))
         bar_line_widths = kwargs.pop('bar_line_widths', [1.0])
         cap_line_widths = kwargs.pop('cap_line_widths', [2.0])
         cap_lengths = kwargs.pop('cap_lengths', [4.0])
@@ -2486,11 +2486,11 @@ class Axes(_Data_Axes_Base):
         """
         widths = kwargs.pop('widths', [0.5])
         colors = kwargs.pop('colors', \
-            _utl.cycle_thru_list(_cp.params.pastel_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['pastel'], self.color_ndx))
         edge_styles = kwargs.pop('edge_styles', ['-'])
         edge_widths = kwargs.pop('edge_widths', [1.5])
         edge_colors = kwargs.pop('edge_colors', \
-            _utl.cycle_thru_list(_cp.params.darker_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['darker'], self.color_ndx))
         align = kwargs.pop('align', 'center')
         
         #Preprocess inputs
@@ -2564,18 +2564,18 @@ class Axes(_Data_Axes_Base):
         
         body_widths = kwargs.pop('body_widths', [0.75])
         body_colors = kwargs.pop('body_colors', \
-            _utl.cycle_thru_list(_cp.params.pastel_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['pastel'], self.color_ndx))
         body_edge_styles = kwargs.pop('body_edge_styles', ['-'])
         body_edge_widths = kwargs.pop('body_edge_widths', [1.5])
         body_edge_colors = kwargs.pop('body_edge_colors', \
-            _utl.cycle_thru_list(_cp.params.dark_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['dark'], self.color_ndx))
         show_means = kwargs.pop('show_means', True)
         show_medians = kwargs.pop('show_medians', False)
         show_extrema = kwargs.pop('show_extrema', True)
         line_styles = kwargs.pop('line_styles', ['-'])
         line_widths = kwargs.pop('line_widths', [2])
         line_colors = kwargs.pop('line_colors', \
-            _utl.cycle_thru_list(_cp.params.dark_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['dark'], self.color_ndx))
         
         #Preprocess inputs
         [x, y] = self._data_preprocessor(x, y, False, 1)
@@ -2672,26 +2672,26 @@ class Axes(_Data_Axes_Base):
         
         box_widths = kwargs.pop('box_widths', [0.75])
         box_colors = kwargs.pop('box_colors', \
-            _utl.cycle_thru_list(_cp.params.pastel_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['pastel'], self.color_ndx))
         box_edge_styles = kwargs.pop('box_edge_styles', ['-'])
         box_edge_widths = kwargs.pop('box_edge_widths', [1.5])
         box_edge_colors = kwargs.pop('box_edge_colors', \
-            _utl.cycle_thru_list(_cp.params.dark_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['dark'], self.color_ndx))
         whisker_styles = kwargs.pop('whisker_styles', ['--'])
         whisker_widths = kwargs.pop('whisker_widths', [2])
         whisker_colors = kwargs.pop('whisker_colors', \
-            _utl.cycle_thru_list(_cp.params.dark_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['dark'], self.color_ndx))
         cap_styles = kwargs.pop('cap_styles', ['-'])
         cap_widths = kwargs.pop('cap_widths', [2])
         cap_colors = kwargs.pop('cap_colors', \
-            _utl.cycle_thru_list(_cp.params.dark_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['dark'], self.color_ndx))
         flier_shapes = kwargs.pop('flier_shapes', ['+'])
         flier_sizes = kwargs.pop('flier_sizes', [6])
         flier_colors = kwargs.pop('flier_colors', \
-            _utl.cycle_thru_list(_cp.params.dark_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['dark'], self.color_ndx))
         flier_edge_widths = kwargs.pop('flier_edge_widths', [2])
         flier_edge_colors = kwargs.pop('flier_edge_colors', \
-            _utl.cycle_thru_list(_cp.params.dark_colors, self.color_ndx))
+            _utl.cycle_thru_list(_cp.colors.c_lists['dark'], self.color_ndx))
         
         #Preprocess inputs
         [x, y] = self._data_preprocessor(x, y, False, 1)
@@ -2821,7 +2821,7 @@ class Axes(_Data_Axes_Base):
         """
         plot_type = kwargs.pop('plot_type', 'filled')
         im_interp = kwargs.pop('im_interp', 'auto')
-        c_map = kwargs.pop('c_map', _cp.params.c_maps['rainbow'])
+        c_map = kwargs.pop('c_map', _cp.colors.c_maps['rainbow'])
         c_lim = kwargs.pop('c_lim', ['auto', 'auto'])
         cl_levels = kwargs.pop('cl_levels', 'auto')
         cl_labels = kwargs.pop('cl_labels', 'auto')

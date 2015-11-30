@@ -8,10 +8,10 @@ Created on Sun Dec 15 17:11:53 2013
 
 import clearplot.plot_functions as pf
 import clearplot.figure as figure
-import clearplot as brp
+import clearplot as cp
 import os, cPickle, scipy.misc
 import numpy as np
-data_dir = os.path.join(os.path.dirname(os.path.dirname(brp.__file__)), \
+data_dir = os.path.join(os.path.dirname(os.path.dirname(cp.__file__)), \
     'doc', 'source', 'data')
 
 #Verify that plot function can handle curves input as lists as well as 
@@ -147,7 +147,7 @@ x = np.arange(-1.5, 1.5 + delta/100, delta)
 y = np.arange(-1.5, 1.5 + delta/100, delta)
 x12a, y12a = np.meshgrid(x, y)
 r = (x12a + 1.5)**2.0 + (y12a + 1.5)**2.0
-size = np.array(r.shape) * 1.0 / brp.params.dpmm
+size = np.array(r.shape) * 1.0 / cp.params.dpmm
 #fig = brp.Figure(size = size)
 fig = figure.Figure()
 ax = fig.add_invisible_axes(position = [0,0], size = size)
@@ -190,7 +190,7 @@ x = np.array([[0,1,2,3], [0,1,2,3], [0,1,2,3], [0,1,2,3]])
 y = np.array([[0,0,0,0], [1,1,1,1], [2,2,2,2], [3,3,3,3]])
 z = np.array([[0.25, 0.75, 1.0, 0.75], [0.1, 0.65, 0.5, 0.4], [0.6, 0.3, 0.0, 0.2], [0.7, 0.9, 0.4, 0.6]])
 #Create figure window
-fig_size = np.array([1200, 400]) / brp.params.dpmm
+fig_size = np.array([1200, 400]) / cp.params.dpmm
 fig = figure.Figure(size = fig_size) 
 #Add plots to figure window
 [fig, ax] = pf.plot_contours('', x, y, z, plot_type = 'filled', \
@@ -214,7 +214,7 @@ fig = figure.Figure()
 ax = fig.add_axes()
 ax.x_label = ['x', 'pix']
 ax.y_label = ['y', 'pix']
-im_obj = ax.add_image(im12a, im_interp = 'bilinear', c_map = brp.params.c_maps['light_gray'])
+im_obj = ax.add_image(im12a, im_interp = 'bilinear', c_map = cp.colors.c_maps['light_gray'])
 ax.x_tick = 50
 fig.add_color_bar(ax, im_obj)
 fig.auto_adjust_layout()
