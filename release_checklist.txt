@@ -1,0 +1,9 @@
+Release Checklist
+=================
+
+1. Update version in `clearplot/__init__.py`, `doc/source/conf.py`, and `setup.py`.
+2. Run the tests in `tests/` and examples in `doc/source/examples/run_examples.py`.  Visually verify that the tests and examples look correct.  (Eventually we could automate the verification by comparing raster images.)
+3. Tag the new version using `git tag "new_version"`.
+4. Test the PyPI submission using `python setup.py sdist upload -r pypitest`.
+5. (There should be a way to actually download and install the package from the PyPI test server.  I have not tried this yet, but it is important to do, because the official PyPI server will not allow you to update a package unless you create a new version number.)
+6. Upload the official PyPI submission using `python setup.py sdist upload -r pypi`.
