@@ -31,7 +31,7 @@ c_lists['pastel'] = [[1,0.3,0.3], [0.3,0.3,1], [0.3,0.72,0.3], [1,0.65,0.3], \
 
 #Define custom colormaps
 #(These colormaps were originally stored in a pickle file and loaded upon
-#importing clearplot.  This caused issues with github and PiPy (see Issue #1 
+#importing clearplot.  This caused issues with github and PyPI (see Issue #1 
 #on github).  Instead we hard code the colormap definitions here.  It isn't 
 #terribly pretty, but it solves the issue for now.)
 c_maps = {}
