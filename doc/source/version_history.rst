@@ -1,7 +1,7 @@
 Version History
 ===============
 
-clearplot version 1.0.1
+clearplot version 1.0.1 and 1.0.2
 
 1. Hard coded the color map definitions instead of loading them from a pickled file to resolve issues on github and PyPI.  Also moved color lists and color maps into a new module called colors.  
 

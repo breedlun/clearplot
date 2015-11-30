@@ -5,6 +5,7 @@ clearplot/__init__.py
 clearplot/axes.py
 clearplot/axis_label.py
 clearplot/color_bar.py
+clearplot/colors.py
 clearplot/custom_annotations.py
 clearplot/figure.py
 clearplot/params.py
