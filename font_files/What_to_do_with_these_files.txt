@@ -1,0 +1,13 @@
+Matplotlib does not have many fonts installed, not even Helvetica.  Follow the instructions below to manually install the provided fonts. 
+
+Note: If a font directory has a Source_Fonts directory, the source fonts can be ignored. 
+
+1. Find where Matplotlib stores its data.  Bring up a python interpreter.  At the prompt type the following three commands: `import matplotlib`, `matplotlib.matplotlib_fname()`, and `matplotlib.get_cachedir()`.  On a mac you should get something like: `'/Users/[username]/Library/Enthought/Canopy_64bit/User/lib/python2.7/site-packages/matplotlib/mpl-data/matplotlibrc'` and `'/Users/[username]/.matplotlib'`.
+2. Place the .ttf font files in: `[username]/Library/Enthought/Canopy_64bit/User/lib/python2.7/site-packages/matplotlib/mpl-data/fonts/ttf/`
+3. Go to `/Users/[username]/.matplotlib` and delete `fontList.cache`.  Next time matplotlib is imported the cache file will be rebuilt.
+4. Install the fonts on your system so they can be accessed by other applications like Adobe Illustrator and Inkscape. 
+a. For Adobe Illustrator on a Mac, you can simply open the Font Book application (`/Applications/Utilities/Font Book`) and "drag and drop" the font files into the Font Book window.
+b. For Inkscape on a Mac, you must copy the font files into the main font folder, not the user font folder.  The main font folder is located at `/Library/Fonts`.
+c. I do not know how to install fonts on Windows or Linux, but I am sure there are instructions online.
+
+See `http://blog.olgabotvinnik.com/post/35807476900/how-to-set-helvetica-as-the-default-sans-serif-font-in` for more details.
