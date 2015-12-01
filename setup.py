@@ -26,7 +26,7 @@ setup(
     #   3 - Alpha
     #   4 - Beta
     #   5 - Production/Stable
-    'Development Status :: 4 - Beta'
+    'Development Status :: 4 - Beta',
     # Pick your license as you wish (should match "license" above)
     'License :: OSI Approved :: MIT License',
 	# Specify the Python versions you support here. In particular, ensure
