@@ -1,5 +1,5 @@
 from distutils.core import setup
-import os
+import os, sys
 import matplotlib as mpl
 
 #Define the version of clearplot
@@ -8,12 +8,12 @@ cp_version = '1.0.3dev2'
 #Find where matplotlib stores its True Type fonts
 mpl_data_dir = os.path.dirname(mpl.matplotlib_fname())
 mpl_ttf_dir = os.path.join(mpl_data_dir, 'fonts', 'ttf')
-#Create a relative path to the True Type font directory because wheels do not support 
-#absolute paths for `data_files`.  (As of pip 7.0 (I think), pip automatically downloads
-#PiPI packages as a wheel, even if it was uploaded as a sdist.  See discussion at:
-#https://bitbucket.org/pypa/wheel/issues/92 for further information.)
-prefix = os.path.commonprefix([__file__, mpl_ttf_dir])
-mpl_ttf_rel_path = os.path.relpath(mpl_ttf_dir, prefix)
+
+#Wheels do not support absolute paths for `data_files`.  (As of pip 7.0 (I think), pip 
+#automatically downloads PiPI packages as a wheel, even if it was uploaded as a sdist.  
+#See discussion at: https://bitbucket.org/pypa/wheel/issues/92 for further information.)
+if 'bdist_wheel' in sys.argv:
+    raise RuntimeError("This setup.py does not support wheels")
 
 setup(
     name = 'clearplot',
@@ -43,8 +43,8 @@ setup(
         'Topic :: Scientific/Engineering :: Visualization'],
     install_requires = ['matplotlib >= 1.4.0, !=1.4.3', 'numpy >= 1.6'],
     data_files = [
-        (mpl_ttf_rel_path, ['./font_files/TeXGyreHeros-txfonts/TeXGyreHerosTXfonts-Regular.ttf']),
-        (mpl_ttf_rel_path, ['./font_files/TeXGyreHeros-txfonts/TeXGyreHerosTXfonts-Italic.ttf'])]
+        (mpl_ttf_dir, ['./font_files/TeXGyreHeros-txfonts/TeXGyreHerosTXfonts-Regular.ttf']),
+        (mpl_ttf_dir, ['./font_files/TeXGyreHeros-txfonts/TeXGyreHerosTXfonts-Italic.ttf'])]
 )
 
 #Try to delete matplotlib's fontList cache
