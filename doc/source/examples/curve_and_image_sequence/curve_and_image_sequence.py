@@ -5,15 +5,16 @@ Created on Sat Apr 18 15:43:55 2015
 @author: Ben
 """
 import clearplot.plot_functions as pf
-import os, scipy.misc, pickle
+import os, scipy.misc
+import numpy as np
 
-#Load global response and the indices of the field images to be plotted
+#Load global response
 data_dir = os.path.join(os.path.dirname(pf.__file__), os.pardir, 'doc', \
     'source', 'data')
-path = os.path.join(data_dir, 's140302C-mechanical_response.pkl')
-f = open(path, 'rb')
-[x, y, ndx_list] = pickle.load(f)
-f.close()
+path = os.path.join(data_dir, 's140302C-mechanical_response.csv')
+data = np.loadtxt(path, delimiter = ',')
+#Specify the indices of the field images to be plotted
+ndx_list = [0, 85, 141, 196, 252]
 #Specify the column indices to crop the images to
 cols = range(470,470+340)
 #Load the field images into an image sequence list
@@ -27,9 +28,9 @@ for ndx in ndx_list:
     im_seq.append(im[:,cols,:])
 
 #Plot curve
-[fig, ax] = pf.plot('', x, y, ['\varepsilon', '\%'], ['\sigma', 'GPa'])
-ax.label_curve(x = x, y = y, ndx = ndx_list, angles = 60)
-ax.plot_markers(x[ndx_list], y[ndx_list], colors = [0,0,0])
+[fig, ax] = pf.plot('', data[:,0], data[:,1], ['\varepsilon', '\%'], ['\sigma', 'GPa'])
+ax.label_curve(x = data[:,0], y = data[:,1], ndx = ndx_list, angles = 60)
+ax.plot_markers(data[ndx_list,0], data[ndx_list,1], colors = [0,0,0])
 fig.save('curve_and_image_sequence-a.png');
 #Plot image sequence
 [fig, ax, im_obj] = pf.show_im('curve_and_image_sequence-b.png', \

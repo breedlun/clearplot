@@ -8,7 +8,6 @@ cp_version = '1.0.3dev1'
 #Find where matplotlib stores its True Type fonts
 mpl_data_dir = os.path.dirname(mpl.matplotlib_fname())
 mpl_ttf_dir = os.path.join(mpl_data_dir, 'fonts', 'ttf')
-print mpl_ttf_dir
 
 setup(
   name = 'clearplot',
