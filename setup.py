@@ -3,13 +3,13 @@ import os, sys
 import matplotlib as mpl
 
 #Define the version of clearplot
-cp_version = '1.0.3dev2'
+cp_version = '1.0.3'
 
 #Find where matplotlib stores its True Type fonts
 mpl_data_dir = os.path.dirname(mpl.matplotlib_fname())
 mpl_ttf_dir = os.path.join(mpl_data_dir, 'fonts', 'ttf')
 
-#Wheels do not support absolute paths for `data_files`.  (As of pip 7.0 (I think), pip 
+#Wheels do not support absolute paths for `data_files`.  (pip 7.0 (I think) and later 
 #automatically downloads PiPI packages as a wheel, even if it was uploaded as a sdist.  
 #See discussion at: https://bitbucket.org/pypa/wheel/issues/92 for further information.)
 if 'bdist_wheel' in sys.argv:

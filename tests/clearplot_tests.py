@@ -9,7 +9,7 @@ Created on Sun Dec 15 17:11:53 2013
 import clearplot.plot_functions as pf
 import clearplot.figure as figure
 import clearplot as cp
-import os, cPickle, scipy.misc
+import os, scipy.misc
 import numpy as np
 data_dir = os.path.join(os.path.dirname(os.path.dirname(cp.__file__)), \
     'doc', 'source', 'data')
@@ -130,13 +130,11 @@ ax.plot_error_bars([x7a, x7b], [y7a, y7b], y_err = [y7a_err, y7b_err])
 fig.save('Test11-bar_plot')
 
 #Verification that box plots work properly
-path = os.path.join(data_dir, 'violin_plot_data.pkl')
-f = open(path, 'rb')
-[y8a, y8b, y8c, y8d] = cPickle.load(f)
-
+path = os.path.join(data_dir, 'violin_plot_data.csv')
+data = np.loadtxt(path, delimiter = ',')
 [fig, ax] = pf.plot_box_and_whiskers('Test12-box_plot', \
     [np.array([1]), np.array([2]), np.array([3]), np.array([4])], \
-    [y8a, y8b, y8c, y8d], \
+    [data[:,0], data[:,1], data[:,2], data[:,3]], \
     ['\mathsf{Long\,Label}'], ['\varphi','km']);
 
 

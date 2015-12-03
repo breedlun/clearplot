@@ -1,11 +1,16 @@
 Version History
 ===============
 
-clearplot version 1.0.1 and 1.0.2
+version 1.0.3
+
+1.  Modified the PyPI installation script to automatically install the custom fonts.
+2.  Moved the color map arrays and the raw data used in the examples into csv files to finish resolving issues on github and PyPI.
+
+version 1.0.1 and 1.0.2
 
 1. Hard coded the color map definitions instead of loading them from a pickled file to resolve issues on github and PyPI.  Also moved color lists and color maps into a new module called colors.  
 
-clearplot version 1.0
+version 1.0
 
 1. Renamed BRplot to clearplot and made it publicly available for the first time.
 
@@ -58,13 +63,13 @@ BRplot version 1.0
 16.	Improved y-axis label placement for LaTeX strings whose bounding box extends far below the text baseline.
 17.	Added some custom colormaps 
 
-Version 0.2
+BRplot Version 0.2
 
 1.	Improved PDF bounding box so that it tightly wraps around the limits of the figure content. (The mpl.rcParams['savefig.bbox']='tight' previously did not work well because BRplot created a set of invisible figure axes to place annotations and axis labels in.  The bounding box became the edges of the figure axes, even though they were invisible.  Removing the figure axes also means that PDFs opened in Adobe Illustrator have fewer clipping masks to delete.)
 2.	Added the ability to input a list of tick marks.
 3.	If you have clip_on = True in matplotlib, then each curve has it's own clipping mask, which is really annoying when you just want to select a curve in Adobe Illustrator. In addition, the data outside the clipping mask is visible once you release the clipping mask. Instead, I switched clip_on = False, and I do the clipping prior to plotting the data.
 
-Version 0.1
+BRplot Version 0.1
 
 1.	Initial testing
 2.	Added a list of example problems.
