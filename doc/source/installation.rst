@@ -5,11 +5,13 @@ Easy Way
 --------
 
 1.  Install clearplot using ``pip install clearplot`` from the command line.  This will download clearplot from PyPI, install it on your ``PYTHONPATH``, and install the custom fonts in the proper directory.
+    
+    a.  If pip has trouble connecting to the PyPI server, you can download clearplot from `PyPI's website <https://pypi.python.org/pypi/clearplot>`__ and run ``pip install [path]``, where ``[path]`` is the path to the downloaded tarball.   
 
 Hard (Manual) Way
 -----------------
 
-1.	Get a recent copy of clearplot.
+1.	Get a recent copy of clearplot using ``git clone https://github.com/breedlun/clearplot``.
 
 2.  Append the clearplot directory to your ``PYTHONPATH``.
 
