@@ -32,7 +32,7 @@ Dependencies
 Installation
 ------------
 
-The documentation contains [installation instructions](http://clearplot.readthedocs.org/en/latest/installation/).
+The documentation contains [installation instructions](http://clearplot.readthedocs.org/en/latest/installation).
 
 <!--
 Testing
@@ -46,13 +46,13 @@ To test seaborn, run `make test` in the source directory. This will run the unit
 Bug Fixes
 ---------
 
-Please [submit](https://github.com/breedlu/clearplot/issues/new) any bugs you encounter to the Github issue tracker.
+Please [submit](https://github.com/breedlun/clearplot/issues/new) any bugs you encounter to the Github issue tracker.
 
 
 Feature Requests and Enhancements
 ---------------------------------
 
-We encourage you to [submit](https://github.com/breedlu/clearplot/issues/new) your feature requests to the Github issue tracker.  We should warn you, however, we can be quite particular, so please do not take it the wrong way if we do not chose to implement your feature.  Similarly, please make sure to [submit](https://github.com/breedlu/clearplot/issues/new) your feature requests before creating a pull request.  It is best to discuss before you code anything up.
+We encourage you to [submit](https://github.com/breedlun/clearplot/issues/new) your feature requests to the Github issue tracker.  We should warn you, however, we can be quite particular, so please do not take it the wrong way if we do not chose to implement your feature.  Similarly, please make sure to [submit](https://github.com/breedlun/clearplot/issues/new) your feature requests before creating a pull request.  It is best to discuss before you code anything up.
 
 
 License
