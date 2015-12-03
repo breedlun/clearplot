@@ -32,7 +32,7 @@ Dependencies
 Installation
 ------------
 
-The documentation contains [installation instructions](http://clearplot.readthedocs.org/en/latest/installation).
+The documentation contains [installation instructions](http://clearplot.readthedocs.org/en/latest/installation.html).
 
 <!--
 Testing
