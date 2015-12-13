@@ -3,7 +3,7 @@
 #@author: Benjamin Reedlunn
 
 #Define clearplot version number
-__version__ = '1.0.3'
+__version__ = '1.0.4dev1'
 
 import matplotlib as _mpl
 import sys as _sys

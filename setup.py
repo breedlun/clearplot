@@ -1,19 +1,58 @@
-from distutils.core import setup
-import os, sys
-import matplotlib as mpl
-
+from setuptools import setup
+from setuptools.command.install import install
 #Define the version of clearplot
-cp_version = '1.0.3'
+cp_version = '1.0.4dev1'
 
-#Find where matplotlib stores its True Type fonts
-mpl_data_dir = os.path.dirname(mpl.matplotlib_fname())
-mpl_ttf_dir = os.path.join(mpl_data_dir, 'fonts', 'ttf')
-
-#Wheels do not support absolute paths for `data_files`.  (pip 7.0 (I think) and later 
-#automatically downloads PiPI packages as a wheel, even if it was uploaded as a sdist.  
-#See discussion at: https://bitbucket.org/pypa/wheel/issues/92 for further information.)
-if 'bdist_wheel' in sys.argv:
-    raise RuntimeError("This setup.py does not support wheels")
+#Subclass the setuptools install class as a way to run custom commands during 
+#installation.  More info can be found at 
+#http://blog.niteoweb.com/setuptools-run-custom-code-in-setup-py/
+#This allows us to install the custom fonts that come with clearplot.
+#Note: Instead of this somewhat backdoor method, I originally tried to use the 
+#data_files keyword in distutil.setup() to install the font files, but this 
+#turned into a mess.  Wheels do not support absolute file paths, and the pip 
+#project is basically forcing people to use wheels.  For more information see 
+#this stackoverflow post 
+#http://stackoverflow.com/questions/34193900/how-do-i-distribute-fonts-with-my-python-package/34204582
+#and the contained links.)
+class move_ttf(install):
+    def run(self):
+        """
+        Performs the usual install process and then copies the True Type fonts 
+        that come with clearplot into matplotlib's True Type font directory, 
+        and deletes the matplotlib fontList.cache 
+        """
+        #Perform the usual install process
+        install.run(self)
+        #Try to install custom fonts
+        try:
+            import os, shutil
+            import matplotlib as mpl
+            import clearplot as cp
+            
+            #Find where matplotlib stores its True Type fonts
+            mpl_data_dir = os.path.dirname(mpl.matplotlib_fname())
+            mpl_ttf_dir = os.path.join(mpl_data_dir, 'fonts', 'ttf')
+            
+            #Copy the font files to matplotlib's True Type font directory
+            #(I originally tried to move the font files instead of copy them,
+            #but it did not seem to work, so I gave up.)
+            cp_ttf_dir = os.path.join(os.path.dirname(cp.__file__), 'true_type_fonts')
+            for file_name in os.listdir(cp_ttf_dir):
+                if file_name[-4:] == '.ttf':
+                    old_path = os.path.join(cp_ttf_dir, file_name)
+                    new_path = os.path.join(mpl_ttf_dir, file_name)
+                    shutil.copyfile(old_path, new_path)
+                    print "Copying " + old_path + " -> " + new_path
+            
+            #Try to delete matplotlib's fontList cache
+            mpl_cache_dir = mpl.get_cachedir()
+            mpl_cache_dir_ls = os.listdir(mpl_cache_dir)
+            if 'fontList.cache' in mpl_cache_dir_ls:
+                fontList_path = os.path.join(mpl_cache_dir, 'fontList.cache')
+                os.remove(fontList_path)
+                print "Deleted the matplotlib fontList.cache"
+        except:
+            print "WARNING: An issue occured while installing the custom fonts for clearplot."
 
 setup(
     name = 'clearplot',
@@ -41,15 +80,10 @@ setup(
         # Indicate who your project is intended for
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Visualization'],
+    #Specify the dependencies and versions
     install_requires = ['matplotlib >= 1.4.0, !=1.4.3', 'numpy >= 1.6'],
-    data_files = [
-        (mpl_ttf_dir, ['./font_files/TeXGyreHeros-txfonts/TeXGyreHerosTXfonts-Regular.ttf']),
-        (mpl_ttf_dir, ['./font_files/TeXGyreHeros-txfonts/TeXGyreHerosTXfonts-Italic.ttf'])]
+    #Specify any non-python files to be distributed with the package
+    package_data = {'' : ['color_maps/*.csv', 'true_type_fonts/*.ttf']},
+    #Specify the custom install class
+    cmdclass={'install' : move_ttf}
 )
-
-#Try to delete matplotlib's fontList cache
-mpl_cache_dir = mpl.get_cachedir()
-mpl_cache_dir_ls = os.listdir(mpl_cache_dir)
-if 'fontList.cache' in mpl_cache_dir_ls:
-    fontList_path = os.path.join(mpl_cache_dir, 'fontList.cache')
-    os.remove(fontList_path)
