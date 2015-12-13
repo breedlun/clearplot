@@ -4,17 +4,18 @@ import warnings
 #Define the version of clearplot
 cp_version = '1.0.4dev3'
 
-#As suggested at
-#http://blog.niteoweb.com/setuptools-run-custom-code-in-setup-py/
-#we can subclass the setuptools install class in order to run custom commands 
-#during installation.  Here, we use it to install custom fonts.
-#Note: Instead of this somewhat backdoor method, I originally tried to use the 
-#data_files keyword in distutil.setup() to install the font files, but this 
-#turned into a mess.  Wheels do not support absolute file paths, and the pip 
-#project is basically forcing people to use wheels.  For more information see 
-#this stackoverflow post 
+#Set up the machinery to install custom fonts.
+#Note: I originally tried to use the data_files keyword in distutil.setup() to 
+#install the font files, but this turned into a mess.  Wheels do not support 
+#absolute file paths, and the pip project is basically forcing people to use 
+#wheels.  Also, in order to find where matplotlib stores its true type fonts 
+#and fontList.cache, I had to import matplotlib before setup() had a chance to 
+#install matplotlib first.  For more information see this stackoverflow post 
 #http://stackoverflow.com/questions/34193900/how-do-i-distribute-fonts-with-my-python-package/34204582
-#and the contained links.)
+#and the contained links.  Fortunately, we can subclass the setuptools install 
+#class in order to run custom commands during installation.  See 
+#http://blog.niteoweb.com/setuptools-run-custom-code-in-setup-py/ for more
+#information.
 class move_ttf(install):
     def run(self):
         """
