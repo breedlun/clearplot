@@ -1,7 +1,7 @@
 from setuptools import setup
 from setuptools.command.install import install
 #Define the version of clearplot
-cp_version = '1.0.4dev1'
+cp_version = '1.0.4dev2'
 
 #Subclass the setuptools install class as a way to run custom commands during 
 #installation.  More info can be found at 
