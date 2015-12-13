@@ -7,6 +7,7 @@ import matplotlib.pyplot as _plt
 import numpy as _np
 from copy import deepcopy
 import utilities as _utl
+import warnings as _warnings
 import matplotlib.patches as _mpl_patches
 from matplotlib.path import Path as _mpl_Path
 from matplotlib.lines import Line2D as _mpl_Line2D
@@ -759,10 +760,10 @@ class Axes(_Data_Axes_Base):
         self.mpl_ax.yaxis.set_tick_params(which = 'both', \
             labelsize = self.font_size, right = False)
         if abs(scale_plot - 1.0) > 1e-10:
-            print """Warning: Due to a bug in matplotlib (github issue #4346)
+            _warnings.warn("""Warning: Due to a bug in matplotlib (github issue #4346)
                 the tick marks and the spaced between the tick marks and the
                 tick mark labels cannot be scaled while creating the plot.  
-                You can, however, scale them after the plot has been created."""
+                You can, however, scale them after the plot has been created.""")
             
 #        self.mpl_ax.xaxis.set_tick_params(which = 'major', \
 #            labelsize = self.font_size, top = False, \
@@ -1182,12 +1183,12 @@ class Axes(_Data_Axes_Base):
         #Adjust physical tick mark spacing as a last resort
         if abs(length_diff) > 1E-12:
             tick_mm = n_s_tick * s_tick_mm / n_tick
-            print """Warning: There are two sets of axes that share a 
+            _warnings.warn( """Warning: There are two sets of axes that share a 
                 x / y axis.  The auto selected (or specified) limits, tick mark
                 spacing, and physical distance between tick marks resulted in 
                 unequal  y / x axis lengths.  The physical distance between 
                 tick marks has been adjusted to force the y / x axis lengths 
-                to be equal, which may make the plot aesthetics suffer."""
+                to be equal, which may make the plot aesthetics suffer.""")
         return(lim, tick_mm, s_lim)
 
     def _update_clipping_mask(self):
@@ -1766,7 +1767,7 @@ class Axes(_Data_Axes_Base):
                 ax_coord = loc_dict[loc][1:]                
                 loc = loc_dict[loc][0]                
             except KeyError:
-                print("Warning: The legend_pos keyword argument was not recognized.  Defaulting to 'upper center' instead.")
+                _warnings.warn("Warning: The legend_pos keyword argument was not recognized.  Defaulting to 'upper center' instead.")
                 ax_coord = loc_dict['upper center'][1:]
                 loc = loc_dict['upper center'][0]                
         else:

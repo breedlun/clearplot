@@ -1,10 +1,15 @@
 Version History
 ===============
 
+version 1.0.4
+
+1. Updated setup.py to install the custom fonts more robustly and to install the color map csv files.
+2. Switched to the warnings module instead of simply printing warnings.
+
 version 1.0.3
 
-1.  Modified the PyPI installation script to automatically install the custom fonts.
-2.  Moved the color map arrays and the raw data used in the examples into csv files to finish resolving issues on github and PyPI.
+1. Modified setup.py to automatically install the custom fonts.
+2. Moved the color map arrays and the raw data used in the examples into csv files to finish resolving issues on github and PyPI.
 
 version 1.0.1 and 1.0.2
 
