@@ -604,13 +604,13 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, ax_scale, exceed_lim)
         #Initialize the limit candidates with the user input limits
         lim_c = _np.array([lim])      
         #Automatically round limits to the closest power of 10
-        if _np.all(lim > 0):
+        if _np.all(lim >= 0):
             #If limits were not specified, round limits to match tick mark spacing
             if ui_lim[0] == 'auto':
                 lim_c[0][0] = 10.0**_np.floor(_np.log10(data_lim[0]))
             if ui_lim[1] == 'auto':
                 lim_c[0][1] = 10.0**_np.ceil(_np.log10(data_lim[1]))
-        elif _np.all(lim < 0):
+        elif _np.all(lim <= 0):
             #If limits were not specified, round limits to match tick mark spacing
             if ui_lim[0] == 'auto':
                 lim_c[0][0] = -10.0**_np.ceil(_np.log10(-data_lim[0]))
