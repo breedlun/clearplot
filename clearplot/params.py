@@ -11,6 +11,11 @@ import matplotlib as _mpl
 #importing pyplot.  See 
 #http://stackoverflow.com/questions/20025077/how-do-i-display-a-matplotlib-figure-window-on-top-of-all-other-windows-in-spyde
 #for further details.)
+#Note: It would probably be better to switch to the TkAgg backend, since it
+#doesn't require PySide or PyQt.  However, there is an issue with changing
+#the figure window size with TkAgg in Spyder.  See 
+#https://github.com/spyder-ide/spyder/issues/1651
+#for further details
 _mpl.rcParams['backend'] = 'Qt4Agg'
 
 #Misc Settings

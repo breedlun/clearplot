@@ -665,6 +665,8 @@ class Axes(_Data_Axes_Base):
         
         self.shared_x_ax = kwargs.pop('share_x_ax', None)
         self.shared_y_ax = kwargs.pop('share_y_ax', None)
+        #Create a set to store the linked x and y axes.  (Sets make it easy
+        #to have a list of unique items.)
         self.linked_x_ax = set()
         link_x_ax = kwargs.pop('link_x_ax', None)
         self.linked_y_ax = set()

@@ -2,7 +2,7 @@ from setuptools import setup
 from setuptools.command.install import install
 import warnings
 #Define the version of clearplot
-cp_version = '1.0.4dev3'
+cp_version = '1.0.4'
 
 #Set up the machinery to install custom fonts.
 #Note: I originally tried to use the data_files keyword in distutil.setup() to 
