@@ -1,8 +1,19 @@
 from setuptools import setup
+#from pkg_resources import require, DistributionNotFound
 from setuptools.command.install import install
 import warnings
+
 #Define the version of clearplot
-cp_version = '1.0.4'
+cp_version = '1.0.5'
+
+#Comment out this code in case we switch back to the Qt4Agg backend.
+##For now we are using the Qt4Agg backend, which requires PyQt4 or PySide, but 
+##PyQt4 is prefered 
+#try:
+#    require('PyQt4')
+#    Qt_pkg = 'PyQt4' 
+#except DistributionNotFound:
+#    Qt_pkg = 'PySide'
 
 #Set up the machinery to install custom fonts.
 #Note: I originally tried to use the data_files keyword in distutil.setup() to 
@@ -83,7 +94,7 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Visualization'],
     #Specify the dependencies and versions
-    install_requires = ['matplotlib >= 1.4.0, !=1.4.3', 'numpy >= 1.6'],
+    install_requires = [Qt_pkg, 'matplotlib >= 1.4.0, !=1.4.3', 'numpy >= 1.6'],
     #Specify any non-python files to be distributed with the package
     package_data = {'' : ['color_maps/*.csv', 'true_type_fonts/*.ttf']},
     #Specify the custom install class

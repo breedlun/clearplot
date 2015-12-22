@@ -34,7 +34,13 @@ Hard (Manual) Way
 Optional Additional Steps
 -------------------------
 
-1.	If you are using the Spyder IDE on a Mac, you may need to change the matplotlib backend loaded by Spyder's scientific startup script.  In order to make the plotting window appear on top of all other windows, clearplot makes a call to ``fig.canvas.manager.window``. With the MacOSX backend ``fig.canvas.manager.window`` gives ``AttributeError: 'FigureManagerMac' object has no attribute 'window'``.  To avoid this you must go to Spyder Preferences->Console->External Modules, set the GUI Backend to Qt4Agg and restart Spyder.  Check that the backend is actually QtAgg by entering ``matplotlib.get_backend()`` at the console. See `this post <http://stackoverflow.com/questions/20025077/how-do-i-display-a-matplotlib-figure-window-on-top-of-all-other-windows-in-spyde>`__ and `this post <http://stackoverflow.com/questions/26050709/matplotlib-trouble-reducing-figure-size-with-tkagg-backend>`__ if you need further details.
+1.	If you are using the Spyder IDE on a Mac, you may need to change the matplotlib backend loaded by Spyder's scientific startup script.  The MacOSX backend and the TkAgg backend both have issues (see `this post <http://stackoverflow.com/questions/20025077/how-do-i-display-a-matplotlib-figure-window-on-top-of-all-other-windows-in-spyde>`__ and `this post <https://github.com/spyder-ide/spyder/issues/1651>`__ for more information).  If you are running into these problems, you must:
+
+    a. Go to Spyder Preferences->Console->External Modules and set the GUI Backend to Qt4Agg.
+    
+    b. Go to Spyder Preferences->Console->Advanced Settings and select "Use the following startup script" to select the ``scientific_startup.py`` script. 
+    
+    c. Restart Spyder.  
 
 2.	Install the custom fonts on your system so they can be accessed by other applications like Adobe Illustrator and Inkscape.
 	

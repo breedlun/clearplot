@@ -11,12 +11,19 @@ import matplotlib as _mpl
 #importing pyplot.  See 
 #http://stackoverflow.com/questions/20025077/how-do-i-display-a-matplotlib-figure-window-on-top-of-all-other-windows-in-spyde
 #for further details.)
-#Note: It would probably be better to switch to the TkAgg backend, since it
-#doesn't require PySide or PyQt.  However, there is an issue with changing
-#the figure window size with TkAgg in Spyder.  See 
-#https://github.com/spyder-ide/spyder/issues/1651
-#for further details
-_mpl.rcParams['backend'] = 'Qt4Agg'
+#(We selected the TkAgg backend, since it is the only interactive backend that 
+#is supposed to work "out of the box" with matplotlib.  See 
+#http://matplotlib.org/faq/usage_faq.html#what-is-a-backend and 
+#http://matplotlib.org/users/installing.html for more info.  Unfortunately, 
+#Spyder 2.3.8 has a bug with adjusting the window size with TkAgg, as detailed 
+#here https://github.com/spyder-ide/spyder/issues/1651.  We were using Qt4Agg 
+#previously, but it requires PySide or PyQt.  Also, as noted in issue #2 on 
+#Github, matplotlib 1.5.0 has a bug with Qt4Agg that causes python to crash.  
+#Fortunately, this Qt4Agg bug does not appear when using Qt4Agg in Spyder.  
+#Thus we can still specify TkAgg for general python usage, and avoid the 
+#TkAgg/Spyder figure window size bug by specifying the QtAgg backend in Spyder 
+#and turning on the scientific_startup.py script.)
+_mpl.rcParams['backend'] = 'TkAgg'
 
 #Misc Settings
 #The default background is gray, change it to white 
