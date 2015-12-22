@@ -94,7 +94,7 @@ setup(
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Visualization'],
     #Specify the dependencies and versions
-    install_requires = [Qt_pkg, 'matplotlib >= 1.4.0, !=1.4.3', 'numpy >= 1.6'],
+    install_requires = ['matplotlib >= 1.4.0, !=1.4.3', 'numpy >= 1.6'],
     #Specify any non-python files to be distributed with the package
     package_data = {'' : ['color_maps/*.csv', 'true_type_fonts/*.ttf']},
     #Specify the custom install class
