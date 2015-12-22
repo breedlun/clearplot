@@ -3,7 +3,7 @@ Version History
 
 version 1.0.5
 
-1. Switch from the matplotlib backend from Qt4Agg to TkAgg, since TkAgg is the only interactive backend that is supposed to work "out of the box" with matplotlib, as of matplotlib version 1.5.0.  If you wish to avoid the TkAgg/Spyder figure window size bug detailed `here <https://github.com/spyder-ide/spyder/issues/1651>`__ follow the `optional additional steps <../installation.html#optional-additional-steps>`_ to use the QtAgg backend in Spyder.
+1. Switch from the matplotlib backend from Qt4Agg to TkAgg, since TkAgg is the only interactive backend that is supposed to work "out of the box" with matplotlib, as of matplotlib version 1.5.0.  If you wish to avoid the TkAgg/Spyder figure window size bug detailed `here <https://github.com/spyder-ide/spyder/issues/1651>`__ follow the `optional additional steps <../installation.html>`_ to use the QtAgg backend in Spyder.
 
 version 1.0.4
 
