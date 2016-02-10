@@ -21,7 +21,7 @@ Hard (Manual) Way
 
 4.  Place the custom fonts where matplotlib can find them.
 
-    a.  Find where Matplotlib stores its True Type fonts.  In a python interpreter, type the following two commands: ``import matplotlib``, ``matplotlib.matplotlib_fname()``.  On a mac, you should get something like ``.../python2.7/site-packages/matplotlib/mpl-data/matplotlibrc``.  The True Type fonts are stored in ``.../python2.7/site-packages/matplotlib/mpl-data/fonts/ttf/``.
+    a.  Find where Matplotlib stores its True Type fonts.  In a python interpreter, type the following two commands: ``import matplotlib``, ``matplotlib.matplotlib_fname()``.  On a mac, you should get something like ``.../site-packages/matplotlib/mpl-data/matplotlibrc``.  The True Type fonts are stored in ``.../site-packages/matplotlib/mpl-data/fonts/ttf/``.
     
     b.  Grab the fonts in the directories inside ``clearplot/Font_Files/`` and place them in: ``.../python2.7/site-packages/matplotlib/mpl-data/fonts/ttf/``.
     
@@ -44,7 +44,7 @@ Optional Additional Steps
 
 2.	Install the custom fonts on your system so they can be accessed by other applications like Adobe Illustrator and Inkscape.
 	
-	a.  Find where Matplotlib stores its True Type fonts.  In a python interpreter, type the following two commands: ``import matplotlib``, ``matplotlib.matplotlib_fname()``.  On a mac you should get something like: ``.../python2.7/site-packages/matplotlib/mpl-data/matplotlibrc``.  The custom fonts, such as TeXGyreHeros-txfonts, should have been installed in ``.../python2.7/site-packages/matplotlib/mpl-data/fonts/ttf/``.
+	a.  Find where Matplotlib stores its True Type fonts.  In a python interpreter, type the following two commands: ``import matplotlib``, ``matplotlib.matplotlib_fname()``.  On a mac you should get something like: ``.../site-packages/matplotlib/mpl-data/matplotlibrc``.  The custom fonts, such as TeXGyreHeros-txfonts, should have been installed in ``.../site-packages/matplotlib/mpl-data/fonts/ttf/``.
     
     b.  For Adobe Illustrator on a Mac, you can simply open the Font Book application (``/Applications/Utilities/Font Book``) and "drag and drop" the font files into the Font Book window.
     
