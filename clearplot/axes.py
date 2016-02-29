@@ -902,6 +902,18 @@ class Axes(_Data_Axes_Base):
         lim = self._ui_x_lim
         [lim, tick] = self._select_and_set_x_lim_and_tick(lim, tick)
         return(lim, tick)
+    
+    @property
+    def num_x_tick(self):
+        """
+        Gets the number of x-axis tick marks
+        """
+        lim = self.x_lim
+        if self.x_scale == 'log':
+            num_tick = (_np.log10(lim[1]) - _np.log10(lim[0])) / self.x_tick
+        else:
+            num_tick = (lim[1] - lim[0]) / self.x_tick
+        return(num_tick)
         
     def _select_and_set_x_lim_and_tick(self, lim, tick):
         """
@@ -976,13 +988,13 @@ class Axes(_Data_Axes_Base):
         """
         Sets the x limits and the x tick spacing
         """
-        #Get the number of tick marks (not including the first one)
-        if self.x_scale == 'log':
-            n_tick = (_np.log10(lim[1]) - _np.log10(lim[0])) / tick
-        else:
-            n_tick = (lim[1] - lim[0]) / tick
+        #Set the limits and tick mark spacing
         self.mpl_ax.set_xlim(lim)
         self._x_tick = tick
+        #Get the number of tick marks (not including the first one)
+        #(we make sure to do this after the limits and tick mark spacing have
+        #been set)
+        n_tick = self.num_x_tick        
         self.x_tick_list = self._ui_x_tick_list
         self.x_tick_labels = self._ui_x_tick_labels
         self.size = _np.array([n_tick * self._x_tick_mm, self.size[1]])
@@ -1029,6 +1041,18 @@ class Axes(_Data_Axes_Base):
         lim = self._ui_y_lim
         [lim, tick] = self._select_and_set_y_lim_and_tick(lim, tick)
         return(lim, tick)
+        
+    @property
+    def num_y_tick(self):
+        """
+        Gets the number of y-axis tick marks
+        """
+        lim = self.y_lim
+        if self.y_scale == 'log':
+            num_tick = (_np.log10(lim[1]) - _np.log10(lim[0])) / self.y_tick
+        else:
+            num_tick = (lim[1] - lim[0]) / self.y_tick
+        return(num_tick)
         
     def _select_and_set_y_lim_and_tick(self, lim, tick):
         """
@@ -1101,13 +1125,13 @@ class Axes(_Data_Axes_Base):
         """
         Sets the y limits and the y tick spacing
         """
-        #Get the number of tick marks (not including the first one)
-        if self.y_scale == 'log':
-            n_tick = (_np.log10(lim[1]) - _np.log10(lim[0])) / tick
-        else:
-            n_tick = (lim[1] - lim[0]) / tick
+        #Set the limits and tick mark spacing
         self.mpl_ax.set_ylim(lim)
         self._y_tick = tick
+        #Get the number of tick marks (not including the first one)
+        #(we make sure to do this after the limits and tick mark spacing have
+        #been set)
+        n_tick = self.num_y_tick    
         self.y_tick_list = self._ui_y_tick_list
         self.y_tick_labels = self._ui_y_tick_labels  
         self.size = _np.array([self.size[0], n_tick * self._y_tick_mm])
@@ -1299,13 +1323,12 @@ class Axes(_Data_Axes_Base):
     @x_tick_mm.setter
     def x_tick_mm(self, tick_mm):
         self._x_tick_mm = tick_mm
-        n_tick = (self.x_lim[1] - self.x_lim[0]) / self.x_tick
-        self.size = _np.array([n_tick * self._x_tick_mm * self.sdim/20.0, \
+        self.size = _np.array([self.num_x_tick * self._x_tick_mm * self.sdim/20.0, \
             self.size[1]])
-        if self.y_label is not None:
-            self.x_label._tick_mm = tick_mm
-            if self.x_label.anno is not None:
-                self.x_label.place_label()
+        if self.x_label_obj is not None:
+            self.x_label_obj._tick_mm = tick_mm
+            if self.x_label_obj.anno is not None:
+                self.x_label_obj.place_label()
             
     @property
     def y_tick_mm(self):
@@ -1318,13 +1341,12 @@ class Axes(_Data_Axes_Base):
     @y_tick_mm.setter
     def y_tick_mm(self, tick_mm):
         self._y_tick_mm = tick_mm
-        n_tick = (self.y_lim[1] - self.y_lim[0]) / self.y_tick
         self.size = _np.array([self.size[0], \
-            n_tick * self._y_tick_mm * self.sdim/20.0])
-        if self.y_label is not None:
-            self.y_label._tick_mm = tick_mm
-            if self.y_label.anno is not None:
-                self.y_label.place_label()
+            self.num_y_tick * self._y_tick_mm * self.sdim/20.0])
+        if self.y_label_obj is not None:
+            self.y_label_obj._tick_mm = tick_mm
+            if self.y_label_obj.anno is not None:
+                self.y_label_obj.place_label()
 
     @property
     def x_tick_list(self):
