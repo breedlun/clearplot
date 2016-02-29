@@ -1299,12 +1299,13 @@ class Axes(_Data_Axes_Base):
     @x_tick_mm.setter
     def x_tick_mm(self, tick_mm):
         self._x_tick_mm = tick_mm
-        self.x_label._tick_mm = tick_mm
         n_tick = (self.x_lim[1] - self.x_lim[0]) / self.x_tick
         self.size = _np.array([n_tick * self._x_tick_mm * self.sdim/20.0, \
             self.size[1]])
-        if self.x_label.anno is not None:
-            self.x_label.place_label()
+        if self.y_label is not None:
+            self.x_label._tick_mm = tick_mm
+            if self.x_label.anno is not None:
+                self.x_label.place_label()
             
     @property
     def y_tick_mm(self):
@@ -1317,12 +1318,13 @@ class Axes(_Data_Axes_Base):
     @y_tick_mm.setter
     def y_tick_mm(self, tick_mm):
         self._y_tick_mm = tick_mm
-        self.y_label._tick_mm = tick_mm
         n_tick = (self.y_lim[1] - self.y_lim[0]) / self.y_tick
         self.size = _np.array([self.size[0], \
             n_tick * self._y_tick_mm * self.sdim/20.0])
-        if self.y_label.anno is not None:
-            self.y_label.place_label()
+        if self.y_label is not None:
+            self.y_label._tick_mm = tick_mm
+            if self.y_label.anno is not None:
+                self.y_label.place_label()
 
     @property
     def x_tick_list(self):
