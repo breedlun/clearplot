@@ -20,7 +20,6 @@ Contents
     ./examples/index
     api/clearplot
     ./version_history
-
     
 Primary Features
 ----------------
@@ -45,3 +44,13 @@ Please `submit <https://github.com/breedlun/clearplot/issues/new>`_ any bugs you
 Feature Requests and Enhancements
 ---------------------------------
 We encourage you to `submit <https://github.com/breedlun/clearplot/issues/new>`_ your feature requests to the Github issue tracker.  We should warn you, however, we can be quite particular, so please do not take it the wrong way if we do not chose to implement your feature.  Similarly, please make sure to `submit <https://github.com/breedlun/clearplot/issues/new>`_ your feature requests before creating a pull request.  It is best to discuss before you code anything up.
+
+Potential Improvements
+----------------------
+- When interactively picking curves, highlight the current curve being labeled.
+- Setup a check if the kwarg inputs are valid.
+- Improve handling of curves that consist of one data point.
+- After interactively labeling curves, clearplot prints the label_dict so that it can be easy copied and pasted into a script.  The '$' need to be removed from the latex strings, and the floats should be rounded to only a few digits beyond the decimal place.
+- Allow label indices to be a 1-D numpy array instead of only a list.
+- Load defaults from a file, similar to rcParams.
+- Implement more line styles than the limited set that comes with matplotlib

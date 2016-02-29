@@ -2108,7 +2108,12 @@ class Axes(_Data_Axes_Base):
         angle_cand = _np.array([30, 60, 120, 150, -150, -120, -60, -30])
         
         if (style is 'balloon') or (style is 'balloons'):
-            l_bbox = dict(boxstyle='circle', fc = [1,1,1], pad = 0.2)
+            #As of matplotlib 1.5.0, you can specify the padding.  Earlier 
+            #versions cannot.
+            if _cp.mpl_version < (1,5,0):
+                l_bbox = dict(boxstyle='circle', fc = [1,1,1]) 
+            else:   
+                l_bbox = dict(boxstyle='circle', fc = [1,1,1], pad = 0.2) 
         else:
             l_bbox = None    
         

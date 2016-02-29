@@ -38,7 +38,7 @@ def _parse_version_string(v):
     return v_list
 #Verify the minimum version of matplotlib is installed
 mpl_version = _parse_version_string(_mpl.__version__)
-if _parse_version_string(_mpl.__version__) < _parse_version_string(min_mpl_version):
+if mpl_version < _parse_version_string(min_mpl_version):
     raise ValueError('Matplotlib version must be ' + min_mpl_version + ' or greater')
 if mpl_version == (1,4,2):
     _warnings.warn("Warning: Markers may not work properly due to a bug in matplotlib 1.4.2.")

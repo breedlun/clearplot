@@ -780,6 +780,12 @@ def show_im(filename, im_seq, **kwargs):
     #Define the gap between the balloon labels and the images 
     #(in normalized axes coordinates)
     label_gap_nac = sdim * 0.35 / ax_size[1]
+    #As of matplotlib 1.5.0, you can specify the padding for circles.  Earlier 
+    #versions cannot.
+    if _cp.mpl_version < (1,5,0):
+        l_bbox = dict(boxstyle='circle', fc = 'none') 
+    else:   
+        l_bbox = dict(boxstyle='circle', fc = 'none', pad = 0.2) 
     #Define a list to store the image objects
     im_obj = []
     for i, im_seq in enumerate(im_seqs):
@@ -802,8 +808,7 @@ def show_im(filename, im_seq, **kwargs):
                     ['data', 'axes fraction'], \
                     size = font_size * scale_plot, \
                     va = 'center', ha = 'center', \
-                    fontname = 'sans-serif', \
-                    bbox=dict(boxstyle='circle', fc = 'none', pad = 0.2))
+                    fontname = 'sans-serif', bbox=l_bbox)
             x0 = x1
         #Put a gap between each image sequence
         x0 = x0 + pix_gap
