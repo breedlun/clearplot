@@ -707,10 +707,8 @@ class Axes(_Data_Axes_Base):
                 position = _np.array([30, 30])
             else:
                 position = self._ui_pos
-            #Define the initial size of the axes
-            L_x = 1.0 / self._x_tick * self._x_tick_mm
-            L_y = 1.0 / self._y_tick * self._y_tick_mm
-            size = _np.array([L_x, L_y]) 
+            #Initialize an array to store the initial size of the axes
+            size = _np.zeros([2])
             if link_x_ax is not None:
                 #Add specified axes and its linked axes to linked axes set
                 self.linked_x_ax.add(link_x_ax)
@@ -724,6 +722,9 @@ class Axes(_Data_Axes_Base):
                 link_x_ax.linked_x_ax.add(self)
                 #Define the axis object that mpl will actually share
                 link_mpl_x = link_x_ax.mpl_ax
+                #Initialize the linked axis with the same physical distance
+                #between the tick marks
+                self._x_tick_mm = link_x_ax._x_tick_mm
                 if self._ui_pos == 'auto':
                     #Place the linked axes above the original axes
                     position = link_x_ax.position
@@ -731,6 +732,7 @@ class Axes(_Data_Axes_Base):
                     size[0] = link_x_ax.size[0]
             else:
                 link_mpl_x = None
+                size[0] = 1.0 / self._x_tick * self._x_tick_mm
             if link_y_ax is not None:
                 #Add specified axes and its linked axes to linked axes set
                 self.linked_y_ax.add(link_y_ax)
@@ -743,6 +745,9 @@ class Axes(_Data_Axes_Base):
                 link_y_ax.linked_y_ax.add(self)
                 #Define the axis object that mpl will actually share
                 link_mpl_y = link_y_ax.mpl_ax
+                #Initialize the linked axis with the same physical distance
+                #between the tick marks
+                self._y_tick_mm = link_y_ax._y_tick_mm
                 if self._ui_pos == 'auto':
                     #Place the linked axes to the right of the original axes
                     position = link_y_ax.position
@@ -750,6 +755,7 @@ class Axes(_Data_Axes_Base):
                     size[1] = link_y_ax.size[1]
             else:
                 link_mpl_y = None
+                size[1] = 1.0 / self._y_tick * self._y_tick_mm
             #Generate matplotlib axes object
             rect_nfc = _np.hstack([position / fig_size, size / fig_size])
             self.mpl_ax = _plt.axes(rect_nfc, sharex = link_mpl_x, \
@@ -904,7 +910,7 @@ class Axes(_Data_Axes_Base):
         return(lim, tick)
     
     @property
-    def num_x_tick(self):
+    def _num_x_tick(self):
         """
         Gets the number of x-axis tick marks
         """
@@ -994,7 +1000,7 @@ class Axes(_Data_Axes_Base):
         #Get the number of tick marks (not including the first one)
         #(we make sure to do this after the limits and tick mark spacing have
         #been set)
-        n_tick = self.num_x_tick        
+        n_tick = self._num_x_tick        
         self.x_tick_list = self._ui_x_tick_list
         self.x_tick_labels = self._ui_x_tick_labels
         self.size = _np.array([n_tick * self._x_tick_mm, self.size[1]])
@@ -1043,7 +1049,7 @@ class Axes(_Data_Axes_Base):
         return(lim, tick)
         
     @property
-    def num_y_tick(self):
+    def _num_y_tick(self):
         """
         Gets the number of y-axis tick marks
         """
@@ -1131,7 +1137,7 @@ class Axes(_Data_Axes_Base):
         #Get the number of tick marks (not including the first one)
         #(we make sure to do this after the limits and tick mark spacing have
         #been set)
-        n_tick = self.num_y_tick    
+        n_tick = self._num_y_tick    
         self.y_tick_list = self._ui_y_tick_list
         self.y_tick_labels = self._ui_y_tick_labels  
         self.size = _np.array([self.size[0], n_tick * self._y_tick_mm])
@@ -1323,7 +1329,7 @@ class Axes(_Data_Axes_Base):
     @x_tick_mm.setter
     def x_tick_mm(self, tick_mm):
         self._x_tick_mm = tick_mm
-        self.size = _np.array([self.num_x_tick * self._x_tick_mm * self.sdim/20.0, \
+        self.size = _np.array([self._num_x_tick * self._x_tick_mm * self.sdim/20.0, \
             self.size[1]])
         if self.x_label_obj is not None:
             self.x_label_obj._tick_mm = tick_mm
@@ -1342,7 +1348,7 @@ class Axes(_Data_Axes_Base):
     def y_tick_mm(self, tick_mm):
         self._y_tick_mm = tick_mm
         self.size = _np.array([self.size[0], \
-            self.num_y_tick * self._y_tick_mm * self.sdim/20.0])
+            self._num_y_tick * self._y_tick_mm * self.sdim/20.0])
         if self.y_label_obj is not None:
             self.y_label_obj._tick_mm = tick_mm
             if self.y_label_obj.anno is not None:
