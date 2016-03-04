@@ -1683,6 +1683,13 @@ class Axes(_Data_Axes_Base):
                         curve.get_markersize(), curve.get_markeredgewidth(), \
                         e_color[0], e_color[1], e_color[2], \
                         f_color[0], f_color[1], f_color[2]])
+                else:
+                    #Otherwise assign the same marker properties to all curves 
+                    #without markers
+                    c_data[-1].extend(['None', \
+                        0.0, 0.0, \
+                        0, 0, 0, \
+                        0, 0, 0])
             #Isolate the unique curve and label combinations, so that we
             #don't get duplicate labels in the legend
             [u_c_data, u_ndx] = _utl.get_unique_rows(c_data)
