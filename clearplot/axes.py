@@ -1027,7 +1027,7 @@ class Axes(_Data_Axes_Base):
                 abs_diff[i,:] = _np.abs(s_n_tick_c - n_tick)
             #Select the limits and tick mark spacing combo with the smallest
             #difference in the number of tick marks
-            [a,b] = _np.where(abs_diff == min(abs_diff))
+            [a,b] = _np.where(abs_diff == _np.min(abs_diff))
             a = a[0]
             b = b[0]
             tick = tick_c[a]
@@ -1167,7 +1167,7 @@ class Axes(_Data_Axes_Base):
             abs_diff = _np.zeros([len(n_tick_c), len(s_n_tick_c)])
             for i, n_tick in enumerate(n_tick_c):
                 abs_diff[i,:] = _np.abs(s_n_tick_c - n_tick)
-            [a,b] = _np.where(abs_diff == min(abs_diff))
+            [a,b] = _np.where(abs_diff == _np.min(abs_diff))
             a = a[0]
             b = b[0]
             tick = tick_c[a]
