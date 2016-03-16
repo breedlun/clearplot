@@ -7,7 +7,7 @@ Created on Sun Dec 15 17:11:53 2013
 """
 
 import clearplot.plot_functions as pf
-import clearplot.figure as figure
+import clearplot.figure as cpfig
 import clearplot as cp
 import os, scipy.misc
 import numpy as np
@@ -32,7 +32,7 @@ pf.plot('Test2-cropping_algorithm', [x2a, x2b], [y2a, y2b], \
 
 #Verification that auto selected limits allow data to exceed limits by a 
 #small amount
-fig = figure.Figure()
+fig = cpfig.Figure()
 ax = fig.add_axes()
 ax.x_tick = 5
 ax.y_tick = 0.5
@@ -147,7 +147,7 @@ x12a, y12a = np.meshgrid(x, y)
 r = (x12a + 1.5)**2.0 + (y12a + 1.5)**2.0
 size = np.array(r.shape) * 1.0 / cp.params.dpmm
 #fig = brp.Figure(size = size)
-fig = figure.Figure()
+fig = cpfig.Figure()
 ax = fig.add_invisible_axes(position = [0,0], size = size)
 ax.x_lim = [0, r.shape[0]]
 ax.y_lim = [0, r.shape[1]]
@@ -189,7 +189,7 @@ y = np.array([[0,0,0,0], [1,1,1,1], [2,2,2,2], [3,3,3,3]])
 z = np.array([[0.25, 0.75, 1.0, 0.75], [0.1, 0.65, 0.5, 0.4], [0.6, 0.3, 0.0, 0.2], [0.7, 0.9, 0.4, 0.6]])
 #Create figure window
 fig_size = np.array([1200, 400]) / cp.params.dpmm
-fig = figure.Figure(size = fig_size) 
+fig = cpfig.Figure(size = fig_size) 
 #Add plots to figure window
 [fig, ax] = pf.plot_contours('', x, y, z, plot_type = 'filled', \
     fig = fig, ax_pos = [35, 30], c_label = ['z', 'mm'], x_tick = 1, y_tick = 1)
@@ -208,7 +208,7 @@ fig.save('Test16-Three_Contours')
 #Load image data
 path = os.path.join(data_dir, 'fiber_image.tiff')
 im12a = scipy.misc.imread(path)
-fig = figure.Figure()
+fig = cpfig.Figure()
 ax = fig.add_axes()
 ax.x_label = ['x', 'pix']
 ax.y_label = ['y', 'pix']
@@ -228,7 +228,7 @@ path = os.path.join(data_dir, 'hi-rez_field_images', 's140302C-eqps_field-frame_
 im = scipy.misc.imread(path)
 cols = range(350,850)
 im13a = im[:, cols, :]
-fig = figure.Figure()
+fig = cpfig.Figure()
 ax = fig.add_axes()
 ax.x_label = ['x', 'pix']
 ax.y_label = ['y', 'pix']
@@ -263,7 +263,7 @@ fig.save('Test19-duplicate_legend_labels')
 
 #Verification that limits and ticks can be set on the first set of axes
 #and do not get reset by the second set of axes.
-fig = figure.Figure()
+fig = cpfig.Figure()
 ax1 = fig.add_axes()
 x20a = np.linspace(0,10,10)
 y20a = np.linspace(0,1,10)
@@ -306,7 +306,7 @@ x22a = np.linspace(0, 5, 10)
 y22a = np.linspace(0, 5, 10)
 x22b = np.linspace(1, 4, 10)
 y22b = 10.0**x22b
-fig = figure.Figure()
+fig = cpfig.Figure()
 ax1 = fig.add_axes()
 ax1.x_label = ['x1']
 ax1.y_label = ['y1']
@@ -318,7 +318,16 @@ ax2.plot(x22b, y22b)
 fig.auto_adjust_layout()
 fig.save('Test22-shared_x_ax_with_linear_and_log_y_axes')
 
-
+#Verification of natural log y-axis
+x23 = np.linspace(0, 2, 50)
+y23 = np.exp(3*x23)
+fig = cpfig.Figure()
+ax = fig.add_axes()
+ax.plot(x23, y23)
+ax.y_scale = 'log'
+ax.y_scale_log_base = np.e
+fig.auto_adjust_layout()
+fig.save('Test23-natural_log_y_axis')
 
 ############################
 ## Features in development #

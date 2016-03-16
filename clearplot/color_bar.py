@@ -68,12 +68,13 @@ class Color_Bar(axes._Axes_Base):
             data = data_obj.get_array()
             [lim, tick, n_tick] = _utl.find_and_select_lim_and_tick(\
                 self._ui_lim, self._ui_tick, [data.min(), data.max()],
-                'linear', self.data_ax.exceed_lim)
+                'linear', 10.0, self.data_ax.exceed_lim)
 
         #In case the user specified new limits, update the data object
         data_obj.set_clim(lim)
         #Generate the tick list
-        tick_list = _utl.gen_tick_list(self._ui_tick_list, lim, tick, 'linear')
+        tick_list = _utl.gen_tick_list(self._ui_tick_list, lim, tick, \
+            'linear', 10.0)
         n_tick = len(tick_list) - 1
 
         #Find the data axes position in mm
@@ -181,7 +182,7 @@ class Color_Bar(axes._Axes_Base):
         spacing once."""
         data_lim = [self.data_obj.vmin, self.data_obj.vmax]
         [lim, tick, n_tick] = _utl.find_and_select_lim_and_tick(lim, \
-            tick, data_lim, 'linear', self.data_ax.exceed_lim)
+            tick, data_lim, 'linear', 10.0, self.data_ax.exceed_lim)
         self.data_obj.set_clim(lim)
         self._tick = tick
         self.tick_list = self._ui_tick_list
