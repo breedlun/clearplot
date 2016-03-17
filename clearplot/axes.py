@@ -878,7 +878,7 @@ class Axes(_Data_Axes_Base):
         #specified formatters.)
         if _np.abs(b - _np.e) < 1e-12:
             def ticks(n, pos):
-                return r'$e^{:.0f}$'.format(_np.log(n))
+                return r'e$^{:.0f}$'.format(_np.log(n))
             self.mpl_ax.xaxis.set_major_formatter(\
                 _mpl.ticker.FuncFormatter(ticks))
 
@@ -925,7 +925,7 @@ class Axes(_Data_Axes_Base):
         #specified formatters.)
         if _np.abs(b - _np.e) < 1e-12:
             def ticks(n, pos):
-                return r'$e^{{{:.0f}}}$'.format(_np.log(n))
+                return r'e$^{{{:.0f}}}$'.format(_np.log(n))
             self.mpl_ax.yaxis.set_major_formatter(\
                 _mpl.ticker.FuncFormatter(ticks))
 
