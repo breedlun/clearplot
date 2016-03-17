@@ -427,7 +427,8 @@ def preprocess_input(ui, depth, C):
     ui = ui[:C]
     return(ui)
 
-def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, ax_scale, exceed_lim):
+def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
+    ax_scale, ax_log_base, exceed_lim):
     """
     Finds candidate limits and tick mark spacings
     
@@ -443,6 +444,9 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, ax_scale, exceed_lim)
         Limits of the data on the axis.
     ax_scale : ['linear' | 'log']
         Axis scaling.
+    ax_log_base : float
+        Base of the logarithm for log scaled axes. (Not used for linearly 
+        scaled axes.)
     exceed_lim : float
         When automatically selecting limits, the data is allowed to exceed the 
         limits by this ratio of the tick mark spacing.
@@ -462,7 +466,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, ax_scale, exceed_lim)
     if (data_lim[0] == _np.inf) or (data_lim[1] == _np.inf):
         if ui_lim[0] == 'auto' and ui_lim[1] == 'auto':
             if ax_scale == 'log':
-                ui_lim = [10e-5,1.0]
+                ui_lim = [ax_log_base**(-5),1.0]
             else:
                 ui_lim = [0.0, 1.0]          
         elif ui_lim[0] == 'auto':
@@ -599,7 +603,9 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, ax_scale, exceed_lim)
     else:
         #If auto, set tick marks to be at powers of 10^1
         if ui_tick == 'auto':
-            tick_c = _np.array([1])        
+            tick_c = _np.array([1])  
+        else:
+            tick_c = ui_tick
             
         #Initialize the limit candidates with the user input limits
         lim_c = _np.array([lim])      
@@ -607,21 +613,26 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, ax_scale, exceed_lim)
         if _np.all(lim >= 0):
             #If limits were not specified, round limits to match tick mark spacing
             if ui_lim[0] == 'auto':
-                lim_c[0][0] = 10.0**_np.floor(_np.log10(data_lim[0]))
+                exp = _np.floor(_np.log(data_lim[0]) / _np.log(ax_log_base))
+                lim_c[0][0] = ax_log_base**exp
             if ui_lim[1] == 'auto':
-                lim_c[0][1] = 10.0**_np.ceil(_np.log10(data_lim[1]))
+                exp = _np.ceil(_np.log(data_lim[1]) / _np.log(ax_log_base))
+                lim_c[0][1] = ax_log_base**exp
         elif _np.all(lim <= 0):
             #If limits were not specified, round limits to match tick mark spacing
             if ui_lim[0] == 'auto':
-                lim_c[0][0] = -10.0**_np.ceil(_np.log10(-data_lim[0]))
+                exp = _np.ceil(_np.log(-data_lim[0]) / _np.log(ax_log_base))
+                lim_c[0][0] = -ax_log_base**exp
             if ui_lim[1] == 'auto':
-                lim_c[0][1] = -10.0**_np.floor(_np.log10(-data_lim[1]))
+                exp = _np.floor(_np.log(-data_lim[1]) / _np.log(ax_log_base))
+                lim_c[0][1] = -ax_log_base**exp
         else:
             raise ValueError("""You cannot have a logarithmic axis that spans 
                 across negative and positive numbers""")
 
         #Calculate the number of tick marks
-        n_tick_c = (_np.log10(lim_c[0][1]) - _np.log10(lim_c[0][0])) / tick_c
+        n_tick_c = (_np.log(lim_c[0][1]) / _np.log(ax_log_base) \
+            - _np.log(lim_c[0][0]) / _np.log(ax_log_base)) / tick_c
         
     return(lim_c, tick_c, n_tick_c)
     
@@ -671,19 +682,19 @@ def select_lim_and_tick(lim_c, tick_c, n_tick_c):
             n_tick = n_tick_c[0]
     return(lim, tick, n_tick)
     
-def find_and_select_lim_and_tick(ui_lim, ui_tick, data_lim, ax_scale, \
-    exceed_lim):
+def find_and_select_lim_and_tick(ui_lim, ui_tick, data_lim, \
+    ax_scale, ax_log_base, exceed_lim):
     """
     Convenience function that combines `find_candidate_lim_and_tick` with 
     `select_lim_and_tick`.
     """
     [lim_c, tick_c, n_tick_c] = find_candidate_lim_and_tick(ui_lim, ui_tick, \
-        data_lim, ax_scale, exceed_lim)
+        data_lim, ax_scale, ax_log_base, exceed_lim)
     [lim, tick, n_tick] = select_lim_and_tick(lim_c, tick_c, n_tick_c)
     return(lim, tick, n_tick)
 
     
-def gen_tick_list(ui_tick_list, lim, tick, scale):
+def gen_tick_list(ui_tick_list, lim, tick, scale, log_base):
     """
     Generates a list of tick mark values
     
@@ -698,6 +709,8 @@ def gen_tick_list(ui_tick_list, lim, tick, scale):
         Tick mark spacing
     scale : ['log' | 'linear']
         Axis scaling
+    log_base : float
+        Logarithm base for log scaled axes
         
     Returns
     -------
@@ -708,9 +721,10 @@ def gen_tick_list(ui_tick_list, lim, tick, scale):
         #Set the list of tick marks
         if scale == 'log':
             #(range omits the last entry so we need to nudge it a bit)
-            log_tick_list = _np.arange(_np.ceil(_np.log10(lim[0])), \
-                _np.log10(lim[1]) + tick/100.0, tick)
-            tick_list = 10.0**log_tick_list
+            log_tick_list = _np.arange(\
+                _np.log(lim[0]) / _np.log(log_base), \
+                _np.log(lim[1]) / _np.log(log_base) + tick/100.0, tick)
+            tick_list = log_base**log_tick_list
         else:
             #(range omits the last entry so we need to nudge it a bit)
             tick_list = _np.arange(lim[0], lim[1] + tick/100.0, tick)

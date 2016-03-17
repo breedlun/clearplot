@@ -426,7 +426,8 @@ class _Data_Axes_Base(_Axes_Base):
                 #spacing will be recalculated when the color bar is added to 
                 #the figure.)
                 [c_lim, c_tick, n_tick] = _utl.find_and_select_lim_and_tick(\
-                    c_lim, 'auto', [_np.nanmin(im), _np.nanmax(im)], 'linear', 0.0)
+                    c_lim, 'auto', [_np.nanmin(im), _np.nanmax(im)], \
+                    'linear', 10.0, 0.0)
                 im_type = 'values'
         elif im.ndim == 3:
             if im.shape[2] == 3:
@@ -641,7 +642,11 @@ class Axes(_Data_Axes_Base):
         self.font_size = kwargs.pop('font_size', _mpl.rcParams['font.size'])
         #Set the physical distance between tick marks
         self._x_tick_mm = 20 * scale_plot
-        self._y_tick_mm = 20 * scale_plot 
+        self._y_tick_mm = 20 * scale_plot
+        
+        #Set the log base for log scaled axes
+        self._x_scale_log_base = 10.0
+        self._y_scale_log_base = 10.0
         
         #Set default lims and ticks
         self._ui_x_lim = ['auto', 'auto']
@@ -855,9 +860,40 @@ class Axes(_Data_Axes_Base):
 
     @x_scale.setter
     def x_scale(self, x_scale):
-        if self.x_scale != x_scale:
-            self.mpl_ax.set_xscale(x_scale)
-            self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)
+        b = self._x_scale_log_base
+        #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
+        #etc.  This results in only one minor tick mark for natural log scaled 
+        #axes.  Instead we just place 9 linearly spaced tick marks.
+        if _np.abs(b - _np.e) < 1e-12:
+            minor_ticks = _np.arange(0.1*(b-1.0)+1.0, \
+                0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
+        else:
+            minor_ticks = None
+        self.mpl_ax.set_xscale(x_scale, basex = b, subsx = minor_ticks)
+        self._select_and_set_x_lim_and_tick(self._ui_x_lim[:], self._ui_x_tick)
+        #If using a base e logarithm, label major ticks using 'e^z' rather
+        #than 2.718281828459045^z
+        #(We need to put this here rather than inside the x_scale_log_base 
+        #setter because the mpl_ax.set_xscale() method overrides any previously
+        #specified formatters.)
+        if _np.abs(b - _np.e) < 1e-12:
+            def ticks(n, pos):
+                return r'$e^{:.0f}$'.format(_np.log(n))
+            self.mpl_ax.xaxis.set_major_formatter(\
+                _mpl.ticker.FuncFormatter(ticks))
+
+    @property
+    def x_scale_log_base(self):
+        """
+        Gets/sets the logarithmic base for log scaling on the x-axis.
+        """
+        return(self._x_scale_log_base)
+       
+    @x_scale_log_base.setter
+    def x_scale_log_base(self, log_base):
+        self._x_scale_log_base = log_base
+        #Reset the axis scaling
+        self.x_scale = self.x_scale
     
     @property
     def y_scale(self):
@@ -871,9 +907,41 @@ class Axes(_Data_Axes_Base):
     
     @y_scale.setter
     def y_scale(self, y_scale):
-        if self.y_scale != y_scale:
-            self.mpl_ax.set_yscale(y_scale)
-            self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)
+        b = self._y_scale_log_base
+        #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
+        #etc.  This results in only one minor tick mark for natural log scaled 
+        #axes.  Instead we just place 9 linearly spaced tick marks.
+        if _np.abs(b - _np.e) < 1e-12:
+            minor_ticks = _np.arange(0.1*(b-1.0)+1.0, \
+                0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
+        else:
+            minor_ticks = None
+        self.mpl_ax.set_yscale(y_scale, basey = b, subsy = minor_ticks)
+        self._select_and_set_y_lim_and_tick(self._ui_y_lim[:], self._ui_y_tick)
+        #If using a base e logarithm, label major ticks using 'e^z' rather
+        #than 2.718281828459045^z
+        #(We need to put this here rather than inside the y_scale_log_base 
+        #setter because the mpl_ax.set_yscale() method overrides any previously
+        #specified formatters.)
+        if _np.abs(b - _np.e) < 1e-12:
+            def ticks(n, pos):
+                return r'$e^{{{:.0f}}}$'.format(_np.log(n))
+            self.mpl_ax.yaxis.set_major_formatter(\
+                _mpl.ticker.FuncFormatter(ticks))
+
+            
+    @property
+    def y_scale_log_base(self):
+        """
+        Gets/sets the logarithmic base for log scaling on the x-axis.
+        """
+        return(self._y_scale_log_base)
+       
+    @y_scale_log_base.setter
+    def y_scale_log_base(self, log_base):
+        self._y_scale_log_base = log_base
+        #Reset the axis scaling
+        self.y_scale = self.y_scale
         
     @property
     def x_lim(self):
@@ -916,7 +984,8 @@ class Axes(_Data_Axes_Base):
         """
         lim = self.x_lim
         if self.x_scale == 'log':
-            num_tick = (_np.log10(lim[1]) - _np.log10(lim[0])) / self.x_tick
+            num_tick = (_np.log(lim[1])/_np.log(self._x_scale_log_base) - \
+                _np.log(lim[0])/_np.log(self._x_scale_log_base)) / self.x_tick
         else:
             num_tick = (lim[1] - lim[0]) / self.x_tick
         return(num_tick)
@@ -938,7 +1007,7 @@ class Axes(_Data_Axes_Base):
         data_lim = [_np.min(data_lims[:,0]), _np.max(data_lims[:,1])]
         #Automatically select candidates for the limits and tick mark spacing
         [lim_c, tick_c, n_tick_c] = _utl.find_candidate_lim_and_tick(lim, \
-            tick, data_lim, self.x_scale, self.exceed_lim)
+            tick, data_lim, self.x_scale, self._x_scale_log_base, self.exceed_lim)
 
         #The automatically found limits and tick mark spacings can result in an 
         #unequal number of tick marks on the first y-axis and the second 
@@ -949,7 +1018,7 @@ class Axes(_Data_Axes_Base):
             s_data_lim = self.shared_y_ax.mpl_ax.xaxis.get_data_interval()
             [s_lim_c, s_tick_c, s_n_tick_c] = _utl.find_candidate_lim_and_tick(\
                 self.shared_y_ax._ui_x_lim, self.shared_y_ax._ui_x_tick, \
-                s_data_lim, self.shared_y_ax.x_scale, \
+                s_data_lim, self.shared_y_ax.x_scale, self.shared_y_ax._x_scale_log_base, \
                 self.shared_y_ax.exceed_lim)
             #Find the differences between the number of tick marks on the two
             #x-axes
@@ -974,8 +1043,10 @@ class Axes(_Data_Axes_Base):
             else:
                 [lim, tick_mm, s_lim] = self._adjust_shared_lim( \
                     self._ui_x_lim, lim_c[a,:], tick, self.x_tick_mm, n_tick, \
-                    self.x_scale, self.shared_y_ax._ui_x_lim, s_lim_c[b,:], s_tick, \
-                    self.shared_y_ax.x_tick_mm, s_n_tick, self.shared_y_ax.x_scale)
+                    self.x_scale, self._x_scale_log_base, \
+                    self.shared_y_ax._ui_x_lim, s_lim_c[b,:], s_tick, \
+                    self.shared_y_ax.x_tick_mm, s_n_tick, \
+                    self.shared_y_ax.x_scale, self.shared_y_ax._x_scale_log_base)
                 self._x_tick_mm = tick_mm
                 self.x_label_obj._tick_mm = tick_mm 
             self.shared_y_ax._set_x_lim_and_tick(s_lim, s_tick)
@@ -1055,7 +1126,8 @@ class Axes(_Data_Axes_Base):
         """
         lim = self.y_lim
         if self.y_scale == 'log':
-            num_tick = (_np.log10(lim[1]) - _np.log10(lim[0])) / self.y_tick
+            num_tick = (_np.log(lim[1])/_np.log(self._y_scale_log_base) - \
+                _np.log(lim[0])/_np.log(self._y_scale_log_base)) / self.y_tick
         else:
             num_tick = (lim[1] - lim[0]) / self.y_tick
         return(num_tick)
@@ -1077,7 +1149,7 @@ class Axes(_Data_Axes_Base):
         data_lim = [_np.min(data_lims[:,0]), _np.max(data_lims[:,1])]
         #Automatically select candidates for the limits and tick mark spacing
         [lim_c, tick_c, n_tick_c] = _utl.find_candidate_lim_and_tick(lim, \
-            tick, data_lim, self.y_scale, self.exceed_lim)
+            tick, data_lim, self.y_scale, self._y_scale_log_base, self.exceed_lim)
         
         #The automatically found limits and tick mark spacings can result in an 
         #unequal number of tick marks on the first y-axis and the second 
@@ -1088,7 +1160,7 @@ class Axes(_Data_Axes_Base):
             s_data_lim = self.shared_x_ax.mpl_ax.yaxis.get_data_interval()
             [s_lim_c, s_tick_c, s_n_tick_c] = _utl.find_candidate_lim_and_tick(\
                 self.shared_x_ax._ui_y_lim, self.shared_x_ax._ui_y_tick, \
-                s_data_lim, self.shared_x_ax.y_scale, \
+                s_data_lim, self.shared_x_ax.y_scale, self.shared_x_ax._y_scale_log_base, \
                 self.shared_x_ax.exceed_lim)
             #Select the limits and tick mark spacing combo with the smallest
             #difference in the number of tick marks
@@ -1111,8 +1183,10 @@ class Axes(_Data_Axes_Base):
             else:
                 [lim, tick_mm, s_lim] = self._adjust_shared_lim( \
                     self._ui_y_lim, lim_c[a,:], tick, self.y_tick_mm, n_tick, \
-                    self.y_scale, self.shared_x_ax._ui_y_lim, s_lim_c[b,:], s_tick, \
-                    self.shared_x_ax.y_tick_mm, s_n_tick, self.shared_x_ax.y_scale)
+                    self.y_scale, self._y_scale_log_base, \
+                    self.shared_x_ax._ui_y_lim, s_lim_c[b,:], s_tick, \
+                    self.shared_x_ax.y_tick_mm, s_n_tick, \
+                    self.shared_x_ax.y_scale, self.shared_x_ax._y_scale_log_base)
                 self._y_tick_mm = tick_mm
                 self.y_label_obj._tick_mm = tick_mm 
             self.shared_x_ax._set_y_lim_and_tick(s_lim, s_tick)
@@ -1151,19 +1225,22 @@ class Axes(_Data_Axes_Base):
         self._line_at_zero(lim, tick, [0.0, 1.0], [0.0, 0.0], \
             self.mpl_ax.transAxes, self.mpl_ax.transData)
         
-    def _adjust_shared_lim(self, ui_lim, lim, tick, tick_mm, n_tick, ax_scale, \
-        s_ui_lim, s_lim, s_tick, s_tick_mm, n_s_tick, s_ax_scale):
+    def _adjust_shared_lim(self, ui_lim, lim, tick, tick_mm, n_tick, \
+        ax_scale, ax_log_base, s_ui_lim, s_lim, s_tick, s_tick_mm, \
+        n_s_tick, s_ax_scale, s_ax_log_base):
         """
         Adjusts x/y axis limits for axes with shared y/x axes.  This method
         kinda works, but perhaps it could be better.
         """
         #Define a function to decide which limit to adjust on a given axis, 
         #and to perform the adjustment
-        def select_and_adjust_lim(ui_lim, lim, length_diff, tick, ax_scale):
+        def select_and_adjust_lim(ui_lim, lim, length_diff, tick, \
+            ax_scale, ax_log_base):
             #Define a function to adjust the limits            
-            def adjust_lim(lmt, n_tick_diff, tick, sign, ax_scale):
+            def adjust_lim(lmt, n_tick_diff, tick, sign, ax_scale, ax_log_base):
                 if ax_scale == 'log':
-                    lmt = 10.0**(_np.log10(lmt) + sign * n_tick_diff * tick)
+                    lmt = ax_log_base**(_np.log(lmt)/_np.log(ax_log_base) \
+                        + sign * n_tick_diff * tick)
                 else:
                     lmt = lmt + sign * n_tick_diff * tick
                 return(lmt)
@@ -1175,16 +1252,20 @@ class Axes(_Data_Axes_Base):
                 #currently at 0, then attempt to preserve it.  Otherwise,
                 #adjust the top limit.
                 if lim[1] == 0.0:
-                    lim[0] = adjust_lim(lim[0], n_tick_diff, tick, -1.0, ax_scale)
+                    lim[0] = adjust_lim(lim[0], n_tick_diff, tick, -1.0, \
+                        ax_scale, ax_log_base)
                 else:
-                    lim[1] = adjust_lim(lim[1], n_tick_diff, tick, 1.0, ax_scale)
+                    lim[1] = adjust_lim(lim[1], n_tick_diff, tick, 1.0, \
+                        ax_scale, ax_log_base)
             else:
                 #Adjust whichever limit is automatically selected.
                 ndx = ndx_list[0]
                 if ndx == 0:
-                    lim[0] = adjust_lim(lim[0], n_tick_diff, tick, -1.0, ax_scale)
+                    lim[0] = adjust_lim(lim[0], n_tick_diff, tick, -1.0, \
+                        ax_scale, ax_log_base)
                 else:
-                    lim[1] = adjust_lim(lim[1], n_tick_diff, tick, 1.0, ax_scale)
+                    lim[1] = adjust_lim(lim[1], n_tick_diff, tick, 1.0, \
+                        ax_scale, ax_log_base)
             return(lim)
             
             
@@ -1192,25 +1273,28 @@ class Axes(_Data_Axes_Base):
         if length_diff > 1e-12 and 'auto' in s_ui_lim:
             #If the current axes are longer than the shared, adjust the shared.
             n_tick_diff = _np.floor(length_diff / s_tick_mm + 1e-12)
-            s_lim = select_and_adjust_lim(s_ui_lim, s_lim, length_diff, s_tick, s_ax_scale)
+            s_lim = select_and_adjust_lim(s_ui_lim, s_lim, length_diff, \
+                s_tick, s_ax_scale, s_ax_log_base)
         elif length_diff < -1e-12 and 'auto' in ui_lim:
             #If the current axes are shorter than the shared, adjust the 
             #current.
             n_tick_diff = -_np.floor(length_diff / tick_mm + 1e-12)
-            lim = select_and_adjust_lim(ui_lim, lim, length_diff, tick, ax_scale)
+            lim = select_and_adjust_lim(ui_lim, lim, length_diff, tick, \
+                ax_scale, ax_log_base)
         
         #Define a function to calculate the number of tick marks along an axis
-        def calc_n_tick(lim, tick, ax_scale):
+        def calc_n_tick(lim, tick, ax_scale, ax_log_base):
             if ax_scale == 'log':
-                n_tick = (_np.log10(lim[1]) - _np.log10(lim[0])) / tick
+                n_tick = (_np.log(lim[1])/_np.log(ax_log_base) - \
+                    _np.log(lim[0])/_np.log(ax_log_base)) / tick
             else:
                 n_tick = (lim[1] - lim[0]) / tick
             return(n_tick)
         #If physical tick mark spacings are different, then it may be 
         #impossible to make the lengths agree by only adjusting the number of
         #tick marks.  So we need to check if lengths are still different.
-        n_tick = calc_n_tick(lim, tick, ax_scale)
-        n_s_tick = calc_n_tick(s_lim, s_tick, s_ax_scale)
+        n_tick = calc_n_tick(lim, tick, ax_scale, ax_log_base)
+        n_s_tick = calc_n_tick(s_lim, s_tick, s_ax_scale, s_ax_log_base)
         length_diff = n_tick * tick_mm - n_s_tick * s_tick_mm
         #Adjust physical tick mark spacing as a last resort
         if abs(length_diff) > 1E-12:
@@ -1237,16 +1321,18 @@ class Axes(_Data_Axes_Base):
             #Clip the copy and update the curve with the clipped data
             #Clip the x data first
             [x_c, y_c] = self._clip_data(x, y, \
-                self.x_lim, self.x_tick, self.x_scale, line.get_linestyle())
+                self.x_lim, self.x_tick, self.x_scale, self._x_scale_log_base, \
+                line.get_linestyle())
             line.set_xdata(x_c)
             line.set_ydata(y_c)
             #Clipd the y data second
             [y_c, x_c] = self._clip_data(y_c, x_c, \
-                self.y_lim, self.y_tick, self.y_scale, line.get_linestyle())
+                self.y_lim, self.y_tick, self.y_scale, self._y_scale_log_base, \
+                line.get_linestyle())
             line.set_xdata(x_c)
             line.set_ydata(y_c)
              
-    def _clip_data(self, x, y, lims, tick, ax_scale, line_style):
+    def _clip_data(self, x, y, lims, tick, ax_scale, ax_log_base, line_style):
         """Clips data to limits"""
 
         #If clip_on = True in ax.plot(), then each curve has it's own 
@@ -1266,8 +1352,10 @@ class Axes(_Data_Axes_Base):
         #(The distance beyond the limit must be calculated differently if 
         #axis has a log scale instead of a normal linear scale.)
         if ax_scale == 'log':
-            diff = [_np.log10(lims[0]) - _np.log10(_np.nanmin(x)), \
-                _np.log10(_np.nanmax(x)) - _np.log10(lims[1])]
+            diff = [_np.log(lims[0])/_np.log(ax_log_base) - \
+                _np.log(_np.nanmin(x))/_np.log(ax_log_base), \
+                _np.log(_np.nanmax(x))/_np.log(ax_log_base) - \
+                _np.log(lims[1])/_np.log(ax_log_base)]
         else:
             diff = [lims[0] - _np.nanmin(x), _np.nanmax(x) - lims[1]]
         if diff[0] < tick * self.exceed_lim:
@@ -1366,7 +1454,8 @@ class Axes(_Data_Axes_Base):
     @x_tick_list.setter
     def x_tick_list(self, tick_list):
         self._ui_x_tick_list = tick_list
-        tick_list = _utl.gen_tick_list(tick_list, self.x_lim, self.x_tick, self.x_scale)
+        tick_list = _utl.gen_tick_list(tick_list, self.x_lim, self.x_tick, \
+            self.x_scale, self._y_scale_log_base)
         self.mpl_ax.set_xticks(tick_list)
         
     @property
@@ -1381,7 +1470,8 @@ class Axes(_Data_Axes_Base):
     @y_tick_list.setter
     def y_tick_list(self, tick_list):
         self._ui_y_tick_list = tick_list
-        tick_list = _utl.gen_tick_list(tick_list, self.y_lim, self.y_tick, self.y_scale)
+        tick_list = _utl.gen_tick_list(tick_list, self.y_lim, self.y_tick, \
+            self.y_scale, self._y_scale_log_base)
         self.mpl_ax.set_yticks(tick_list)
     
     @property
@@ -2881,7 +2971,7 @@ class Axes(_Data_Axes_Base):
         #(Hard code auto tick spacing because the color bar tick spacing
         #will be recalculated when the color bar is added to the figure.)
         [c_lim_c, c_tick_c, n_tick_c] = _utl.find_candidate_lim_and_tick(\
-            c_lim, 'auto', [_np.min(z), _np.max(z)], 'linear', self.exceed_lim)
+            c_lim, 'auto', [_np.min(z), _np.max(z)], 'linear', 10.0, self.exceed_lim)
         [c_lim, c_tick, n_tick] = _utl.select_lim_and_tick(c_lim_c, c_tick_c, \
             n_tick_c)
         #We have to include the limits in the levels because the colorbar seems
