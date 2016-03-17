@@ -758,7 +758,7 @@ class Axes(_Data_Axes_Base):
                 size[1] = 1.0 / self._y_tick * self._y_tick_mm
             #Generate matplotlib axes object
             rect_nfc = _np.hstack([position / fig_size, size / fig_size])
-            self.mpl_ax = _plt.axes(rect_nfc, sharex = link_mpl_x, \
+            self.mpl_ax = fig.mpl_fig.add_axes(rect_nfc, sharex = link_mpl_x, \
                 sharey = link_mpl_y, **kwargs)
         
         #Set tick mark properties: fontsize, remove tick marks from top 
