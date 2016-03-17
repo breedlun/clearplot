@@ -62,7 +62,7 @@ _mpl.rcParams['mathtext.sf'] = 'sans'
 _mpl.rcParams['mathtext.it'] = 'sans:italic'
 _mpl.rcParams['mathtext.fontset'] = 'custom'
 _mpl.rcParams['font.size'] = 16
-_mpl.rcParams['legend.fontsize'] = 14
+_mpl.rcParams['legend.fontsize'] = 16
 #The font type must be set to 42 (TrueType) so that Acrobat/Illustrator can 
 #edit the text
 _mpl.rcParams['pdf.fonttype'] = 42

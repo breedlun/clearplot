@@ -1,6 +1,16 @@
 Version History
 ===============
 
+version 1.0.6
+
+1. Enabled arbitrary logarithmic bases for log scaled axes.
+2. Fixed an incompatibility with circled labels and matplotlib versions prior to 1.5.0.
+3. Fixed a bug with setting the physical distance between tick marks before creating axis labels.
+4. Fixed a bug with changing the physical distance between tick marks on log axes.
+5. Fixed a bug where linked axes did not inherit the physical distance between tick marks.
+6. Fixed a bug with determining the unique curves for a legend when the plot has curves with and without markers.
+7. Fixed a bug with autoselecting limits with shared axes.
+
 version 1.0.5
 
 1. Switch the matplotlib backend from Qt4Agg to TkAgg, since TkAgg is the only interactive backend that is supposed to work "out of the box" with matplotlib, as of matplotlib version 1.5.0.  If you wish to avoid the TkAgg/Spyder figure window size bug detailed `here <https://github.com/spyder-ide/spyder/issues/1651>`__ follow the `optional additional steps <./installation.html#optional-additional-steps>`_ to use the QtAgg backend in Spyder.
