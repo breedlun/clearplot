@@ -933,7 +933,7 @@ class Axes(_Data_Axes_Base):
     @property
     def y_scale_log_base(self):
         """
-        Gets/sets the logarithmic base for log scaling on the x-axis.
+        Gets/sets the logarithmic base for log scaling on the y-axis.
         """
         return(self._y_scale_log_base)
        
