@@ -1909,6 +1909,12 @@ class Axes(_Data_Axes_Base):
         #We must add the artist to the axes, so that the next call to legend()
         #creates a new legend instead of overwriting the old one.
         self.mpl_ax.add_artist(legend)
+        #The legend has some sort of clipping box that causes the 
+        #fig.tight_bbox() code to ignore the legend.  fig.tight_bbox() is used
+        #to appropriately size the figure window before saving, so this 
+        #resulted in clipped legends.  The solution is to simply turn off the
+        #clipping box.
+        legend.set_clip_on(False)
         return(legend)
 
     def add_arrowhead(self, x, cs, orient, length = 7.0, aspect_ratio = 2.5, \

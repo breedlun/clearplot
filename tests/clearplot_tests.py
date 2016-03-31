@@ -329,6 +329,15 @@ ax.y_scale_log_base = np.e
 fig.auto_adjust_layout()
 fig.save('Test23-natural_log_y_axis')
 
+#Verification that legends outside the axes do not get clipped
+x24a = np.linspace(0,1,10)
+y24a = np.sinh(x24a)
+x24b = np.linspace(0,1,10)
+y24b = np.cosh(x24a)
+pf.plot('Test24-legend_outside_axes', [x24a, x24a], [x24b, y24b], \
+    ['x'], ['y'], legend_outside_ax = True, legend_loc = 'center right', \
+    legend = ['\sf This\;legend\;is', '\sf outside\;the\;axes'])
+
 ############################
 ## Features in development #
 ############################
