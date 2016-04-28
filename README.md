@@ -5,12 +5,12 @@ Clearplot creates publication quality plots using matplotlib.
 Documentation
 -------------
 
-Detailed documentation is available [here](http://clearplot.readthedocs.org/en/latest/).
+Detailed documentation is available [here](http://clearplot.readthedocs.io/en/latest/).
 
 Examples
 --------
 
-The documentation contains an [example gallery](http://clearplot.readthedocs.org/en/latest/examples/) with scripts demonstrating how to generate several types of plots.
+The documentation contains an [example gallery](http://clearplot.readthedocs.io/en/latest/examples/) with scripts demonstrating how to generate several types of plots.
 
 <!--
 Citing
@@ -32,7 +32,7 @@ Dependencies
 Installation
 ------------
 
-The documentation contains [installation instructions](http://clearplot.readthedocs.org/en/latest/installation.html).
+The documentation contains [installation instructions](http://clearplot.readthedocs.io/en/latest/installation.html).
 
 <!--
 Testing
