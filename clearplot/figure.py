@@ -165,9 +165,10 @@ class Figure(object):
         
     def put_window_on_top(self):
         """
-        Places the figure window on top of all other windows.
+        Places the figure window on top of all other windows if interactive
+        mode is on.
         """
-        if hasattr(self.mpl_fig.canvas.manager, 'window'):
+        if hasattr(self.mpl_fig.canvas.manager, 'window') and _plt.isinteractive():
             #Force the figure to be on top of all other windows
             if hasattr(self.mpl_fig.canvas.manager.window, 'attributes'):
                 #(The command below doees not work with the MacOSX or Qt4Agg backend.  
@@ -548,5 +549,9 @@ class Figure(object):
             transparent = transparent, bbox_inches = bbox_inch, \
             pad_inch = pad * 25.4, frame_on = frame_on)
             
-
+    def close(self):
+        """
+        Closes the figure window
+        """
+        _plt.close(self.mpl_fig)
         

@@ -2502,7 +2502,7 @@ class Axes(_Data_Axes_Base):
         sizes = kwargs.pop('sizes', [6])
         colors = kwargs.pop('colors', \
             _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.marker_color_ndx))
-        edge_widths = kwargs.pop('edge_widths', [1.0])
+        edge_widths = kwargs.pop('edge_widths', [0.0])
         edge_colors = kwargs.pop('edge_colors', [[0,0,0]])   
           
         [x, y] = self._data_preprocessor(x, y, True, 1)
