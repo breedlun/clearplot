@@ -4,7 +4,8 @@ Version History
 version 1.0.7
 
 1. Changed the default marker edge width to zero.  
-2. Made figure window only appear on top of all other windows if interactive mode is on.  3. Added a method to the figure class to close the figure window.
+2. Made figure window only appear on top of all other windows if interactive mode is on.
+3. Added a method to the figure class to close the figure window.
 4. Fixed a bug that caused fig.auto_adjust_layout() to ignore legends.  This bug often caused big legends or legends placed outside of the axes to get clipped.
 5. Changed the latter part of the standard color list to have more distinctive colors.  Also automated the process of creating dark, darker, and pastel color lists from the standard colors list.
 6. Make the tick label e^n non-italic for natural logarithm scaled axes.
