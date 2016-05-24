@@ -11,6 +11,7 @@ import warnings as _warnings
 import matplotlib.patches as _mpl_patches
 from matplotlib.path import Path as _mpl_Path
 from matplotlib.lines import Line2D as _mpl_Line2D
+from matplotlib.spines import Spine as _mpl_Spine
 import clearplot as _cp
 import custom_annotations as _ca
 import axis_label as _axis_label
@@ -352,8 +353,90 @@ class _Axes_Base(object):
 #        #Add the polygon to the axes
 #        self.mpl_ax.patches.append(patch_obj)
 #        return(patch_obj)
+
+    def add_arrow(self, style_str, x, cs, orient, length, \
+        head_length = 7.0, head_aspect_ratio = 3.0, color = [0, 0, 0]):
+        """
+        Creates an arrow with a curved back. The arrow can be placed
+        relative to several coordinate systems, yet it retains it's shape, even 
+        when the data limits, axes, or figure window change size.
         
-    
+        Parameters
+        ----------
+        x : 1x2 numpy array
+            Tip of arrowhead, in the coordinate system(s) specified in 
+            `x_coord_sys`
+        cs : string or 1x2 list
+            Specifies the coordinate system for the coordinates in `x`.  See
+            description of `cs_1` in the axes.annotate method for further 
+            information.
+        orient :  float
+            Orientation angle (rad) of arrow
+        length : float, optional
+            Length of the arrow, in mm
+        head_length = float, optional
+            Length of the arrowhead
+        head_aspect_ratio : float, optional
+            Length/width ratio of the arrowhead
+        color : 1x3 list, optional
+            RGB value for the arrow
+        
+        Returns
+        -------
+        arrow : annotation object
+        """
+        #Convert the head length from mm into points (1/72")
+        head_length_pts = head_length * 72.0/25.4
+        #Calculate the head width
+        head_width_pts = head_length_pts / head_aspect_ratio
+        #Matplotlib annotations take two points as inputs, not one point and
+        #an orientation, so we must create a second point
+        x_offset = _np.array([-head_length * _np.cos(orient), \
+                              -head_length * _np.sin(orient)])
+        #(We use an annotation instead of a low level patch, because
+        #annotations can retain their shape even when the figure or axes are
+        #resized)
+        arrowstyle_str = style_str + ', head_width = ' + str(head_width_pts) + \
+            ', head_length = ' + str(head_length_pts) + ', length = ' + str(length * 72/25.4)
+        #Generate arrow
+        arrow = self.annotate('', x_offset, 'offset mm', x_2 = x, cs_2 = cs, \
+            arrowprops = dict(arrowstyle = arrowstyle_str, mutation_scale = 1.0, \
+            linewidth = 0, facecolor = color, connectionstyle = 'arc3', \
+            shrinkA = 0, shrinkB = 0))
+        return(arrow)
+
+    def add_arrowhead(self, x, cs, orient, length = 7.0, aspect_ratio = 2.5, \
+        color = [0,0,0]):
+        """
+        Creates an arrowhead with a curved back. The arrow can be placed
+        relative to several coordinate systems, yet it retains it's shape, even 
+        when the data limits, axes, or figure window change size.
+        
+        Parameters
+        ----------
+        x : 1x2 numpy array
+            Tip of arrowhead, in the coordinate system(s) specified in 
+            `x_coord_sys`
+        cs : string or 1x2 list
+            Specifies the coordinate system for the coordinates in `x`.  See
+            description of `cs_1` in the axes.annotate method for further 
+            information.
+        orient :  float
+            Orientation angle (rad) of arrowhead
+        length : float, optional
+            Length of the arrowhead, in mm
+        aspect_ratio : float, optional
+            Length/width ratio of the arrowhead
+        color : 1x3 list, optional
+            RGB value for the arrowhead
+        
+        Returns
+        -------
+        arrowhead : annotation object
+        """
+        arrowhead = self.add_arrow('-)>', x, cs, orient, 0, \
+            length, aspect_ratio, color)
+        return(arrowhead)
 
 class _Data_Axes_Base(_Axes_Base):   
     
@@ -834,19 +917,18 @@ class Axes(_Data_Axes_Base):
         if link_x_ax is not None:
             self._ui_x_lim = link_x_ax._ui_x_lim
             self._ui_x_tick = link_x_ax._ui_x_tick
-#            self._set_x_lim_and_tick(self.linked_x_ax.x_lim, self.linked_x_ax.x_tick)
         if link_y_ax is not None:
             self._ui_y_lim = link_y_ax._ui_y_lim
             self._ui_y_tick = link_y_ax._ui_y_tick
-#            self._set_y_lim_and_tick(self.linked_y_ax.y_lim, self.linked_y_ax.y_tick)
-        
-#        #Set the axis scaling.  (This appears to change the limits and tick 
-#        #marks in matplotlib 1.3.1, which might be a bug.  We avoid the issue 
-#        #by setting the scaling before setting the tick marks.)
-#        self.x_scale = 'linear'
-#        self.y_scale = 'linear'
-#        self.mpl_ax.set_xlim(0,1)
-#        self.mpl_ax.set_ylim(0,1)
+            
+#        self.mpl_ax.spines[u'x_zero'] = _mpl_Spine(self.mpl_ax, 'right', \
+#            _mpl_Path(([[ 0., 0.], [ 0.,  0.]]), None), \
+#            linestyle='--', linewidth=0.5, facecolor=[0,0,0], clip_on = True)
+#        self.mpl_ax.spines[u'y_zero'] = _mpl_Spine(self.mpl_ax, 'top', \
+#            _mpl_Path(([[ 0., 0.], [ 0.,  0.]]), None), \
+#            linestyle='--', linewidth=0.5, facecolor=[0,0,0], clip_on = True)                
+#        
+
 
     @property
     def x_scale(self):
@@ -1081,7 +1163,7 @@ class Axes(_Data_Axes_Base):
         if self.mpl_ax.yaxis.get_label_position() == 'right' and \
             self.y_label_obj.anno is not None:
             self.y_label_obj.place_label()
-        #Draw a dashed line across plot if axis spans zero 
+        #Draw a dashed line across plot if axis spans zero
         self._line_at_zero(lim, tick, [0.0, 0.0], [0.0, 1.0], \
             self.mpl_ax.transData, self.mpl_ax.transAxes)      
             
@@ -1727,6 +1809,7 @@ class Axes(_Data_Axes_Base):
                 transform = trans, zorder = 1)
             #Add the line to the axes container 
             self.mpl_ax.lines.append(l)
+            
         
     def add_title(self, text):
         """
@@ -1916,64 +1999,6 @@ class Axes(_Data_Axes_Base):
         #clipping box.
         legend.set_clip_on(False)
         return(legend)
-
-    def add_arrowhead(self, x, cs, orient, length = 7.0, aspect_ratio = 2.5, \
-        color = [0,0,0]):
-        """
-        Creates an arrowhead with a curved back. The arrow can be placed
-        relative to several coordinate systems, yet it retains it's shape, even 
-        when the data limits, axes, or figure window change size.
-        
-        Parameters
-        ----------
-        x : 1x2 numpy array
-            Tip of arrowhead, in the coordinate system(s) specified in 
-            `x_coord_sys`
-        cs : string or 1x2 list
-            Specifies the coordinate system for the coordinates in `x`.  See
-            description of `cs_1` in the axes.annotate method for further 
-            information.
-        orient :  float
-            Orientation angle (rad) of arrowhead
-        length : float, optional
-            Length of the arrowhead, in mm
-        aspect_ratio : float, optional
-            Length/width ratio of the arrowhead
-        color : 1x3 list, optional
-            RGB value for the arrowhead
-        
-        Returns
-        -------
-        arrowhead : annotation object
-        """
-        arrowhead = self._add_arrow('-)>', x, cs, orient, 0, \
-            length, aspect_ratio, color)
-        return(arrowhead)
-
-    def _add_arrow(self, style_str, x, cs, orient, length, \
-        head_length, head_aspect_ratio, color):
-        """
-        Add an arrow to the axes
-        """
-        #Convert the head length from mm into points (1/72")
-        head_length_pts = head_length * 72.0/25.4
-        #Calculate the head width
-        head_width_pts = head_length_pts / head_aspect_ratio
-        #Matplotlib annotations take two points as inputs, not one point and
-        #an orientation, so we must create a second point
-        x_offset = _np.array([-head_length * _np.cos(orient), \
-                              -head_length * _np.sin(orient)])
-        #(We use an annotation instead of a low level patch, because
-        #annotations can retain their shape even when the figure or axes are
-        #resized)
-        arrowstyle_str = style_str + ', head_width = ' + str(head_width_pts) + \
-            ', head_length = ' + str(head_length_pts) + ', length = ' + str(length * 72/25.4)
-        #Generate arrow
-        arrow = self.annotate('', x_offset, 'offset mm', x_2 = x, cs_2 = cs, \
-            arrowprops = dict(arrowstyle = arrowstyle_str, mutation_scale = 1.0, \
-            linewidth = 0, facecolor = color, connectionstyle = 'arc3', \
-            shrinkA = 0, shrinkB = 0))
-        return(arrow)  
                 
     def add_arrowheads_to_curves(self, **kwargs):
         """
@@ -3046,7 +3071,6 @@ class Axes(_Data_Axes_Base):
                 im_origin = 'lower left', xy_coords = 'pixel centers', \
                 c_lim = c_lim, interp = im_interp)
             #Clip the extra half a pixel on the edges
-                
             xy_clip = _np.array([[_np.min(x), _np.min(y)], \
                                  [_np.max(x), _np.min(y)], \
                                  [_np.max(x), _np.max(y)], \

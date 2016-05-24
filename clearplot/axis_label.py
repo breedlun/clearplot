@@ -105,7 +105,7 @@ class Axis_Label(object):
             length = self._tick_mm
         if head_length == 'auto':
             head_length = 7.0 * self._tick_mm / 20.0
-        arrow = self.parent_ax._add_arrow('=)>', x, cs, \
+        arrow = self.parent_ax.add_arrow('=)>', x, cs, \
             self.orient, length, head_length, head_aspect_ratio, color)
         return(arrow)
     

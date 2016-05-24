@@ -861,7 +861,7 @@ def plot_surface(filename, x, y, z, x_label='x', y_label='y', z_label='z', \
     N_tick = [0] * 3
     for a, (x, lim, tick) in enumerate(zip(xyz, ax_lim, ax_tick)):
         [ax_lim[a], ax_tick[a], N_tick[a]] = \
-            _utl.find_and_select_lim_and_tick(lim, tick, lim, 'linear', 0.0)
+            _utl.find_and_select_lim_and_tick(lim, tick, lim, 'linear', 10.0, 0.0)
         
     axes3d = fig.mpl_fig.gca(projection = '3d')
     #Turn off autoscale so that the plot command does not alter the limits of 
@@ -956,7 +956,7 @@ def plot_3d_scatter(filename, x, y, z, x_label='x', y_label='y', z_label='z', \
     N_tick = [0] * 3
     for a, (x, lim, tick) in enumerate(zip(xyz, ax_lim, ax_tick)):
         [ax_lim[a], ax_tick[a], N_tick[a]] = \
-            _utl.find_and_select_lim_and_tick(lim, tick, x, 'linear', 0.02)
+            _utl.find_and_select_lim_and_tick(lim, tick, x, 'linear', 10, 0.02)
         
     axes3d = fig.mpl_fig.gca(projection = '3d')
     #Turn off autoscale so that the plot command does not alter the limits of 
