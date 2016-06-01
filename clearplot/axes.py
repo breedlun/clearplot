@@ -920,14 +920,20 @@ class Axes(_Data_Axes_Base):
         if link_y_ax is not None:
             self._ui_y_lim = link_y_ax._ui_y_lim
             self._ui_y_tick = link_y_ax._ui_y_tick
-            
-#        self.mpl_ax.spines[u'x_zero'] = _mpl_Spine(self.mpl_ax, 'right', \
-#            _mpl_Path(([[ 0., 0.], [ 0.,  0.]]), None), \
-#            linestyle='--', linewidth=0.5, facecolor=[0,0,0], clip_on = True)
-#        self.mpl_ax.spines[u'y_zero'] = _mpl_Spine(self.mpl_ax, 'top', \
-#            _mpl_Path(([[ 0., 0.], [ 0.,  0.]]), None), \
-#            linestyle='--', linewidth=0.5, facecolor=[0,0,0], clip_on = True)                
-#        
+        
+        #Add dashed lines indicating zero
+        #(It is better to add them as spines rather than lines so that they
+        #become part of the axes themselves.  This means hiding the axes also
+        #hides the dashed lines.)
+        self.mpl_ax.spines['x_zero'] = _mpl_Spine(self.mpl_ax, 'right', \
+            _mpl_Path(([[ 0., 0.], [ 0.,  0.]]), None), \
+            linestyle = '--', linewidth = 1.0, facecolor = [0,0,0], \
+            clip_on = True, clip_box = self.mpl_ax.bbox)
+        self.mpl_ax.spines['y_zero'] = _mpl_Spine(self.mpl_ax, 'top', \
+            _mpl_Path(([[ 0., 0.], [ 0.,  0.]]), None), \
+            linestyle = '--', linewidth = 1.0, facecolor = [0,0,0], \
+            clip_on = True, clip_box = self.mpl_ax.bbox) 
+        
 
 
     @property
@@ -1162,10 +1168,7 @@ class Axes(_Data_Axes_Base):
             self.x_label_obj.place_label()
         if self.mpl_ax.yaxis.get_label_position() == 'right' and \
             self.y_label_obj.anno is not None:
-            self.y_label_obj.place_label()
-        #Draw a dashed line across plot if axis spans zero
-        self._line_at_zero(lim, tick, [0.0, 0.0], [0.0, 1.0], \
-            self.mpl_ax.transData, self.mpl_ax.transAxes)      
+            self.y_label_obj.place_label()  
             
     @property
     def y_lim(self):
@@ -1303,9 +1306,6 @@ class Axes(_Data_Axes_Base):
         if self.mpl_ax.xaxis.get_label_position() == 'top' and \
             self.x_label_obj.anno is not None:
             self.x_label_obj.place_label()
-        #Draw a dashed line across plot if axis spans zero
-        self._line_at_zero(lim, tick, [0.0, 1.0], [0.0, 0.0], \
-            self.mpl_ax.transAxes, self.mpl_ax.transData)
         
     def _adjust_shared_lim(self, ui_lim, lim, tick, tick_mm, n_tick, \
         ax_scale, ax_log_base, s_ui_lim, s_lim, s_tick, s_tick_mm, \
@@ -1407,7 +1407,7 @@ class Axes(_Data_Axes_Base):
                 line.get_linestyle())
             line.set_xdata(x_c)
             line.set_ydata(y_c)
-            #Clipd the y data second
+            #Clip the y data second
             [y_c, x_c] = self._clip_data(y_c, x_c, \
                 self.y_lim, self.y_tick, self.y_scale, self._y_scale_log_base, \
                 line.get_linestyle())
@@ -1787,29 +1787,7 @@ class Axes(_Data_Axes_Base):
                             ':'  : 'dotted'})
         for i, lstyle in enumerate(edge_styles):
             edge_styles[i] = lstyle_dict[lstyle]
-        return(widths, colors, edge_styles, edge_widths, edge_colors)
-        
-    def _line_at_zero(self, lim, tick, coord1, coord2, trans1, trans2):
-        """
-        Draws a vertical/horizontal line across zero if axis limits span 
-        zero
-        """
-        #(the sign function says zero is a negative number so we nudge things
-        #very slightly to avoid issue)
-        if _np.sign(lim[0] + tick / 10.0**10) != _np.sign(lim[1] - tick / 10.0**10):
-            #Use a blended transformation so that y data points correspond 
-            #to axes/data coordinates, while x data points correspond to data/axes 
-            #coordinates.  This way the dashed line will remain in the 
-            #right spot even if you pan, zoom, and change axis limits. 
-            #(I could use axvline()/axhline() here, but I like to have things 
-            #explicit.)
-            trans = _mpl.transforms.blended_transform_factory(trans1, trans2)
-            l = _mpl_Line2D(coord1, coord2, \
-                linestyle = '--', linewidth = 1, color = [0,0,0], \
-                transform = trans, zorder = 1)
-            #Add the line to the axes container 
-            self.mpl_ax.lines.append(l)
-            
+        return(widths, colors, edge_styles, edge_widths, edge_colors)            
         
     def add_title(self, text):
         """
