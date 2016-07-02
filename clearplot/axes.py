@@ -2432,7 +2432,7 @@ class Axes(_Data_Axes_Base):
         marker_sizes = kwargs.pop('marker_sizes', [6])
         marker_colors = kwargs.pop('marker_colors', \
             _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.color_ndx))
-        marker_edge_widths = kwargs.pop('marker_edge_widths', [1.0])
+        marker_edge_widths = kwargs.pop('marker_edge_widths', [0.0])
         marker_edge_colors = kwargs.pop('marker_edge_colors', [[0,0,0]])
         
         #Preprocess inputs
