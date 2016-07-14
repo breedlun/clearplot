@@ -1390,29 +1390,32 @@ class Axes(_Data_Axes_Base):
         return(lim, tick_mm, s_lim)
 
     def _update_clipping_mask(self):
-        """Cycle thru the curves in the plot, and clip each of them"""
-        for line in self.curves:
+        """Cycle thru the data sets in the plot, and clip each of them"""
+        data_sets = []
+        data_sets.extend(self.curves[:])
+        data_sets.extend(self.markers[:])
+        for data_set in data_sets:
             #Save the full data set before clipping
-            if not hasattr(line, 'full_x_data'):
-                line.full_x_data = line.get_xdata()
-            if not hasattr(line, 'full_y_data'):
-                line.full_y_data = line.get_ydata()
+            if not hasattr(data_set, 'full_x_data'):
+                data_set.full_x_data = data_set.get_xdata()
+            if not hasattr(data_set, 'full_y_data'):
+                data_set.full_y_data = data_set.get_ydata()
             #Perform the clipping on a copy of the full data set 
-            x = _np.copy(line.full_x_data)
-            y = _np.copy(line.full_y_data)
+            x = _np.copy(data_set.full_x_data)
+            y = _np.copy(data_set.full_y_data)
             #Clip the copy and update the curve with the clipped data
             #Clip the x data first
             [x_c, y_c] = self._clip_data(x, y, \
                 self.x_lim, self.x_tick, self.x_scale, self._x_scale_log_base, \
-                line.get_linestyle())
-            line.set_xdata(x_c)
-            line.set_ydata(y_c)
+                data_set.get_linestyle())
+            data_set.set_xdata(x_c)
+            data_set.set_ydata(y_c)
             #Clip the y data second
             [y_c, x_c] = self._clip_data(y_c, x_c, \
                 self.y_lim, self.y_tick, self.y_scale, self._y_scale_log_base, \
-                line.get_linestyle())
-            line.set_xdata(x_c)
-            line.set_ydata(y_c)
+                data_set.get_linestyle())
+            data_set.set_xdata(x_c)
+            data_set.set_ydata(y_c)
              
     def _clip_data(self, x, y, lims, tick, ax_scale, ax_log_base, line_style):
         """Clips data to limits"""
