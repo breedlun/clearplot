@@ -150,7 +150,7 @@ def plot(filename, x, y, x_label = None, y_label = None, **kwargs):
     
     #Generate legend
     if legend != None:
-        legend_obj = ax.add_legend(legend, loc = legend_loc, \
+        ax.add_legend(legend, loc = legend_loc, \
             outside_ax = legend_outside_ax, **legend_kwargs)
 
 #    # Catch unexpected keyword arguments
