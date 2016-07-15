@@ -1798,7 +1798,7 @@ class Axes(_Data_Axes_Base):
         """
         self.mpl_ax.set_title(text)
 
-    def add_legend(self, labels = None, curves = 'auto', loc = 'best', \
+    def add_curve_legend(self, labels = None, curves = 'auto', loc = 'best', \
         outside_ax = False, **kwargs):
         """
         Adds a legend to label curves plotted with ax.plot()
