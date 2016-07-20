@@ -1128,6 +1128,13 @@ class Axes(_Data_Axes_Base):
             if abs_diff[a,b] < 1e-10:
                 lim = lim_c[a,:]
                 s_lim = s_lim_c[b,:]
+                #Even if the number of tick marks is the same, we still need to 
+                #reset the physical spacing between the tick marks because it 
+                #is likely that the number of tick marks wasn't the same at 
+                #some point causing the physical spacing to be changed
+                #previously.
+                self._x_tick_mm = self.shared_y_ax.x_tick_mm
+                self.x_label_obj._tick_mm = self.shared_y_ax.x_tick_mm
             else:
                 [lim, tick_mm, s_lim] = self._adjust_shared_lim( \
                     self._ui_x_lim, lim_c[a,:], tick, self.x_tick_mm, n_tick, \
@@ -1265,6 +1272,13 @@ class Axes(_Data_Axes_Base):
             if abs_diff[a,b] < 1e-10:
                 lim = lim_c[a,:]
                 s_lim = s_lim_c[b,:]
+                #Even if the number of tick marks is the same, we still need to 
+                #reset the physical spacing between the tick marks because it 
+                #is likely that the number of tick marks wasn't the same at 
+                #some point causing the physical spacing to be changed
+                #previously.
+                self._y_tick_mm = self.shared_x_ax.y_tick_mm
+                self.y_label_obj._tick_mm = self.shared_x_ax.y_tick_mm
             else:
                 [lim, tick_mm, s_lim] = self._adjust_shared_lim( \
                     self._ui_y_lim, lim_c[a,:], tick, self.y_tick_mm, n_tick, \
