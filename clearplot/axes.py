@@ -2342,12 +2342,12 @@ class Axes(_Data_Axes_Base):
                         #Find the index of the angle that most closely 
                         #matches the specified angle and use that for the 
                         #leader line root
-                        ndx = _np.where(_np.nanmin(_np.abs(beta - angles[n])) \
+                        cand_ndx = _np.where(_np.nanmin(_np.abs(beta - angles[n])) \
                             == _np.abs(beta - angles[n]))[0][0]
-                        ndx[n] = int(ndx)
+                        ndx[n] = int(cand_ndx)
                         #Compute the distance between the root and the text
                         lengths[n] = \
-                            (delta_mm[0, ndx]**2.0 + delta_mm[1, ndx]**2.0)**0.5
+                            (delta_mm[0, ndx[n]]**2.0 + delta_mm[1, ndx[n]]**2.0)**0.5
                         lengths[n] = _np.round(lengths[n], decimals = 2)
             else:
                 if ndx[n] is 'auto':
