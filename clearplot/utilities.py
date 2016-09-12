@@ -25,10 +25,14 @@ def get_unique_rows(array):
     #(See https://github.com/numpy/numpy/pull/3584)
     #Instead I created a custom function.
     array = _np.ascontiguousarray(array)
-    array = array.view([('', array.dtype)]*array.shape[1])
+    if array.ndim >= 2:
+        array = array.view([('', array.dtype)]*array.shape[1])
     [u_array, u_ndx] = _np.unique(array, return_index = True)
     u_ndx = _np.sort(u_ndx)
-    u_array = array[u_ndx,:] 
+    if array.ndim >= 2:
+        u_array = array[u_ndx,:] 
+    else:
+        u_array = array
     return(u_array, u_ndx)
 
 def get_im_window_extent(im_obj, ax) :

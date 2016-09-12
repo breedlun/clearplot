@@ -13,7 +13,6 @@ xa = np.arange(0,10,0.01)
 ya = np.sqrt(xa)
 xb = xa
 yb = np.log(xa + 1.0)
-[fig, ax] = pf.plot('', [xa, xb], [ya, yb])
-ax.label_curves(['\Omega_1', '\Omega_2'], pick = 'root', \
-    angles = [120, -60]);
+[fig, ax] = pf.plot('', [xa, xb], [ya, yb], labels = ['\Omega_1', '\Omega_2'])
+ax.label_curves(pick = 'root', angles = [120, -60]);
 fig.save('manually_picked_label_root')

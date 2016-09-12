@@ -14,8 +14,8 @@ ya = np.append(ya, -np.flipud(ya))
 xb = xa * 2.35
 yb = ya * 1.5
 
-[fig, ax] = pf.plot('', [xa, xb], [ya, yb], \
-    ['\lambda_{zz}'], ['\rho_{r\theta}', 'Btu']);
+[fig, ax, curves] = pf.plot('', [xa, xb], [ya, yb], \
+    x_label = ['\lambda_{zz}'], y_label = ['\rho_{r\theta}', 'Btu']);
 ax.x_tick_labels = ['0', '\pi/2', '\pi', '3\pi/2', '2\pi', '5\pi/4']
 ax.y_tick_labels = ['\alpha', '', '0', '', '\beta']
 ax.add_arrowheads_to_curves(ndx = [[800, 1300], [800, 1300]])

@@ -48,7 +48,8 @@ def _setup_plot(x_label, y_label, **kwargs):
 #        ax.label_y(y_label[0], y_label[1])
     return(fig, ax)
 
-def plot(filename, x, y, x_label = None, y_label = None, **kwargs):
+def plot(filename, x, y, labels = [None], \
+    x_label = None, y_label = None, **kwargs):
     """
     Plot the x and y data as 2D curves.
     
@@ -63,8 +64,11 @@ def plot(filename, x, y, x_label = None, y_label = None, **kwargs):
         x coordinates of the data to be plotted.  Each list element should be 
         a 1-D numpy array.
     y : list of numpy arrays
-        Contains the y coordinates of the data to be plotted.  Same structure 
-        as the `x` input
+        y coordinates of the data to be plotted.  Same structure as the `x` 
+        input.
+    labels : list, optional
+        Specifies LaTeX strings to label the curves.  The list should be 1xQ, 
+        where Q is the number of curves.
     x_label : list of strings, optional
         x-axis label.  The first list element is the axis variable being 
         plotted, while the second element is the axis units.  Both strings 
@@ -97,9 +101,8 @@ def plot(filename, x, y, x_label = None, y_label = None, **kwargs):
         x-axis scaling.  The default is 'linear'.
     y_scale : [ 'linear' | 'log' ], optional
         y-axis scaling.  The default is 'linear'.
-    legend : list, optional
-        Specifies LaTeX strings to label the curves.  The list should be 1xQ, 
-        where Q is the number of curves.
+    legend : bool, optional
+        Specifies whether to display a legend for the curves.
     legend_loc : 1x2 list or string, optional
         Legend location.  For the proper syntax, see the matplotlib 
         documentation for the legend 'loc' keyword argument.
@@ -132,25 +135,32 @@ def plot(filename, x, y, x_label = None, y_label = None, **kwargs):
     -------
     fig : figure object
         Figure object containing the plot.
-    ax : axes object(s)
+    ax : axes object
         Axes object containing the data.
+    curves: list
+        Curve objects
         
     See Also
     --------
     plot_functions.plot_markers()
     """
-    legend = kwargs.pop('legend', None)
+    legend = kwargs.pop('legend', 'auto')
     legend_loc = kwargs.pop('legend_loc', 'best')
     legend_outside_ax = kwargs.pop('legend_outside_ax', False)
     legend_kwargs = kwargs.pop('legend_kwargs', dict())
 
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
     
-    ax.plot(x, y, **kwargs)
+    ax.plot(x, y, labels = labels, **kwargs)
     
     #Generate legend
-    if legend != None:
-        ax.add_legend(legend, loc = legend_loc, \
+    if legend == 'auto':
+        if len(x) > 1 and labels != [None]:
+            legend = True
+        else:
+            legend = False 
+    if legend:
+        ax.add_legend(loc = legend_loc, \
             outside_ax = legend_outside_ax, **legend_kwargs)
 
 #    # Catch unexpected keyword arguments
@@ -164,23 +174,29 @@ def plot(filename, x, y, x_label = None, y_label = None, **kwargs):
     if filename != '':
         fig.save(filename)
         
-    return(fig, ax)
-
-def plot_bars(filename, x, y, x_label = None, y_label = None, **kwargs):
+    return(fig, ax, ax.curves)
+    
+def plot_markers(filename, x, y, labels = [None], \
+    x_label = None, y_label = None, **kwargs):
     """
-    Plot the x and y data as a series of vertical bars
+    Plot the x and y data as markers (a scatterplot).
     
     Parameters
     ----------
-    filename: string
+    filename : string
         File name for the plot output file.  A file extension supported by 
-        matplotlib, such as '.jpg', can be appended to the file name to 
+        matplotlib, such as '.png', can be appended to the file name to 
         override the default file type.  To skip creating an output file, 
         input '' for `filename`.
-    x : 1xN list of numpy arrays
-        x coordinates of bars
-    y : 1xN list of numpy arrays
-        Height of bars
+    x : list of numpy arrays
+        x coordinates of the data to be plotted.  Each list element should be 
+        a 1-D numpy array.
+    y : list of numpy arrays
+        y coordinates of the data to be plotted.  Same structure as the `x` 
+        input
+    labels : list, optional
+        Specifies LaTeX strings to label the marker.  The list should be 1xQ, 
+        where Q is the number of curves.
     x_label : list of strings, optional
         x-axis label.  The first list element is the axis variable being 
         plotted, while the second element is the axis units.  Both strings 
@@ -213,9 +229,135 @@ def plot_bars(filename, x, y, x_label = None, y_label = None, **kwargs):
         x-axis scaling.  The default is 'linear'.
     y_scale : [ 'linear' | 'log' ], optional
         y-axis scaling.  The default is 'linear'.
-    legend : list, optional
+    legend : bool, optional
+        Specifies whether to display a legend for the curves.
+    legend_loc : 1x2 list or string, optional
+        Legend location.  For the proper syntax, see the matplotlib 
+        documentation for the legend 'loc' keyword argument.
+    legend_outside_ax : bool, optional
+        Specifies whether to place the legend outside of the data axes.  If 
+        True then the `legend_loc` sets the legend position within the axes.  
+        If False, then `legend_loc` sets the legend postion outside the axes.
+    legend_kwargs : dict, optional
+        Keyword arguments to customize the legend appearance.  This is passed 
+        directly into the matplotlib legend function.  See the matplotlib 
+        documentation further details.
+    scale_plot : float, optional
+        Changes the size of the entire plot, but leaves the font sizes the 
+        same.
+    font_size : float, optional
+        Font size (in points) of the text in the plot.
+    fig : figure object, optional
+        Figure window to place the plot in.  The default behavior is to place 
+        the plot in a new, dedicated, figure window.
+    ax_pos : 1x2 list of floats, optional
+        Position (in mm) of the lower left corner of the data axes, relative 
+        to the lower left corner of the figure window.  (For reference, the 
+        default distance between tick marks is 20 mm.)
+        
+    Other Parameters
+    ----------------
+    See parameters in Axes.plot_markers()
+    
+    Returns
+    -------
+    fig : figure object
+        Figure object containing the plot.
+    ax : axes object
+        Axes object containing the data.
+    markers: list
+        Marker objects
+        
+    See Also
+    --------
+    plot_functions.plot()
+    """
+    labels = kwargs.pop('labels', [None])
+    legend = kwargs.pop('legend', 'auto')
+    legend_loc = kwargs.pop('legend_loc', 'best')
+    legend_outside_ax = kwargs.pop('legend_outside_ax', False)
+    legend_kwargs = kwargs.pop('legend_kwargs', dict())
+
+    [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
+    
+    ax.plot_markers(x, y, labels = labels, **kwargs)
+    
+    #Generate legend
+    if legend == 'auto':
+        if len(x) > 1 and labels != [None]:
+            legend = True
+        else:
+            legend = False 
+    if legend:
+        ax.add_legend(loc = legend_loc, \
+            outside_ax = legend_outside_ax, **legend_kwargs)
+
+#    # Catch unexpected keyword arguments
+#    if kwargs:
+#        raise TypeError("%r are invalid keyword arguments" % (kwargs.keys()))
+
+    #Update canvas
+    fig.auto_adjust_layout()
+
+    #Only save data if a filename has been given
+    if filename != '':
+        fig.save(filename)
+        
+    return(fig, ax, ax.markers)
+
+def plot_bars(filename, x, y, labels = [None], \
+    x_label = None, y_label = None, **kwargs):
+    """
+    Plot the x and y data as a series of vertical bars
+    
+    Parameters
+    ----------
+    filename: string
+        File name for the plot output file.  A file extension supported by 
+        matplotlib, such as '.jpg', can be appended to the file name to 
+        override the default file type.  To skip creating an output file, 
+        input '' for `filename`.
+    x : 1xN list of numpy arrays
+        x coordinates of bars
+    y : 1xN list of numpy arrays
+        Height of bars
+    labels : list, optional
         Specifies LaTeX strings to label the curves.  The list should be 1xQ, 
         where Q is the number of curves.
+    x_label : list of strings, optional
+        x-axis label.  The first list element is the axis variable being 
+        plotted, while the second element is the axis units.  Both strings 
+        should be in LaTeX syntax.  The units get automatically wrapped
+        in parentheses.  Input a 1x1 list to supply a variable without any 
+        units.  
+    y_label : list of strings, optional
+        y-axis label.  The first list element is the axis variable being 
+        plotted, while the second element is the axis units.  Both strings 
+        should be in LaTeX syntax.  The units get automatically wrapped
+        in parentheses.  Input a 1x1 list to supply a variable without any 
+        units. 
+    x_lim : 1x2 list, optional
+        x-axis limits.  The first list element is the lower limit, while the 
+        second element is the upper limit.  Alternatively, either element may 
+        be the string 'auto' to have the algorithm automatically select the 
+        limits.
+    y_lim : list, optional
+        y-axis limits.  The first list element is the lower limit, while the 
+        second element is the upper limit.  Alternatively, either element may 
+        be the string 'auto' to have the algorithm automatically select the 
+        limits.
+    x_tick : float or int, optional
+        Tick mark spacing for the x-axis.  Alternatively, input 'auto' to have 
+        the algorithm automatically select the tick mark spacing.
+    y_tick : list, optional
+        Tick mark spacing for the y-axis.  Alternatively, input 'auto' to have 
+        the algorithm automatically select the tick mark spacing.
+    x_scale : [ 'linear' | 'log' ], optional
+        x-axis scaling.  The default is 'linear'.
+    y_scale : [ 'linear' | 'log' ], optional
+        y-axis scaling.  The default is 'linear'.
+    legend : bool, optional
+        Specifies whether to display a legend for the bars.
     legend_loc : 1x2 list or string, optional
         Legend location.  For the proper syntax, see the matplotlib 
         documentation for the legend 'loc' keyword argument.
@@ -248,22 +390,29 @@ def plot_bars(filename, x, y, x_label = None, y_label = None, **kwargs):
     -------
     fig : figure object
         Figure object containing the plot.
-    ax : axes object(s)
+    ax : axes object
         Axes object containing the data.
+    bars: list
+        Bar objects
     """
-
-    legend = kwargs.pop('legend', None)
+    labels = kwargs.pop('labels', [None])
+    legend = kwargs.pop('legend', 'auto')
     legend_loc = kwargs.pop('legend_loc', 'best')
     legend_outside_ax = kwargs.pop('legend_outside_ax', False)
     legend_kwargs = kwargs.pop('legend_kwargs', dict())
 
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
     
-    ax.plot_bars(x, y, **kwargs)
+    ax.plot_bars(x, y, labels = labels, **kwargs)
     
     #Generate legend
-    if legend != None:
-        ax.add_bar_legend(legend, loc = legend_loc, \
+    if legend == 'auto':
+        if len(x) > 1 and labels != [None]:
+            legend = True
+        else:
+            legend = False 
+    if legend:
+        ax.add_legend(loc = legend_loc, \
         outside_ax = legend_outside_ax, **legend_kwargs)
 
     #Update canvas
@@ -273,10 +422,10 @@ def plot_bars(filename, x, y, x_label = None, y_label = None, **kwargs):
     if filename != '':
         fig.save(filename)
         
-    return(fig, ax)
+    return(fig, ax, ax.bars)
 
-def plot_box_and_whiskers(filename, x, y, x_label = None, y_label = None, \
-    **kwargs):
+def plot_box_and_whiskers(filename, x, y, \
+    x_label = None, y_label = None, **kwargs):
     """
     Make a box and whisker plot from the x and y data
     
@@ -323,20 +472,6 @@ def plot_box_and_whiskers(filename, x, y, x_label = None, y_label = None, \
         x-axis scaling.  The default is 'linear'.
     y_scale : [ 'linear' | 'log' ], optional
         y-axis scaling.  The default is 'linear'.
-    legend : list, optional
-        Specifies LaTeX strings to label the curves.  The list should be 1xQ, 
-        where Q is the number of curves.
-    legend_loc : 1x2 list or string, optional
-        Legend location.  For the proper syntax, see the matplotlib 
-        documentation for the legend 'loc' keyword argument.
-    legend_outside_ax : bool, optional
-        Specifies whether to place the legend outside of the data axes.  If 
-        True then the `legend_loc` sets the legend position within the axes.  
-        If False, then `legend_loc` sets the legend postion outside the axes.
-    legend_kwargs : dict, optional
-        Keyword arguments to customize the legend appearance.  This is passed 
-        directly into the matplotlib legend function.  See the matplotlib 
-        documentation further details.
     scale_plot : float, optional
         Changes the size of the entire plot, but leaves the font sizes the 
         same.
@@ -358,8 +493,10 @@ def plot_box_and_whiskers(filename, x, y, x_label = None, y_label = None, \
     -------
     fig : figure object
         Figure object containing the plot.
-    ax : axes object(s)
+    ax : axes object
         Axes object containing the data.
+    boxes : list
+        Box objects
     """
 
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
@@ -373,7 +510,7 @@ def plot_box_and_whiskers(filename, x, y, x_label = None, y_label = None, \
     if filename != '':
         fig.save(filename)
         
-    return(fig, ax)
+    return(fig, ax, ax.boxes)
 
 def plot_violins(filename, x, y, x_label = None, y_label = None, **kwargs):
     """
@@ -417,20 +554,6 @@ def plot_violins(filename, x, y, x_label = None, y_label = None, **kwargs):
         x-axis scaling.  The default is 'linear'.
     y_scale : [ 'linear' | 'log' ], optional
         y-axis scaling.  The default is 'linear'.
-    legend : list, optional
-        Specifies LaTeX strings to label the curves.  The list should be 1xQ, 
-        where Q is the number of curves.
-    legend_loc : 1x2 list or string, optional
-        Legend location.  For the proper syntax, see the matplotlib 
-        documentation for the legend 'loc' keyword argument.
-    legend_outside_ax : bool, optional
-        Specifies whether to place the legend outside of the data axes.  If 
-        True then the `legend_loc` sets the legend position within the axes.  
-        If False, then `legend_loc` sets the legend postion outside the axes.
-    legend_kwargs : dict, optional
-        Keyword arguments to customize the legend appearance.  This is passed 
-        directly into the matplotlib legend function.  See the matplotlib 
-        documentation further details.
     scale_plot : float, optional
         Changes the size of the entire plot, but leaves the font sizes the 
         same.
@@ -452,8 +575,10 @@ def plot_violins(filename, x, y, x_label = None, y_label = None, **kwargs):
     -------
     fig : figure object
         Figure object containing the plot.
-    ax : axes object(s)
+    ax : axes object
         Axes object containing the data.
+    violins : list
+        Violin objects
     """
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
     
@@ -466,7 +591,7 @@ def plot_violins(filename, x, y, x_label = None, y_label = None, **kwargs):
     if filename != '':
         fig.save(filename)
         
-    return(fig, ax)
+    return(fig, ax, ax.violins)
 
 def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     """
@@ -558,8 +683,12 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     -------
     fig : figure object
         Figure object containing the plot.
-    ax : axes object(s)
+    ax : axes object
         Axes object containing the data.
+    bg : contour background
+        Background of contour plot
+    cl : contour lines
+        Contour lines
     """
     
     #Set default values
@@ -571,13 +700,13 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
     
-    [b_obj, cl_obj] = ax.plot_contours(x, y, z, **kwargs)
+    [bg, cl] = ax.plot_contours(x, y, z, **kwargs)
     
     if c_bar:
         if plot_type is 'lines':
-            c_obj = cl_obj
+            c_obj = cl
         else:
-            c_obj = b_obj
+            c_obj = bg
         #Place color bar
         fig.add_color_bar(ax, c_obj, label = c_label, tick = c_tick, \
             orient = c_orient)
@@ -589,7 +718,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     if filename != '':
         fig.save(filename)
         
-    return(fig, ax)
+    return(fig, ax, bg, cl)
 
 def show_im(filename, im_seq, **kwargs):
     """
