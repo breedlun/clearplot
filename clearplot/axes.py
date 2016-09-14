@@ -1128,6 +1128,13 @@ class Axes(_Data_Axes_Base):
             if abs_diff[a,b] < 1e-10:
                 lim = lim_c[a,:]
                 s_lim = s_lim_c[b,:]
+                #Even if the number of tick marks is the same, we still need to 
+                #reset the physical spacing between the tick marks because it 
+                #is likely that the number of tick marks wasn't the same at 
+                #some point causing the physical spacing to be changed
+                #previously.
+                self._x_tick_mm = self.shared_y_ax.x_tick_mm
+                self.x_label_obj._tick_mm = self.shared_y_ax.x_tick_mm
             else:
                 [lim, tick_mm, s_lim] = self._adjust_shared_lim( \
                     self._ui_x_lim, lim_c[a,:], tick, self.x_tick_mm, n_tick, \
@@ -1265,6 +1272,13 @@ class Axes(_Data_Axes_Base):
             if abs_diff[a,b] < 1e-10:
                 lim = lim_c[a,:]
                 s_lim = s_lim_c[b,:]
+                #Even if the number of tick marks is the same, we still need to 
+                #reset the physical spacing between the tick marks because it 
+                #is likely that the number of tick marks wasn't the same at 
+                #some point causing the physical spacing to be changed
+                #previously.
+                self._y_tick_mm = self.shared_x_ax.y_tick_mm
+                self.y_label_obj._tick_mm = self.shared_x_ax.y_tick_mm
             else:
                 [lim, tick_mm, s_lim] = self._adjust_shared_lim( \
                     self._ui_y_lim, lim_c[a,:], tick, self.y_tick_mm, n_tick, \
@@ -1797,35 +1811,14 @@ class Axes(_Data_Axes_Base):
         Adds a title above axes.  I plan to enhance this later...
         """
         self.mpl_ax.set_title(text)
-
-    def add_curve_legend(self, labels = None, curves = 'auto', loc = 'best', \
-        outside_ax = False, **kwargs):
-        """
-        Adds a legend to label curves plotted with ax.plot()
         
-        Parameters
-        ----------
-        labels : list of strings, optional
-            Label strings
-        curves : list of curve objects, optional
-            Curves that will be labeled
-        loc : string, optional
-            Location of legend.  Valid options include, 'best', 'upper left',
-            'upper center, 'upper right', 'center left', 'center', 
-            'center right', 'lower left', 'lower center', 'lower right'.
-        outside_ax : bool, optional
-            Specifies whether to place the legend outside the axes.
-                
-        Returns
-        -------
-        legend : legend object
-        """
-        if curves is 'auto':
-            #Collect the curve attributes and labels into a series of rows
+    def _get_unique_curves(self):
+        if len(self.curves) > 0:
+            #Collect the curve attributes and labels into a series of rows        
             c_data = []
-            for curve, label in zip(self.curves, labels):
+            for curve in self.curves:
                 color = curve.get_color()
-                c_data.append([label, color[0], color[1], color[2], \
+                c_data.append([curve.get_label(), color[0], color[1], color[2], \
                     curve.get_linestyle(), curve.get_linewidth(), \
                     ])
                 if curve.get_marker() is not None:
@@ -1848,82 +1841,83 @@ class Axes(_Data_Axes_Base):
             #don't get duplicate labels in the legend
             [u_c_data, u_ndx] = _utl.get_unique_rows(c_data)
             curves = _np.array(self.curves)[u_ndx]
-            labels = _np.array(labels)[u_ndx]
-        #Create the legend
-        legend = self._add_legend(curves, labels, loc, outside_ax, **kwargs)
-        return(legend)
-    
-    def add_marker_legend(self, labels = None, markers = 'auto', loc = 'best', \
-        outside_ax = False, **kwargs):
-        """
-        Adds a legend to label markers plotted with ax.plot_markers()
-                
-        Parameters
-        ----------
-        labels : list of strings, optional
-            Label strings
-        markers : list of marker objects, optional
-            Markers that will be labeled
-        loc : string, optional
-            Location of legend.  Valid options include, 'best', 'upper left',
-            'upper center, 'upper right', 'center left', 'center', 
-            'center right', 'lower left', 'lower center', 'lower right'.
-        outside_ax : bool, optional
-            Specifies whether to place the legend outside the axes.
-                
-        Returns
-        -------
-        legend : legend object
-        """
-        if markers is 'auto':
+            labels = _np.array(c_data)[:,0][u_ndx]
+        else:
+            curves = _np.array([])
+            labels = _np.array([])
+        return(curves, labels)
+        
+    def _get_unique_markers(self):
+        if len(self.markers) > 0:
             #Collect the marker attributes and labels into a series of rows
             m_data = []
-            for marker, label in zip(self.markers, labels):
+            for marker in self.markers:
                 e_color = marker.get_markeredgecolor()
                 f_color = marker.get_markerfacecolor()
-                m_data.append([label, marker.get_marker(), e_color[0], e_color[1], e_color[2], \
-                    f_color[0], f_color[1], f_color[2], marker.get_markeredgewidth(), \
+                m_data.append([marker.get_label(), marker.get_marker(), \
+                    e_color[0], e_color[1], e_color[2], \
+                    f_color[0], f_color[1], f_color[2], \
+                    marker.get_markeredgewidth(), \
                     marker.get_markersize()])
             #Isolate the unique marker and label combinations, so that we
             #don't get duplicate labels in the legend
             [u_m_data, u_ndx] = _utl.get_unique_rows(m_data)
             markers = _np.array(self.markers)[u_ndx]
-            labels = _np.array(labels)[u_ndx]
-        #Create the legend
-        legend = self._add_legend(markers, labels, loc, outside_ax, **kwargs)
-        return(legend)
-            
-    def add_bar_legend(self, labels = None, bars = 'auto', loc = 'best', \
-        outside_ax = False, **kwargs):
+            labels = _np.array(m_data)[:,0][u_ndx]
+        else:
+            markers = _np.array([])
+            labels = _np.array([])
+        return(markers, labels)
+        
+    def _get_unique_bars(self):
+        if len(self.bars) > 0:
+            labels = []
+            for bar in self.bars:
+                labels.append(bar.get_label())
+            bars = self.bars
+        else:
+            bars = _np.array([])
+            labels = _np.array([])
+        return(bars, labels)
+        
+    def add_legend(self, artists = 'auto', loc = 'best', outside_ax = False, \
+        **kwargs):
         """
-        Adds a legend to label markers plotted with ax.plot_bars()
-                
+        Adds a legend using labels previously associated with artists
+        
         Parameters
         ----------
-        labels : list of strings, optional
-            Label strings
-        bars : list of bar objects, optional
-            Bars that will be labeled
+        artists : list of data objects, optional
+            Curves, markers, bars, etc. that will be labeled.  Input 'auto'
+            to label the artist type specified in ``artist type``.
         loc : string, optional
             Location of legend.  Valid options include, 'best', 'upper left',
             'upper center, 'upper right', 'center left', 'center', 
             'center right', 'lower left', 'lower center', 'lower right'.
         outside_ax : bool, optional
             Specifies whether to place the legend outside the axes.
-            
+                
         Returns
         -------
         legend : legend object
         """
-        if bars is 'auto':
-            bars = self.bars
-        legend = self._add_legend(bars, labels, loc, outside_ax, **kwargs)
-        return(legend)
-            
-    def _add_legend(self, data_obj, labels, loc, outside_ax, **kwargs):
-        """
-        Places a legend on the axes
-        """
+        if artists == 'auto':
+            [curves, curve_labels] = self._get_unique_curves()
+            [markers, marker_labels] = self._get_unique_markers()
+            [bars, bar_labels] = self._get_unique_bars()
+            artists = []
+            artists.extend(curves)
+            artists.extend(markers)
+            artists.extend(bars)
+            labels = []
+            labels.extend(curve_labels)
+            labels.extend(marker_labels)
+            labels.extend(bar_labels)
+        else:
+            labels = []
+            for artist in artists:
+                labels.append(artist.get_label())
+
         #Get rid of escape characters (ex: \n) and make into a latex string.
         #Flatten the list since plt.legend can only handle 1-D lists
         #(The reason I have legend[:] instead of legend is python passes lists by 
@@ -1968,7 +1962,7 @@ class Axes(_Data_Axes_Base):
         #The legend command normally works without explicitly specifying which 
         #curves to label, but the dashed lines that mark zero cause it to get
         #confused, so I found I had to explicitly specify the curves to label.
-        legend = self.mpl_ax.legend(data_obj, raw_labels, loc = loc, \
+        legend = self.mpl_ax.legend(artists, raw_labels, loc = loc, \
             bbox_to_anchor = ax_coord, **kwargs)
         #We must add the artist to the axes, so that the next call to legend()
         #creates a new legend instead of overwriting the old one.
@@ -2103,15 +2097,16 @@ class Axes(_Data_Axes_Base):
             print """arrow_ndx = """
             print ndx
             
-    def label_curves(self, labels, **kwargs):
+    def label_curves(self, **kwargs):
         """
-        Labels curves, either at interactively picked points or at user 
-        specified locations.
+        Labels curves using labels previously associated with curves.  Labels
+        are placed either at interactively picked points or at user specified 
+        locations.
         
         Parameters
         ----------
-        labels : string or list of strings
-            Label strings (in LaTeX format)
+        curves : list of curves, optional
+            curves to be labeled
         ndx : integer or list of integers, optional
             list of indices that specify the location of the leader line root
         angles : float or list of floats, optional
@@ -2126,9 +2121,9 @@ class Axes(_Data_Axes_Base):
             user selects the position of the text and the leader line is 
             extended until it intersects the curve at the specified or default 
             angle.
-        style : 'normal' or 'balloon', optional, default: 'normal'
-            Input 'normal' to create labels without circles around them.  The 
-            default is 'balloon' labels, with circles around them.
+        style : 'normal' or 'balloon', optional
+            Input 'balloon' to create labels with circles around them.  The 
+            default is 'normal' labels, without circles around them.
         font_size : float, optional
             font size (in points) for label text
         
@@ -2141,29 +2136,35 @@ class Axes(_Data_Axes_Base):
         --------
         Axes.label_curve : Place multiple labels on a single curve
         """
+        curves = kwargs.pop('curves', 'auto')
         ndx = kwargs.pop('ndx', ['auto'])
         angles = kwargs.pop('angles', ['auto'])
         lengths = kwargs.pop('lengths', [12])
         pick = kwargs.pop('pick', False)
         style = kwargs.pop('style', 'normal')
-        font_size = kwargs.pop('font_size', 14)
+        font_size = kwargs.pop('font_size', 16)
+        if curves == 'auto':
+            curves = self.curves
+        labels = []
+        for curve in curves:
+            labels.append(curve.get_label())
         self._add_labels(labels, ndx, angles, lengths, style, pick, font_size, \
-            True, self.curves)
+            True, curves)
         
-    def label_curve(self, **kwargs):
+    def label_curve(self, curve, labels, **kwargs):
         """
         Prints one or more labels on a single curve, either at interactively 
         picked points or at user specified locations.
         
         Parameters
         ----------
-        x : 1D numpy array, optional
-            x coordinates of the data to be labeled
-        y : 1D numpy array, optional
-            y coordinates of the data to be labeled
-        curve : curve object, optional
-            Curve to label.  Either `curve` or both `x` and `y` must be 
-            specified
+        curve : curve object
+            Curve to label
+        labels : list of strings
+            Label strings (in LaTeX format)
+        style : 'normal' or 'balloon', optional
+            Input 'normal' to create labels without circles around them.  The 
+            default is 'balloon' labels, with circles around them.
             
         See Axes.label_curves for descriptions of other input parameters
         
@@ -2176,31 +2177,14 @@ class Axes(_Data_Axes_Base):
         --------
         Axes.label_curves : Place a label on each curve
         """
-        x = kwargs.pop('x', None)
-        y = kwargs.pop('y', None)
-        curve = kwargs.pop('curve', None)
-        labels = kwargs.pop('labels', 'auto')
         ndx = kwargs.pop('ndx', 'auto')
         angles = kwargs.pop('angles', 'auto')
         lengths = kwargs.pop('lengths', [12])
         pick = kwargs.pop('pick', False)
         style = kwargs.pop('style', 'balloon')
-        font_size = kwargs.pop('font_size', 14)
-        if curve is None:
-            if x is None or y is None:
-                raise IOError("""ERROR: either a curve object or both x and y 
-                    data must be supplied""")
-            flag = False            
-            for i, curve in enumerate(self.curves):
-                if _np.max(_np.abs(x.flatten() - curve.full_x_data)) < 1e-12:
-                    if _np.max(_np.abs(y.flatten() - curve.full_y_data)) < 1e-12:
-                        flag = True
-                        continue
-            if not flag:
-                raise IOError("ERROR: x and y data do not correspond to an existing curve")
-        
+        font_size = kwargs.pop('font_size', 16)
         self._add_labels(labels, ndx, angles, lengths, style, pick, font_size, \
-            False, [self.curves[i]])
+            False, [curve])
     
     def _add_labels(self, labels, ndx, angles, lengths, style, pick, font_size, \
         labeling_curves, curves):
@@ -2328,12 +2312,12 @@ class Axes(_Data_Axes_Base):
                         #Find the index of the angle that most closely 
                         #matches the specified angle and use that for the 
                         #leader line root
-                        ndx = _np.where(_np.nanmin(_np.abs(beta - angles[n])) \
+                        cand_ndx = _np.where(_np.nanmin(_np.abs(beta - angles[n])) \
                             == _np.abs(beta - angles[n]))[0][0]
-                        ndx[n] = int(ndx)
+                        ndx[n] = int(cand_ndx)
                         #Compute the distance between the root and the text
                         lengths[n] = \
-                            (delta_mm[0, ndx]**2.0 + delta_mm[1, ndx]**2.0)**0.5
+                            (delta_mm[0, ndx[n]]**2.0 + delta_mm[1, ndx[n]]**2.0)**0.5
                         lengths[n] = _np.round(lengths[n], decimals = 2)
             else:
                 if ndx[n] is 'auto':
@@ -2394,7 +2378,7 @@ class Axes(_Data_Axes_Base):
         self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)
         return(im_obj)
             
-    def plot(self, x, y, **kwargs):
+    def plot(self, x, y, labels = [None], **kwargs):
         """
         Plots x and y data as 2D curves on the axes
         
@@ -2403,7 +2387,10 @@ class Axes(_Data_Axes_Base):
         x : 1xN list of numpy arrays
             x-coordinates of curves
         y : 1xN list of numpy arrays
-            y-coordinates of curves
+            y-coordinates of curves 
+        labels : list, optional
+            Curve labels (in LaTeX format).  (Use add_legend or a similar 
+            command to make the labels visible.)
         curve_colors : list of 1x3 lists, optional
             Colors of curves.  RGB values should be between 0 and 1.
         curve_styles : list of strings, optional
@@ -2421,6 +2408,7 @@ class Axes(_Data_Axes_Base):
             Width of marker edges in points.
         marker_edge_colors: list of 1x3 lists, optional
             Colors of marker edges.  RGB values should be between 0 and 1.
+
             
         See Also
         --------
@@ -2438,11 +2426,14 @@ class Axes(_Data_Axes_Base):
         marker_edge_widths = kwargs.pop('marker_edge_widths', [0.0])
         marker_edge_colors = kwargs.pop('marker_edge_colors', [[0,0,0]])
         
+        
         #Preprocess inputs
         [x, y] = self._data_preprocessor(x, y, True, 1)
         C = len(x)
-        [curve_styles, curve_widths, curve_colors] = self._curve_preprocessor( \
-            curve_styles, curve_widths, curve_colors, C)
+        labels = _utl.preprocess_input(labels, 1, C)
+        [curve_styles, curve_widths, curve_colors] = \
+            self._curve_preprocessor(curve_styles, curve_widths, \
+            curve_colors, C)
         [marker_shapes, marker_sizes, marker_colors, marker_edge_widths, \
             marker_edge_colors ] = self._marker_preprocessor(marker_shapes, \
             marker_sizes, marker_colors, marker_edge_widths, \
@@ -2454,10 +2445,11 @@ class Axes(_Data_Axes_Base):
         #extend to an arbitrary number of curves.)
         #Set the color/style/marker iterator to zero
         i = 0
+        j = len(self.curves)
         for xi, yi in zip(x, y):
             #Plot data
             #(See the axes clipping methods for why clip_on = False.)
-            self.curves.extend(self.mpl_ax.plot(xi, yi, \
+            self.curves.extend(self.mpl_ax.plot(xi, yi, label = labels[i], \
                 linestyle = curve_styles[i], \
                 linewidth = curve_widths[i], \
                 color = curve_colors[i], \
@@ -2475,8 +2467,9 @@ class Axes(_Data_Axes_Base):
         #Set the limits and ticks
         self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)
         self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)
+        return(self.curves[j:j+i])
 
-    def plot_markers(self, x, y, **kwargs):
+    def plot_markers(self, x, y, labels = [None], **kwargs):
         """
         Plots x and y data as markers on the axes
         
@@ -2486,6 +2479,9 @@ class Axes(_Data_Axes_Base):
             x-coordinates of markers
         y : 1xN list of numpy arrays
             y-coordinates of markers
+        labels : list of strings, optional
+            Marker labels (in LaTeX format).  (Use add legend or a similar 
+            command to make labels visible.)
         shapes : list of strings, optional
             Shapes of markers.  See the `matplotlib documentation 
             <http://matplotlib.org/api/markers_api.html>`__ for valid shapes.
@@ -2503,7 +2499,7 @@ class Axes(_Data_Axes_Base):
         Axes.plot : Similar to Axes.plot_markers, except it plots curves that
             can be added to the curve legend
         Axes.plot_error_bars : Plots error bars at each data point
-        """
+        """       
         shapes = kwargs.pop('shapes', ['o'])
         sizes = kwargs.pop('sizes', [6])
         colors = kwargs.pop('colors', \
@@ -2513,6 +2509,7 @@ class Axes(_Data_Axes_Base):
           
         [x, y] = self._data_preprocessor(x, y, True, 1)
         C = len(x)
+        labels = _utl.preprocess_input(labels, 1, C)
         [shapes, sizes, colors, edge_widths, edge_colors ] = \
             self._marker_preprocessor(shapes, sizes, colors, edge_widths, \
                 edge_colors, C)
@@ -2523,10 +2520,11 @@ class Axes(_Data_Axes_Base):
         #extend to an arbitrary number of curves.)
         #Set the color/style/marker iterator to zero
         i = 0
+        j = len(self.markers)
         for xi, yi in zip(x, y):
             #Plot data
             #(See the axes clipping methods for why clip_on = False.)
-            self.markers.extend(self.mpl_ax.plot(xi, yi, \
+            self.markers.extend(self.mpl_ax.plot(xi, yi, label = labels[i], \
                 linestyle = 'none', \
                 marker = shapes[i], \
                 markersize = sizes[i], \
@@ -2540,6 +2538,7 @@ class Axes(_Data_Axes_Base):
         #Set the limits and ticks
         self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)
         self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)
+        return(self.markers[j:j+1])
     
     def plot_error_bars(self, x, y, **kwargs):
         """
@@ -2607,7 +2606,7 @@ class Axes(_Data_Axes_Base):
         #this set of axes
         self.err_color_ndx = self.err_color_ndx + i
         
-    def plot_bars(self, x, y, **kwargs):
+    def plot_bars(self, x, y, labels = [None], **kwargs):
         """
         Plots x--y data as vertical bars on the axes
         
@@ -2617,6 +2616,9 @@ class Axes(_Data_Axes_Base):
             x coordinates of bars
         y : 1xN list of numpy arrays
             Height of bars
+        labels : list, optional
+            Bar labels (in LaTeX format).  (Use add_legend or a similar 
+            command to make the labels visible.)
         widths : list of floats or ints, optional
             Width of bars in x-coordinate units
         colors : list of 1x3 lists, optional
@@ -2643,6 +2645,7 @@ class Axes(_Data_Axes_Base):
         #Preprocess inputs
         [x, y] = self._data_preprocessor(x, y, True, 1)
         C = len(x)
+        labels = _utl.preprocess_input(labels, 1, C)
         [widths, colors, edge_styles, edge_widths, edge_colors] = \
             self._polygon_preprocessor(widths, colors, edge_styles, \
             edge_widths, edge_colors, C)
@@ -2650,9 +2653,10 @@ class Axes(_Data_Axes_Base):
         #Cycle thru the pairs of data in x and y
         #Set the color/style/marker iterator to zero
         i = 0
+        j = len(self.bars)
         for xi, yi in zip(x, y):
             #Plot data
-            self.bars.append(self.mpl_ax.bar(xi, yi, \
+            self.bars.append(self.mpl_ax.bar(xi, yi, label = labels[i], \
                 width = widths[i], \
                 color = colors[i], \
                 linestyle = edge_styles[i], \
@@ -2667,6 +2671,7 @@ class Axes(_Data_Axes_Base):
         #Set the limits and ticks
         self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)
         self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)
+        return(self.bars[j:j+i])
         
     def plot_violins(self, x, y, **kwargs):
         """
@@ -2736,6 +2741,7 @@ class Axes(_Data_Axes_Base):
         #Cycle thru the pairs of data in x and y
         #Set the color/style/marker iterator to zero
         i = 0
+        j = len(self.violins)
         for xi, yi in zip(x, y):
             #Plot data
             self.violins.append(self.mpl_ax.violinplot(yi, positions = xi, \
@@ -2764,6 +2770,7 @@ class Axes(_Data_Axes_Base):
         #Set the limits and ticks
         self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)
         self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)
+        return(self.violins[j:j+i])
         
     def plot_box_and_whiskers(self, x, y, **kwargs):
         """
@@ -2861,6 +2868,7 @@ class Axes(_Data_Axes_Base):
         #Cycle thru the pairs of data in x and y
         #Set the color/style/marker iterator to zero
         i = 0
+        j = len(self.boxes)
         for xi, yi in zip(x, y):
             #Plot data
             self.boxes.append(self.mpl_ax.boxplot(yi, positions = xi, \
@@ -2911,6 +2919,7 @@ class Axes(_Data_Axes_Base):
             formatter = _mpl.ticker.ScalarFormatter()
             self.x_tick_labels = map(lambda x: formatter.format_data(x), self.x_tick_list)
             self._ui_tick_labels = 'auto'
+        return(self.boxes[j:j+i])
         
     def plot_contours(self, x, y, z, **kwargs):
         """

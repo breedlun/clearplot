@@ -12,8 +12,8 @@ ya = np.sqrt(xa)
 xb = xa
 yb = np.log(xb + 1.0)
 
-[fig, ax] = pf.plot('', [xa, xb], [ya, yb], \
-    ['\omega_{x}'], ['\Omega'])
-ax.label_curves(['\Omega_1', '\Omega_2'], \
-    ndx = [500, 530], angles = [120, -60])
+[fig, ax, curves] = pf.plot('', [xa, xb], [ya, yb], \
+    labels = ['\Omega_1', '\Omega_2'], \
+    x_label = ['\omega_{x}'], y_label = ['\Omega'])
+ax.label_curves(ndx = [500, 530], angles = [120, -60])
 fig.save('two_curves-labels-no_units.png')
