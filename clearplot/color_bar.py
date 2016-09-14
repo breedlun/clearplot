@@ -173,6 +173,21 @@ class Color_Bar(axes._Axes_Base):
         lim = self._ui_lim
         [lim, tick, n_tick] = self._set_lim_and_tick(lim, tick)
         return(lim, tick)
+    
+#    @property
+#    def scale(self):
+#        """
+#        Gets/sets the scaling for the color bar.  Valid inputs include 'linear' 
+#        and 'log'.  Note: if you change the scaling when the axis limits 
+#        and ticks are set to 'auto' (the default), then the limits and ticks 
+#        will be recomputed.
+#        """
+#        return(self.mpl_ax.get_yscale())
+#    
+#    @scale.setter
+#    def scale(self, scale):
+#        self.mpl_ax.set_yscale(scale)
+#        self._set_lim_and_tick(self._ui_lim[:], self._ui_tick)
 
     def _set_lim_and_tick(self, lim, tick):
         """Sets the limits and the tick spacing.  The lim and tick 
