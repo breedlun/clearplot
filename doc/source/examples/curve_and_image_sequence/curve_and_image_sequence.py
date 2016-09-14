@@ -26,10 +26,14 @@ for ndx in ndx_list:
     im = scipy.misc.imread(im_path)
     #Crop the field image and add to list
     im_seq.append(im[:,cols,:])
+#Create labels
+labels = range(1, len(ndx_list) + 1)
+labels = map(lambda x: str(x), labels)
 
 #Plot curve
-[fig, ax] = pf.plot('', data[:,0], data[:,1], ['\varepsilon', '\%'], ['\sigma', 'GPa'])
-ax.label_curve(x = data[:,0], y = data[:,1], ndx = ndx_list, angles = 60)
+[fig, ax, curves] = pf.plot('', data[:,0], data[:,1], \
+	x_label = ['\varepsilon', '\%'], y_label = ['\sigma', 'GPa'])
+ax.label_curve(curves[0], labels, ndx = ndx_list, angles = 60)
 ax.plot_markers(data[ndx_list,0], data[ndx_list,1], colors = [0,0,0])
 fig.save('curve_and_image_sequence-a.png');
 #Plot image sequence

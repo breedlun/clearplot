@@ -10,5 +10,6 @@ import numpy as np
 x = np.arange(0,10,0.01)
 y = np.sqrt(x)
 
-pf.plot('basic.png', x, y, ['\phi', '\%'], ['\psi', 'GPa'], \
+pf.plot('basic.png', x, y, \
+	x_label = ['\phi', '\%'], y_label = ['\psi', 'GPa'], \
     x_lim = ['auto', 16], x_tick = 4);

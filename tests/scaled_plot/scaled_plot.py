@@ -9,4 +9,5 @@ import clearplot.plot_functions as pf
 
 #Verification that scaling the plot works cprrectly
 pf.plot('scaled_plot', [0,1,2], [0,0.1,0.15], \
-    ['x', 'mm'], ['y', 'mm'], scale_plot = 1.5, font_size = 24)
+    x_label = ['x', 'mm'], y_label = ['y', 'mm'], \
+    scale_plot = 1.5, font_size = 24)

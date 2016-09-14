@@ -14,4 +14,5 @@ x = np.arange(0,10,0.01)
 y = np.sqrt(x)
 
 pf.plot('no_axis_arrows.png', x, y, \
-    ['\sf{Volume\;Change}', '\%'], ['\psi', 'GPa']);
+    x_label = ['\sf{Volume\;Change}', '\%'], \
+    y_label = ['\psi', 'GPa']);

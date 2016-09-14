@@ -2191,14 +2191,6 @@ class Axes(_Data_Axes_Base):
         """Places mutliple labels on a single curve or one label on each curve
         """
         
-        #Preprocess the label text
-        if labels is 'auto':
-            if ndx is 'auto':
-                raise IOError("""Text and ndx cannot both be 'auto'""")
-            else:
-                labels = range(1, len(ndx) + 1)
-                labels = map(lambda x: str(x), labels)
-        
         #Preprocess lists
         labels = _utl.adjust_depth(labels, 1)
         ndx = _utl.adjust_depth(ndx, 1)

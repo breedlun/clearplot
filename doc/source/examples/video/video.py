@@ -33,7 +33,8 @@ im = scipy.misc.imread(im_path)
 fig_size = np.array([680.0, 380.0]) / clearplot.params.dpmm
 fig = figure.Figure(size = fig_size)
 #Create mechanical response plot
-[fig, ax] = pf.plot('', data_a[:,0], data_a[:,1], ['\varepsilon', '\%'], ['\sigma', 'GPa'], \
+[fig, ax, curves] = pf.plot('', data_a[:,0], data_a[:,1], \
+	x_label = ['\varepsilon', '\%'], y_label = ['\sigma', 'GPa'], \
     fig = fig, ax_pos = [35.0, 23.0])
 ax.plot_markers(x_b, y_b, colors = [1,1,1], edge_widths = [2], sizes = [8])
 #Create image plot
