@@ -8,7 +8,7 @@ Created on Mon May 30 20:37:32 2016
 import clearplot.plot_functions as pf
 
 #Verification that multiple x axes and linked y axes work properly
-[fig, ax1] = pf.plot('', [0,1], [0,1], 'x1', 'y')
+[fig, ax1, curves] = pf.plot('', [0,1], [0,1], x_label = 'x1', y_label = 'y')
 ax2 = fig.add_axes(share_y_ax = ax1)
 ax2.x_tick = 0.1
 ax2.x_label = ['x2']

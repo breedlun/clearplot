@@ -20,7 +20,7 @@ y19c = [0,0.3]
 y19d = [0,0.4]
 y19e = [0,0.5]
 y19f = [0,0.6]
-[fig, ax] = pf.plot('duplicate_legend_labels', \
+pf.plot('duplicate_legend_labels', \
     [x19a, x19b, x19c, x19d, x19e, x19f], \
     [y19a, y19b, y19c, y19d, y19e, y19f], \
     curve_colors = [[1,0,0], [0,1,0], [0,1,0], [0,0,1], [0,0,1], [0,0,1]],\

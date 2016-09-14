@@ -15,7 +15,7 @@ xa = np.append(xa, np.flipud(xa))
 ya = np.append(ya, -np.flipud(ya))
 xb = xa * 2.35
 yb = ya * 1.45
-[fig, ax] = pf.plot('', \
+[fig, ax, curves] = pf.plot('', \
     [xa, xb], [ya, yb])
 ax.add_arrowheads_to_curves(pick = 'middle')
 fig.save('manually_picked_arrows')
