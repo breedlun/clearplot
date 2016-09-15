@@ -32,4 +32,4 @@ ax.add_title('Image')
     fig = fig, ax_pos = [275, 30], c_label = ['z', 'mm'], x_tick = 1, y_tick = 1)
 ax.add_title('Lines Only')
 #Save result
-fig.save('three_contour_plots')
+fig.save('contour_plot-background_position')

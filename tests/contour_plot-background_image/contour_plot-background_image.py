@@ -18,7 +18,7 @@ r = (xa + 1.5)**2.0 + (ya + 1.5)**2.0
 z1 = mlab.bivariate_normal(xa, ya, 1.0, 1.0, 0.0, 0.0)
 z2 = mlab.bivariate_normal(xa, ya, 1.5, 0.5, 1, 1)
 za = 10.0 * (z2 - z1)
-pf.plot_contours('image_contour', xa, ya, za, \
+pf.plot_contours('contour_plot-background_image', xa, ya, za, \
     ['\tau_1', 'kg'], ['\tau_2', 'kg'], \
     x_tick = 0.5, y_tick = 0.5, x_lim = [-1.5, 1.5], y_lim = [-1.5, 1.5], \
     c_label = ['E', 'kJ'], plot_type = 'image', im_interp = 'bilinear')

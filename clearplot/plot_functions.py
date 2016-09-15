@@ -661,7 +661,9 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
         being plotted, while the second element is the color bar units.  Both 
         strings should be in LaTeX syntax. The units get automatically wrapped
         in parentheses.  Input a 1x1 list to supply a variable without any 
-        units. 
+        units.
+    c_scale : [ 'linear' | 'log' ], optional
+        Color bar scaling.  The default is 'linear'.
     scale_plot : float, optional
         Changes the size of the entire plot, but leaves the font sizes the 
         same.
@@ -697,6 +699,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     c_orient = kwargs.pop('c_orient', 'v')
     c_label = kwargs.pop('c_label', ['c\_label'])
     c_tick = kwargs.pop('c_tick', 'auto')
+    c_scale = kwargs.pop('c_scale', 'linear')
     
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
     
@@ -709,7 +712,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
             c_obj = bg
         #Place color bar
         fig.add_color_bar(ax, c_obj, label = c_label, tick = c_tick, \
-            orient = c_orient)
+            orient = c_orient, scale = c_scale)
 
     #Update figure
     fig.auto_adjust_layout()
