@@ -269,7 +269,14 @@ class Color_Bar(axes._Axes_Base):
         explicitly set the tick mark positions.  If `tick_list` is set to 
         'auto', then the tick marks will be automaticaly selected.
         """
-        return(self.mpl_bar.get_ticks())
+        #As of matplotlib 1.5.1, you can only get the normalized ticks, which 
+        #you then must convert.
+        if self.orient == 'h':
+            normalized_tick_list = self.mpl_ax.get_xticks()
+        else:
+            normalized_tick_list = self.mpl_ax.get_yticks()
+        tick_list = self.data_obj.norm.inverse(normalized_tick_list)
+        return(tick_list)
         
     @tick_list.setter
     def tick_list(self, tick_list):
@@ -337,7 +344,7 @@ class _Label(object):
         #units, so we must convert from mm to points.
         pos_pt = pos * 72.0/25.4
         #The reference point is the position of the label, not the units.
-        ref_pt = self.anno[0].xy
+        ref_pt = self.anno[0].xyann
         #Find the change in position and move the label and the units
         dx_pt = pos_pt - ref_pt
         for obj in self.anno:
@@ -408,13 +415,13 @@ class _Label(object):
         x_0 = self.position
         #Define how far to move the label text to center it
         if self.parent_bar.orient.lower() == 'v':
-            dx = _np.array([bar_tight_bbox.width / 2.0 - bbox.width / 2.0, \
+            dx = _np.array([(bar_tight_bbox.width / 2.0 - bbox.width / 2.0) - x_0[0], \
                 ((bar_tight_bbox.y1 - bar_bbox.y0) - x_0[1]) + font_size_mm * 0.7])
         else:
             #(I tried subtracting half the text bounding box height also, but it 
             #did not look right.)
             dx = _np.array([ ((bar_tight_bbox.x1 - bar_bbox.x0) - x_0[0]) \
-                + font_size_mm * 0.5, -bar_bbox.height / 2.0]) 
+                + font_size_mm * 0.5, -bar_bbox.height / 2.0 - x_0[1]]) 
         
         #Move the label
         self.position = x_0 + dx

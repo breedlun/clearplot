@@ -472,6 +472,8 @@ class _Data_Axes_Base(_Axes_Base):
         c_lim : 1x2 list, optional
             Color map limits.  To automatically chose a limit, input 'auto' for
             either the upper or lower limit.
+        c_scale : ['linear' | 'log'], optional
+            Color scaling.
             
         Returns
         -------
@@ -488,6 +490,7 @@ class _Data_Axes_Base(_Axes_Base):
         im_interp = kwargs.pop('im_interp', 'auto')
         c_map = kwargs.pop('c_map', 'auto')
         c_lim = kwargs.pop('c_lim', ['auto','auto'])
+        c_scale = kwargs.pop('c_scale', 'linear')
         
         self._ui_c_lim = c_lim
         im_error = """Do not recognize image type.  Please verify you have 
@@ -510,7 +513,7 @@ class _Data_Axes_Base(_Axes_Base):
                 #the figure.)
                 [c_lim, c_tick, n_tick] = _utl.find_and_select_lim_and_tick(\
                     c_lim, 'auto', [_np.nanmin(im), _np.nanmax(im)], \
-                    'linear', 10.0, 0.0)
+                    c_scale, 10.0, 0.0)
                 im_type = 'values'
         elif im.ndim == 3:
             if im.shape[2] == 3:
@@ -539,9 +542,16 @@ class _Data_Axes_Base(_Axes_Base):
         else:
             raise IOError("ERROR: Did not recognize 'xy_coords' string")
         
+        if c_scale == 'linear':
+            norm = _mpl.colors.Normalize()
+        elif c_scale == 'log':
+            norm = _mpl.colors.LogNorm()
+        else:
+            raise IOError("ERROR: c_scale must be 'linear' or 'log'")
+        
         #Place image
         #(cmap is ignored if im has RGB(A) information)
-        im_obj = self.mpl_ax.imshow(im, extent = im_ext, norm = _mpl.colors.LogNorm(), \
+        im_obj = self.mpl_ax.imshow(im, extent = im_ext, norm = norm, \
                cmap = c_map, aspect = 'auto', origin = im_origin.split()[0])
         #Store image type in case other methods, such as the colorbar need to 
         #know
