@@ -541,7 +541,7 @@ class _Data_Axes_Base(_Axes_Base):
         
         #Place image
         #(cmap is ignored if im has RGB(A) information)
-        im_obj = self.mpl_ax.imshow(im, extent = im_ext, \
+        im_obj = self.mpl_ax.imshow(im, extent = im_ext, norm = _mpl.colors.LogNorm(), \
                cmap = c_map, aspect = 'auto', origin = im_origin.split()[0])
         #Store image type in case other methods, such as the colorbar need to 
         #know
@@ -2939,7 +2939,13 @@ class Axes(_Data_Axes_Base):
               assumed, only the min and max values of `x` and `y` are used to 
               place the image.
             - lines: plots only contour lines.
-             
+        
+        c_map : string, optional
+            Color map for background and contour lines
+        c_lim : 1x2 list, optional
+            Color map limits.
+        c_scale : ['linear' | 'log'], optional
+            Color map scaling
         cl_levels : list of floats, optional
             Contour line levels.
         cl_labels : list of floats, optional
@@ -2971,6 +2977,7 @@ class Axes(_Data_Axes_Base):
         im_interp = kwargs.pop('im_interp', 'auto')
         c_map = kwargs.pop('c_map', _cp.colors.c_maps['rainbow'])
         c_lim = kwargs.pop('c_lim', ['auto', 'auto'])
+        c_scale = kwargs.pop('c_scale', 'linear')
         cl_levels = kwargs.pop('cl_levels', 'auto')
         cl_labels = kwargs.pop('cl_labels', 'auto')
         cl_label_fsize = kwargs.pop('cl_label_fsize', 14)
@@ -2984,7 +2991,7 @@ class Axes(_Data_Axes_Base):
         #(Hard code auto tick spacing because the color bar tick spacing
         #will be recalculated when the color bar is added to the figure.)
         [c_lim_c, c_tick_c, n_tick_c] = _utl.find_candidate_lim_and_tick(\
-            c_lim, 'auto', [_np.min(z), _np.max(z)], 'linear', 10.0, self.exceed_lim)
+            c_lim, 'auto', [_np.min(z), _np.max(z)], c_scale, 10.0, self.exceed_lim)
         [c_lim, c_tick, n_tick] = _utl.select_lim_and_tick(c_lim_c, c_tick_c, \
             n_tick_c)
         #We have to include the limits in the levels because the colorbar seems

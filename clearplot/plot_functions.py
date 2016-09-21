@@ -703,7 +703,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
     
-    [bg, cl] = ax.plot_contours(x, y, z, **kwargs)
+    [bg, cl] = ax.plot_contours(x, y, z, c_scale = c_scale, **kwargs)
     
     if c_bar:
         if plot_type is 'lines':
@@ -711,7 +711,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
         else:
             c_obj = bg
         #Place color bar
-        fig.add_color_bar(ax, c_obj, label = c_label, tick = c_tick, \
+        c_bar = fig.add_color_bar(ax, c_obj, label = c_label, tick = c_tick, \
             orient = c_orient, scale = c_scale)
 
     #Update figure
@@ -803,7 +803,7 @@ def show_im(filename, im_seq, **kwargs):
     fig : figure object
         Figure object containing the plot.
     ax : axes object
-        Axes object containing the data.
+        Axes object containing the data. 
     im_obj : image object
         Image object containing the image data
         
@@ -947,7 +947,7 @@ def show_im(filename, im_seq, **kwargs):
         
     if c_bar:
         #Place color bar
-        fig.add_color_bar(im_ax, im_obj[0], \
+        c_bar = fig.add_color_bar(im_ax, im_obj[0], \
             label = c_label, lim = c_lim, tick = c_tick, orient = c_orient)
 
     #Update canvas
