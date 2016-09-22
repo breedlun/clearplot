@@ -19,7 +19,7 @@ xb_err = np.vstack([xb * 0.2 + 0.2, np.ones(xb.shape)*0.4])
 yb_err = None
 
 [fig, ax, markers] = pf.plot_markers('', [xa, xb], [ya, yb], \
-    ['\theta','deg'], ['f(\theta)'], shapes = 'o')
+    x_label = ['\theta','deg'], y_label = ['f(\theta)'], shapes = 'o')
 ax.plot_error_bars([xa, xb], [ya, yb], \
     x_err = [xa_err, xb_err], y_err = [ya_err, yb_err])
 fig.save('error_bars.png')
