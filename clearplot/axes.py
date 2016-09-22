@@ -1969,14 +1969,16 @@ class Axes(_Data_Axes_Base):
                 loc = loc_dict['upper center'][0]                
         else:
             ax_coord = None
+        if self.mpl_ax.legend_ is not None:
+            #We must add the previous legend to the axes, so that the next 
+            #call to legend() creates a new legend instead of overwriting the 
+            #old one.
+            self.mpl_ax.add_artist(self.mpl_ax.legend_)
         #The legend command normally works without explicitly specifying which 
         #curves to label, but the dashed lines that mark zero cause it to get
         #confused, so I found I had to explicitly specify the curves to label.
         legend = self.mpl_ax.legend(artists, raw_labels, loc = loc, \
             bbox_to_anchor = ax_coord, **kwargs)
-        #We must add the artist to the axes, so that the next call to legend()
-        #creates a new legend instead of overwriting the old one.
-        self.mpl_ax.add_artist(legend)
         #The legend has some sort of clipping box that causes the 
         #fig.tight_bbox() code to ignore the legend.  fig.tight_bbox() is used
         #to appropriately size the figure window before saving, so this 
