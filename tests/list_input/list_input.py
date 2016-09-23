@@ -14,4 +14,4 @@ xa = [1,2,3]
 ya = [1,2,3]
 xb = xa
 yb = np.array([4,5,6])
-pf.plot('list_input', [xa, xb], [ya, yb], ['\Phi'])
+pf.plot('list_input', [xa, xb], [ya, yb])

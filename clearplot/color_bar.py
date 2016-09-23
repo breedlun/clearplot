@@ -80,7 +80,16 @@ class Color_Bar(axes._Axes_Base):
         #It makes the most sense to just instantiate and update later.)
         #Find the data axes position in mm
         #Generate matplotlib axes object
-        mpl_ax = _plt.axes([0.0, 0.0, 0.05, 0.5])
+        #(The random width is used to avoid a bug in concert with a supposed
+        #feature of matplotlib.  If the user tries to create axes with the 
+        #same dimensions and other properties as an existing set of axes, 
+        #then matplotlib will return the existing axes, and not create a new
+        #set of axes.  This "feature" should not affect anything here, because
+        #axes are always moved from the coordinates below to some other 
+        #location.  However, matplotlib 1.5.1 seems to have a bug, because it 
+        #seems to think the original set of axes are still in their original
+        #location, even though I moved them.)
+        mpl_ax = parent_fig.mpl_fig.add_axes([0.0, 0.0, _np.random.rand(1)[0]/20, 0.5])
         #Generate the color bar
         if self.orient == 'v':
             orient = 'vertical'

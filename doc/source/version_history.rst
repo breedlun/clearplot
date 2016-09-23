@@ -1,6 +1,21 @@
 Version History
 ===============
 
+version 1.1.0
+
+1. Added the ability to have log scaled color bars.
+2. Reorganized the color bar code to minimize code duplication between the initialization method and other methods.
+3. Fixed a bug that prevented the color bar from returning the list of tick mark positions.  
+4. Fixed a bug that caused the color bar label to be placed incorrectly if the color bar size or position were changed.
+5. Altered the way users specify labels to artists.  Labels are now specified upon artist creation rather than when the legend is added to the plot.  This way the label becomes associated with the artist object, which makes complex legends with multiple data types much easier.
+6. Fixed a bug that caused a duplicate legend to be placed on top of the original legend.
+7. Converted the dashed line that marks 0 into a spline instead of a curve.  This associates the dashed line more strongly with the axes.  For example, hiding the axes now hides the dashed lines too.
+8. Changed the default marker edge width to zero for curves.  Now both markers and curves have zero marker edge width.
+9. Fixed a bug that allowed markers to sometimes appear outside of the plotting area.
+10. Fixed a bug with auto-adjusting shared axes.  If x/y axis is shared then clearplot attempts to adjust the pair of y/x axes to make them have the same number of tick marks.  If it fails, then it will adjust the physical spacing between the tick marks.  This should be more robust now.
+11. Fixed a bug with picking label text and specifying the leader line angle.
+
+
 version 1.0.7
 
 1. Changed the default marker edge width to zero.  

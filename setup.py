@@ -4,7 +4,7 @@ from setuptools.command.install import install
 import warnings
 
 #Define the version of clearplot
-cp_version = '1.0.7'
+cp_version = '1.1.0'
 
 #Comment out this code in case we switch back to the Qt4Agg backend.
 ##For now we are using the Qt4Agg backend, which requires PyQt4 or PySide, but 
