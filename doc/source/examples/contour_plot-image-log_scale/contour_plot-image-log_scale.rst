@@ -3,7 +3,7 @@
 Contour Plot with a Log Scaled Color Bar
 ========================================
 
-Filled contour plot with colorbar.  Options exist to plot only contour lines or to overlay the contour lines over the z data plotted as an image.
+Contour plot overlaid on the z data plotted as an image.  Options exist to plot only contour lines or to fill the space between the contours.
 
 .. literalinclude:: contour_plot-image-log_scale.py
 	:lines: 7-
