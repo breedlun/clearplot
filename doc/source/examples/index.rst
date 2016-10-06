@@ -279,7 +279,7 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./contour_plot-filled/contour_plot-image-log_scale.html>
+    <a href=./contour_plot-image-log_scale/contour_plot-image-log_scale.html>
     <img src=../_images/contour_plot-image-log_scale.png>
     <span class='figure-label'>
     <p>Log Scaled Contours</p>
