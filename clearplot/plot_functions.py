@@ -711,7 +711,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
         else:
             c_obj = bg
         #Place color bar
-        c_bar = fig.add_color_bar(ax, c_obj, label = c_label, tick = c_tick, \
+        c_bar = fig.add_color_bar(c_obj, label = c_label, tick = c_tick, \
             orient = c_orient, scale = c_scale)
 
     #Update figure

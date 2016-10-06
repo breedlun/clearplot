@@ -19,7 +19,7 @@ z1 = mlab.bivariate_normal(xa, ya, 1.0, 1.0, 0.0, 0.0)
 z2 = mlab.bivariate_normal(xa, ya, 1.5, 0.5, 1, 1)
 za = 10.0 ** (5*(z2 - z1))
 za = za - np.min(za) + 0.01
-[fig, ax, bg, cl] = pf.plot_contours('contour_plot-image-log_scaled', \
+[fig, ax, bg, cl] = pf.plot_contours('contour_plot-image-log_scale.png', \
     xa, ya, za, x_label = ['\tau_1', 'kg'], y_label = ['\tau_2', 'kg'], \
     x_tick = 0.5, y_tick = 0.5, x_lim = [-1.5, 1.5], y_lim = [-1.5, 1.5], \
     c_label = ['E', 'kJ'], c_scale = 'log', \

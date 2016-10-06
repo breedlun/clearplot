@@ -101,7 +101,9 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 	
 	./plot_image_and_add_curve/plot_image_and_add_curve.rst
 	
-	./filled_contours/filled_contours.rst
+	./contour_plot-filled/contour_plot-filled.rst
+	
+	./contour_plot-image-log_scale/contour_plot-image-log_scale.rst
 	
 	./curve_and_image_sequence/curve_and_image_sequence.rst
 	
