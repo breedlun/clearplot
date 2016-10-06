@@ -44,8 +44,6 @@ class _Axes_Base(object):
 
     @position.setter
     def position(self, pos):
-        #(Copy the position in case `pos` changes later)
-        self._ui_pos = pos
         size_nfc = self.mpl_ax.get_position().size
         fig_size = self.parent_fig.size
         rect_nfc = _np.hstack([pos / fig_size, size_nfc])

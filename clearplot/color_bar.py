@@ -19,7 +19,7 @@ class Color_Bar(axes._Axes_Base):
         
         Parameters
         ----------
-        data_obj : data object
+        data_obj : data object or a list of data objects
             Image or contours that the color bar pertains to
         position : 1x2 list or numpy array, optional
             Position of color bar lower left corner from the figure lower left 
@@ -42,9 +42,11 @@ class Color_Bar(axes._Axes_Base):
         scale : [ 'linear' | 'log' ], optional
             Color bar scaling.  The default is 'linear'.
         """
-        self.data_objs = [data_obj]
-        self.data_ax = data_obj.parent_ax
-        self.parent_fig = data_obj.parent_ax.parent_fig
+        self.data_objs = _utl.adjust_list_depth(data_obj, 1)
+        self.data_ax = []
+        for data_obj in self.data_objs:
+             self.data_ax.append(data_obj.parent_ax)
+        self.parent_fig = self.data_objs[0].parent_ax.parent_fig
         self.parent_fig.color_bars.append(self)
         self._ui_pos = kwargs.pop('position', 'auto')
         self.orient = kwargs.pop('orient', 'v')
@@ -236,7 +238,10 @@ class Color_Bar(axes._Axes_Base):
     def _set_size_and_position(self):
         """Set the color bar size and position, based on the number of ticks
         and the physical distance between tick marks."""
-        ax_bbox = self.data_ax.bbox           
+        ax_bboxes = []
+        for da in self.data_ax:
+            ax_bboxes.append(da.bbox)
+        ax_bbox = _mpl.transforms.Bbox.union(ax_bboxes)         
         ax_2_bar_gap = 0.5 * self.sdim
         bar_width = self.sdim/4.0
         if self.orient == 'h':
