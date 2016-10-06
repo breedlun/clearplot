@@ -16,5 +16,5 @@ z1 = mlab.bivariate_normal(x, y, 1.0, 1.0, 0.0, 0.0)
 z2 = mlab.bivariate_normal(x, y, 1.5, 0.5, 1, 1)
 z = 10.0 * (z2 - z1)
 
-pf.plot_contours('filled_contours.png', x, y, z, ['\tau_1', 'kg'], \
+pf.plot_contours('contour_plot-filled.png', x, y, z, ['\tau_1', 'kg'], \
     ['\tau_2', 'kg'], x_tick = 0.5, y_tick = 0.5, c_label = ['E', 'kJ']);

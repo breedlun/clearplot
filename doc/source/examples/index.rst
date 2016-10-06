@@ -266,10 +266,21 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./filled_contours/filled_contours.html>
-    <img src=../_images/filled_contours.png>
+    <a href=./contour_plot-filled/contour_plot-filled.html>
+    <img src=../_images/contour_plot-filled.png>
     <span class='figure-label'>
     <p>Filled Contours</p>
+    </span>
+    </a>
+    </div>
+    
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./contour_plot-filled/contour_plot-image-log_scale.html>
+    <img src=../_images/contour_plot-image-log_scale.png>
+    <span class='figure-label'>
+    <p>Log Scaled Contours</p>
     </span>
     </a>
     </div>

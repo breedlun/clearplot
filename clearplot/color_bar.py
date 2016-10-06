@@ -13,16 +13,12 @@ class Color_Bar(axes._Axes_Base):
     A color bar class
     """
     
-    def __init__(self, parent_fig, data_ax, data_obj, **kwargs):
+    def __init__(self, data_obj, **kwargs):
         """
         Instantiates a color bar object        
         
         Parameters
         ----------
-        parent_fig : figure object
-            Figure where the color bar gets placed
-        data_ax : axes object
-            Axes that contain the data that the color bar pertains to
         data_obj : data object
             Image or contours that the color bar pertains to
         position : 1x2 list or numpy array, optional
@@ -46,9 +42,9 @@ class Color_Bar(axes._Axes_Base):
         scale : [ 'linear' | 'log' ], optional
             Color bar scaling.  The default is 'linear'.
         """
-        self.data_obj = data_obj
-        self.data_ax = data_ax
-        self.parent_fig = parent_fig
+        self.data_objs = [data_obj]
+        self.data_ax = data_obj.parent_ax
+        self.parent_fig = data_obj.parent_ax.parent_fig
         self.parent_fig.color_bars.append(self)
         self._ui_pos = kwargs.pop('position', 'auto')
         self.orient = kwargs.pop('orient', 'v')
@@ -59,10 +55,11 @@ class Color_Bar(axes._Axes_Base):
         self._ui_tick_labels = kwargs.pop('tick_labels', 'auto')
         #Use the user input color limits specified when the data object was 
         #added to the data axes as the default
-        self._ui_lim = kwargs.pop('lim', data_ax._ui_c_lim)
+        self._ui_lim = kwargs.pop('lim', data_obj._ui_c_lim)
         self._ui_scale = kwargs.pop('scale', 'linear')
-        #Store information 
-        self._tick_mm = self.data_ax.sdim
+        #Store information
+        self.sdim = 20.0
+        self._tick_mm = self.sdim
 
         #Create axes that will contain the color bar
         #(When you do not supply axes, fig.colorbar() creates a color bar by 
@@ -89,7 +86,7 @@ class Color_Bar(axes._Axes_Base):
         #location.  However, matplotlib 1.5.1 seems to have a bug, because it 
         #seems to think the original set of axes are still in their original
         #location, even though I moved them.)
-        mpl_ax = parent_fig.mpl_fig.add_axes([0.0, 0.0, _np.random.rand(1)[0]/20, 0.5])
+        mpl_ax = self.parent_fig.mpl_fig.add_axes([0.0, 0.0, _np.random.rand(1)[0]/20, 0.5])
         #Generate the color bar
         if self.orient == 'v':
             orient = 'vertical'
@@ -187,12 +184,14 @@ class Color_Bar(axes._Axes_Base):
         #matplotlib 1.5.1 they need to all be set.
         if scale == 'log':
             self._ui_scale = scale
-            self.data_obj.set_norm(_mpl.colors.LogNorm())
+            for data_obj in self.data_objs:
+                data_obj.set_norm(_mpl.colors.LogNorm())
             self.mpl_bar.set_norm(_mpl.colors.LogNorm())
             self.mpl_bar.formatter = _mpl.ticker.LogFormatterMathtext()
         elif scale == 'linear':
             self._ui_scale = scale
-            self.data_obj.set_norm(_mpl.colors.Normalize())
+            for data_obj in self.data_objs:
+                data_obj.set_norm(_mpl.colors.Normalize())
             self.mpl_bar.set_norm(_mpl.colors.Normalize())
             self.mpl_bar.formatter = _mpl.ticker.ScalarFormatter()
         else:
@@ -206,17 +205,27 @@ class Color_Bar(axes._Axes_Base):
         user interface simple.  This method computes the limits and tick 
         spacing once."""
         #Set the limits and ticks
-        data = self.data_obj.get_array()
-        if data.ndim > 2:
+        rgb_flag = False
+        min_max = _np.zeros([len(self.data_objs),2])
+        for s, data_obj in enumerate(self.data_objs):
+            data = data_obj.get_array()
+            if data.ndim > 2:
+                rgb_flag = True
+                break
+            min_max[s,0] = data.min()
+            min_max[s,1] = data.max()
+        if rgb_flag:
             lim = self._ui_lim
             tick = self._ui_tick
             n_tick = (lim[1] - lim[0]) / tick
         else:
+            mm = [_np.min(min_max[:,0]), _np.max(min_max[:,1])]
             [lim, tick, n_tick] = _utl.find_and_select_lim_and_tick(\
-                self._ui_lim, self._ui_tick, [data.min(), data.max()],
-                self.scale, 10.0, self.data_ax.exceed_lim)
+                self._ui_lim, self._ui_tick, mm,
+                self.scale, 10.0, 0.0)
         self._lim = lim
-        self.data_obj.set_clim(lim)
+        for data_obj in self.data_objs:
+            data_obj.set_clim(lim)
         self._tick = tick
         self._num_tick = n_tick
         self.tick_list = self._ui_tick_list
@@ -227,16 +236,15 @@ class Color_Bar(axes._Axes_Base):
     def _set_size_and_position(self):
         """Set the color bar size and position, based on the number of ticks
         and the physical distance between tick marks."""
-        ax_bbox = self.data_ax.bbox
-        sdim = self.data_ax.sdim            
-        ax_2_bar_gap = 0.5 * sdim
-        bar_width = sdim/4.0
+        ax_bbox = self.data_ax.bbox           
+        ax_2_bar_gap = 0.5 * self.sdim
+        bar_width = self.sdim/4.0
         if self.orient == 'h':
             self.size = _np.array([self._num_tick * self.tick_mm, bar_width])
             #Place the color bar below the data axes, horizontally centered            
-            if self._ui_pos == 'auto':
+            if self._ui_pos is 'auto':
                 bar_pos = _np.array([\
-                    ax_bbox.x0 + ax_bbox.width/2.0  - self._num_tick * sdim / 2.0, \
+                    ax_bbox.x0 + ax_bbox.width/2.0  - self._num_tick * self.sdim / 2.0, \
                     ax_bbox.y0 - ax_2_bar_gap - bar_width])
             else:
                 bar_pos = self._ui_pos
@@ -254,7 +262,8 @@ class Color_Bar(axes._Axes_Base):
         else:
             raise ValueError("""ERROR: Orientation should be either 'h' or 'v'""")
         if hasattr(self, 'label_obj'):
-            self.label_obj.place_label()
+            if hasattr(self.label_obj, 'str_list'):
+                self.label_obj.place_label()
         
     @property
     def label(self):
@@ -284,7 +293,7 @@ class Color_Bar(axes._Axes_Base):
             normalized_tick_list = self.mpl_ax.get_xticks()
         else:
             normalized_tick_list = self.mpl_ax.get_yticks()
-        tick_list = self.data_obj.norm.inverse(normalized_tick_list)
+        tick_list = self.data_objs[0].norm.inverse(normalized_tick_list)
         return(tick_list)
         
     @tick_list.setter
@@ -306,7 +315,7 @@ class Color_Bar(axes._Axes_Base):
             for n in _np.arange(num_dec):
                 minor_ticks = _np.hstack([minor_ticks, \
                     (lim[0]*10.0**n)*_np.arange(2, 10, 1)])
-            normalized_minor_ticks = self.data_obj.norm(minor_ticks)
+            normalized_minor_ticks = self.data_objs[0].norm(minor_ticks)
             if self.orient == 'h':
                 self.mpl_bar.ax.xaxis.set_ticks(\
                     normalized_minor_ticks, minor = True)

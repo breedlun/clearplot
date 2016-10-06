@@ -44,6 +44,8 @@ class _Axes_Base(object):
 
     @position.setter
     def position(self, pos):
+        #(Copy the position in case `pos` changes later)
+        self._ui_pos = pos
         size_nfc = self.mpl_ax.get_position().size
         fig_size = self.parent_fig.size
         rect_nfc = _np.hstack([pos / fig_size, size_nfc])
@@ -489,10 +491,9 @@ class _Data_Axes_Base(_Axes_Base):
         im_origin = kwargs.pop('im_origin', 'upper left')
         im_interp = kwargs.pop('im_interp', 'auto')
         c_map = kwargs.pop('c_map', 'auto')
-        c_lim = kwargs.pop('c_lim', ['auto','auto'])
+        ui_c_lim = kwargs.pop('c_lim', ['auto','auto'])
         c_scale = kwargs.pop('c_scale', 'linear')
         
-        self._ui_c_lim = c_lim
         im_error = """Do not recognize image type.  Please verify you have 
         supplied an image.  If so, additional functionality may need to be 
         implemented."""
@@ -501,7 +502,7 @@ class _Data_Axes_Base(_Axes_Base):
                 #Set color map and limits for a grayscale image
                 if c_map == 'auto':
                     c_map = _mpl.cm.gray
-                if c_lim[0] == 'auto' and c_lim[1] == 'auto':
+                if ui_c_lim[0] == 'auto' and ui_c_lim[1] == 'auto':
                     c_lim = [0, 255]
                 im_type = 'grayscale'
             else:
@@ -512,7 +513,7 @@ class _Data_Axes_Base(_Axes_Base):
                 #spacing will be recalculated when the color bar is added to 
                 #the figure.)
                 [c_lim, c_tick, n_tick] = _utl.find_and_select_lim_and_tick(\
-                    c_lim, 'auto', [_np.nanmin(im), _np.nanmax(im)], \
+                    ui_c_lim, 'auto', [_np.nanmin(im), _np.nanmax(im)], \
                     c_scale, 10.0, 0.0)
                 im_type = 'values'
         elif im.ndim == 3:
@@ -553,10 +554,11 @@ class _Data_Axes_Base(_Axes_Base):
         #(cmap is ignored if im has RGB(A) information)
         im_obj = self.mpl_ax.imshow(im, extent = im_ext, norm = norm, \
                cmap = c_map, aspect = 'auto', origin = im_origin.split()[0])
-        #Store image type in case other methods, such as the colorbar need to 
-        #know
-        im_obj.im_type = im_type              
-               
+        #Store info in case other methods, such as the colorbar, need to know
+        im_obj.im_type = im_type
+        im_obj._ui_c_lim = ui_c_lim
+        im_obj.parent_ax = self
+        
         #Set the color map limits 
         #(Note this must be done before c_bar.solids.set_edgecolor('face'), 
         #which is inside color_bar, or else you get white lines on the color 
@@ -801,7 +803,7 @@ class Axes(_Data_Axes_Base):
             self.mpl_ax.set_xlim(0.0, self._x_tick * n_tick)
         else:
             #Set the position of the axes
-            if self._ui_pos == 'auto':
+            if self._ui_pos is 'auto':
                 position = _np.array([30, 30])
             else:
                 position = self._ui_pos
@@ -2988,7 +2990,7 @@ class Axes(_Data_Axes_Base):
         plot_type = kwargs.pop('plot_type', 'filled')
         im_interp = kwargs.pop('im_interp', 'auto')
         c_map = kwargs.pop('c_map', _cp.colors.c_maps['rainbow'])
-        c_lim = kwargs.pop('c_lim', ['auto', 'auto'])
+        ui_c_lim = kwargs.pop('c_lim', ['auto', 'auto'])
         c_scale = kwargs.pop('c_scale', 'linear')
         cl_levels = kwargs.pop('cl_levels', 'auto')
         cl_labels = kwargs.pop('cl_labels', 'auto')
@@ -2998,12 +3000,11 @@ class Axes(_Data_Axes_Base):
         cl_style = kwargs.pop('cl_style', '-')
         cl_colors = kwargs.pop('cl_colors', 'auto')
 
-        self._ui_c_lim = c_lim
         #Select color bar limits and tick spacing
         #(Hard code auto tick spacing because the color bar tick spacing
         #will be recalculated when the color bar is added to the figure.)
         [c_lim_c, c_tick_c, n_tick_c] = _utl.find_candidate_lim_and_tick(\
-            c_lim, 'auto', [_np.min(z), _np.max(z)], c_scale, 10.0, self.exceed_lim)
+            ui_c_lim, 'auto', [_np.min(z), _np.max(z)], c_scale, 10.0, self.exceed_lim)
         [c_lim, c_tick, n_tick] = _utl.select_lim_and_tick(c_lim_c, c_tick_c, \
             n_tick_c)
         #We have to include the limits in the levels because the colorbar seems
@@ -3011,8 +3012,19 @@ class Axes(_Data_Axes_Base):
         #Round is needed so that the contour line labels match up exactly with 
         #the levels.
         if cl_levels is 'auto':
-            cl_levels = _np.round(_np.arange(c_lim[0], \
-                c_lim[1] + c_tick/100.0, c_tick/4.0), 12)
+            if c_scale == 'log':
+                log_base = 10.0
+                cl_levels = _np.round(_np.arange(c_lim[0], \
+                    c_lim[1] + c_tick/100.0, c_tick/4.0), 12)
+                #(range omits the last entry so we need to nudge it a bit)
+                log_cl_levels = _np.arange(\
+                    _np.log(c_lim[0]) / _np.log(log_base), \
+                    _np.log(c_lim[1]) / _np.log(log_base) + c_tick/100.0, \
+                    c_tick/4.0)
+                cl_levels = _np.round(log_base**log_cl_levels, 2)
+            else:
+                cl_levels = _np.round(_np.arange(c_lim[0], \
+                    c_lim[1] + c_tick/100.0, c_tick/4.0), 12)
         else:
             if c_lim[0] not in cl_levels:
                 cl_levels = _np.hstack([c_lim[0], cl_levels])
@@ -3053,6 +3065,10 @@ class Axes(_Data_Axes_Base):
         #Generate background
         if plot_type is 'filled':
             b_obj = self.mpl_ax.contourf(x, y, z, cl_levels, cmap = c_map)
+            #Store info in case other methods, such as the colorbar, need to 
+            #know
+            b_obj._ui_c_lim = ui_c_lim
+            b_obj.parent_ax = self
         elif plot_type is 'image':
             #Verify that x and y data are appropriate for the 'image' plot type
             dx = _np.diff(x, axis = 1)
@@ -3079,6 +3095,10 @@ class Axes(_Data_Axes_Base):
             clip_patch = _mpl_patches.Polygon(xy_clip, \
                 transform = self.mpl_ax.transData)
             b_obj.set_clip_path(clip_patch)
+            #Store info in case other methods, such as the colorbar, need to 
+            #know
+            b_obj._ui_c_lim = ui_c_lim
+            b_obj.parent_ax = self
             
         #Generate contour lines
         if plot_type is 'lines':

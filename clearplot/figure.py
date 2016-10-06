@@ -301,24 +301,20 @@ class Figure(object):
         self.mpl_fig.patches.append(patch_obj)
         return(patch_obj)
         
-    def add_color_bar(self, ax, im_obj, **kwargs):
+    def add_color_bar(self, data_obj, **kwargs):
         """
         Places a color bar in the specified figure   
         
         Parameters
         ----------
-        ax : axes object
-            Axes object that contains `im_obj`.
-        im_obj : image object
-            Image object that the color bar pertains to.
-        label : list
-            
+        data_obj : data object
+            Object that the color bar pertains to.
 
         Other Parameters
         ----------------
         See parameters in Color_Bar()
         """
-        bar = _color_bar.Color_Bar(self, ax, im_obj, **kwargs)
+        bar = _color_bar.Color_Bar(data_obj, **kwargs)
         label = kwargs.pop('label', None)
         if label is not None:
             #Make sure the label is in the correct format
