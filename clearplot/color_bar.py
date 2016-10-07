@@ -251,9 +251,13 @@ class Color_Bar(axes._Axes_Base):
                 bar_pos = _np.array([\
                     ax_bbox.x0 + ax_bbox.width/2.0  - self._num_tick * self.sdim / 2.0, \
                     ax_bbox.y0 - ax_2_bar_gap - bar_width])
+                #We must immediately reset the user input position to 'auto'
+                #since the position setter method assumes any input was 
+                #supplied by the user.
+                self.position = bar_pos
+                self._ui_pos = 'auto'
             else:
-                bar_pos = self._ui_pos
-            self.position = bar_pos
+                self.position = self._ui_pos
         elif self.orient == 'v':
             self.size = _np.array([bar_width, self._num_tick * self.tick_mm])
             #Place the color bar to the right of the data axes, vertically 
@@ -261,9 +265,13 @@ class Color_Bar(axes._Axes_Base):
             if self._ui_pos == 'auto':
                 bar_pos = _np.array([ax_bbox.x1 + ax_2_bar_gap, \
                     ax_bbox.y0 + ax_bbox.height/2.0 - self.size[1] / 2.0])
+                #We must immediately reset the user input position to 'auto'
+                #since the position setter method assumes any input was 
+                #supplied by the user.
+                self.position = bar_pos
+                self._ui_pos = 'auto'
             else:
-                bar_pos = self._ui_pos
-            self.position = bar_pos
+                self.position = self._ui_pos
         else:
             raise ValueError("""ERROR: Orientation should be either 'h' or 'v'""")
         if hasattr(self, 'label_obj'):

@@ -462,11 +462,16 @@ class Figure(object):
             if False not in ui_ax_pos_auto:
                 #If the axes positions have not been specified then move the 
                 #axes all by the same amount, and resize the figure window.
+                #(We must immediately reset the user input position to 'auto'
+                #since the position setter method assumes any input was 
+                #supplied by the user.)
                 dx = - _np.array([fig_bbox.x0 - pad, fig_bbox.y0 - pad])
                 for ax in self.axes:
                     ax.position = ax.position + dx
+                    ax._ui_pos = 'auto'
                 for bar in self.color_bars:
                     bar.position = bar.position + dx
+                    bar._ui_pos = 'auto'
                 self.size = [fig_bbox.width + 2*pad, fig_bbox.height + 2*pad]
             else:
                 #If any of the axes positions have been specified, then just
