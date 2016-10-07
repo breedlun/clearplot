@@ -2926,6 +2926,91 @@ class Axes(_Data_Axes_Base):
             self.x_tick_labels = map(lambda x: formatter.format_data(x), self.x_tick_list)
             self._ui_tick_labels = 'auto'
         return(self.boxes[j:j+i])
+
+    def plot_matrix(self, x, y, z, **kwargs):
+        """
+        Plots the values of a 2D matrix as colors on the axes
+        
+        Parameters
+        ----------
+        x : 1x2 or MxN numpy array
+            Matrix x position.
+        y : 1x2 or MxN numpy array
+            Matrix y position.
+        z : MxN numpy array
+            Matrix to be plotted
+        clip_edges : bool, optional
+            Specifies whether to clip the extra half pixel along the edges of 
+            the matrix, so that the edges of the matrix conform to the min and
+            max of x and y.
+        im_interp : string, optional
+            Image interpolation method.  See the `matplotlib documentation
+            <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.imshow>`__
+            for acceptable values.
+        c_map : string, optional
+            Image color map.
+        c_lim : 1x2 list, optional
+            Color map limits.  To automatically chose a limit, input 'auto' for
+            either the upper or lower limit.
+        c_scale : ['linear' | 'log'], optional
+            Color scaling.
+            
+        Returns
+        -------
+        im_obj : matplotlib image object
+        
+        See Also
+        --------
+        ax.add_image() : Adds an image to the figure     
+        ax.add_color_bar() : Adds a color bar to the figure
+        ax.plot_contours() : Creates a contour plot from a matrix
+        
+        Notes
+        -----
+        `clip_edges` causes the edges of the matrix to conform to the min/max 
+        of x/y by applying a clipping mask to the image object.  The actual
+        edges of the image object still extend beyond the min/max of x/y by
+        half a pixel on either side.  If the size of the half pixel relative to
+        the tick mark spacing is larger than the ax.exceed_lim percentage, then
+        the automatically selected axes limits will extend an extra tick mark
+        beyond the edge of the visible (clipped) data.  To avoid this, either
+        specify the x/y limits explicitly, increase ax.exceed_lim, or reduce
+        the size of the pixel relative to the tick mark spacing.
+        """
+        clip_edges = kwargs.pop('clip_edges', True)
+        
+        #Verify that x and y data are appropriate
+        dx = _np.diff(x, axis = 1)
+        avg_dx = _np.mean(dx)
+        if ((_np.max(dx) - avg_dx) / avg_dx > 10e-3) or \
+            ((avg_dx - _np.min(dx)) / avg_dx > 10e-3):
+            raise IOError("x-data must be evenly spaced for 'image' plot type.")
+        dy = _np.diff(y, axis = 0)
+        avg_dy = _np.mean(dy)
+        if ((_np.max(dy) - avg_dy) / avg_dy > 10e-3) or \
+            ((avg_dy - _np.min(dy)) / avg_dy > 10e-3):
+            raise IOError("y-data must be evenly spaced for 'image' plot type")
+        del dx, dy        
+        
+        #Plot the matrix
+        im_obj = self.add_image(z, x = [x.min(), x.max()], \
+            y = [y.min(), y.max()], xy_coords = 'pixel centers', \
+            im_origin = 'lower left', **kwargs)
+        
+        if clip_edges:
+            #Clip the extra half a pixel on the edges
+            xy_clip = _np.array([[_np.min(x), _np.min(y)], \
+                                 [_np.max(x), _np.min(y)], \
+                                 [_np.max(x), _np.max(y)], \
+                                 [_np.min(x), _np.max(y)]])
+            clip_patch = _mpl_patches.Polygon(xy_clip, \
+                transform = self.mpl_ax.transData)
+            im_obj.set_clip_path(clip_patch)
+            
+        #Set the limits and ticks
+        self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)
+        self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)     
+        return(im_obj)
         
     def plot_contours(self, x, y, z, **kwargs):
         """
@@ -3070,35 +3155,10 @@ class Axes(_Data_Axes_Base):
             b_obj._ui_c_lim = ui_c_lim
             b_obj.parent_ax = self
         elif plot_type is 'image':
-            #Verify that x and y data are appropriate for the 'image' plot type
-            dx = _np.diff(x, axis = 1)
-            avg_dx = _np.mean(dx)
-            if ((_np.max(dx) - avg_dx) / avg_dx > 10e-3) or \
-                ((avg_dx - _np.min(dx)) / avg_dx > 10e-3):
-                raise IOError("x-data must be evenly spaced for 'image' plot type.")
-            dy = _np.diff(y, axis = 0)
-            avg_dy = _np.mean(dy)
-            if ((_np.max(dy) - avg_dy) / avg_dy > 10e-3) or \
-                ((avg_dy - _np.min(dy)) / avg_dy > 10e-3):
-                raise IOError("y-data must be evenly spaced for 'image' plot type")
-            del dx, dy
             #Plot the background image
-            b_obj = self.add_image(z, c_map = c_map, \
-                x = [x.min(), x.max()], y = [y.min(), y.max()], \
-                im_origin = 'lower left', xy_coords = 'pixel centers', \
+            b_obj = self.plot_matrix(x, y, z, c_map = c_map, \
                 c_lim = c_lim, interp = im_interp)
-            #Clip the extra half a pixel on the edges
-            xy_clip = _np.array([[_np.min(x), _np.min(y)], \
-                                 [_np.max(x), _np.min(y)], \
-                                 [_np.max(x), _np.max(y)], \
-                                 [_np.min(x), _np.max(y)]])
-            clip_patch = _mpl_patches.Polygon(xy_clip, \
-                transform = self.mpl_ax.transData)
-            b_obj.set_clip_path(clip_patch)
-            #Store info in case other methods, such as the colorbar, need to 
-            #know
-            b_obj._ui_c_lim = ui_c_lim
-            b_obj.parent_ax = self
+
             
         #Generate contour lines
         if plot_type is 'lines':
