@@ -97,13 +97,15 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 	
 	./bar_plot/bar_plot.rst
 	
+	./box_plot/box_plot.rst
+
 	./violin_plot-custom_tick_labels/violin_plot-custom_tick_labels.rst
 	
 	./plot_image_and_add_curve/plot_image_and_add_curve.rst
+
+	./matrix_plot-log_scale/matrix_plot-log_scale.rst
 	
 	./contour_plot-filled/contour_plot-filled.rst
-	
-	./contour_plot-image-log_scale/contour_plot-image-log_scale.rst
 	
 	./curve_and_image_sequence/curve_and_image_sequence.rst
 	
@@ -242,6 +244,17 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
     </span>
     </a>
     </div>
+    
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./box_plot/box_plot.html>
+    <img src=../_images/box_plot.png>
+    <span class='figure-label'>
+    <p>Box Plot</p>
+    </span>
+    </a>
+    </div>
     	
 .. raw:: html
 
@@ -264,14 +277,14 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
     </span>
     </a>
     </div>
-    
+
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./contour_plot-filled/contour_plot-filled.html>
-    <img src=../_images/contour_plot-filled.png>
+    <a href=./matrix_plot-log_scale/matrix_plot-log_scale.html>
+    <img src=../_images/matrix_plot-log_scale.png>
     <span class='figure-label'>
-    <p>Filled Contours</p>
+    <p>Log Scaled Matrix Plot</p>
     </span>
     </a>
     </div>
@@ -279,10 +292,10 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./contour_plot-image-log_scale/contour_plot-image-log_scale.html>
-    <img src=../_images/contour_plot-image-log_scale.png>
+    <a href=./contour_plot-filled/contour_plot-filled.html>
+    <img src=../_images/contour_plot-filled.png>
     <span class='figure-label'>
-    <p>Log Scaled Contours</p>
+    <p>Contour Plot</p>
     </span>
     </a>
     </div>

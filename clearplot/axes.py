@@ -2929,7 +2929,8 @@ class Axes(_Data_Axes_Base):
 
     def plot_matrix(self, x, y, z, **kwargs):
         """
-        Plots the values of a 2D matrix as colors on the axes
+        Plots a 2D matrix as an image on the axes.  The matrix values get 
+        mapped to colors.
         
         Parameters
         ----------

@@ -593,6 +593,128 @@ def plot_violins(filename, x, y, x_label = None, y_label = None, **kwargs):
         
     return(fig, ax, ax.violins)
 
+def plot_matrix(filename, x, y, z, x_label = None, y_label = None, **kwargs):
+    """
+    Plots a 2D matrix as an image, where the matrix values get mapped to 
+    colors.
+    
+    Parameters
+    ----------
+    filename: string
+        File name for the plot output file.  A file extension supported by 
+        matplotlib, such as '.jpg', can be appended to the file name to 
+        override the default file type.  To skip creating an output file, 
+        input '' for `filename`.
+    x : 1x2 or MxN numpy array
+        Matrix x position.
+    y : 1x2 or MxN numpy array
+        Matrix y position.
+    z : MxN numpy array
+        Matrix to be plotted
+    x_label : list of strings, optional
+        x-axis label.  The first list element is the axis variable being 
+        plotted, while the second element is the axis units.  Both strings 
+        should be in LaTeX syntax.  The units get automatically wrapped
+        in parentheses.  Input a 1x1 list to supply a variable without any 
+        units.  
+    y_label : list of strings, optional
+        y-axis label.  The first list element is the axis variable being 
+        plotted, while the second element is the axis units.  Both strings 
+        should be in LaTeX syntax.  The units get automatically wrapped
+        in parentheses.  Input a 1x1 list to supply a variable without any 
+        units. 
+    x_lim : 1x2 list, optional
+        x-axis limits.  The first list element is the lower limit, while the 
+        second element is the upper limit.  Alternatively, either element may 
+        be the string 'auto' to have the algorithm automatically select the 
+        limits.
+    y_lim : list, optional
+        y-axis limits.  The first list element is the lower limit, while the 
+        second element is the upper limit.  Alternatively, either element may 
+        be the string 'auto' to have the algorithm automatically select the 
+        limits.
+    x_tick : float or int, optional
+        Tick mark spacing for the x-axis.  Alternatively, input 'auto' to have 
+        the algorithm automatically select the tick mark spacing.
+    y_tick : list, optional
+        Tick mark spacing for the y-axis.  Alternatively, input 'auto' to have 
+        the algorithm automatically select the tick mark spacing.
+    c_bar : boolean, optional
+        Specifies whether or not to place a color bar in the figure window.
+    c_map : matplotlib colormap object, optional
+        If "im" array is MxN, then the array values are mapped to a certain 
+        color (or gray value) using the supplied colormap.
+    c_lim : 1x2 list, optional
+        Colormap limits.  The first element should be the lower limit, while 
+        the second element should be the upper limit.  Alternatively, either 
+        element may be the string 'auto' to have the algorithm automatically 
+        select the limits.
+    c_tick : float, optional
+        Tick mark spacing for the color bar.  Alternatively, input the string 
+        'auto' to have the algorithm automatically select the tick mark 
+        spacing.
+    c_orient : the string 'h' or 'v', optional
+        Orientation of the color bar.  The default is a vertical orientation.
+    c_label : list, optional
+        Color bar label.  The first list element is the color bar variable 
+        being plotted, while the second element is the color bar units.  Both 
+        strings should be in LaTeX syntax. The units get automatically wrapped
+        in parentheses.  Input a 1x1 list to supply a variable without any 
+        units.
+    c_scale : [ 'linear' | 'log' ], optional
+        Color bar scaling.  The default is 'linear'.
+    scale_plot : float, optional
+        Changes the size of the entire plot, but leaves the font sizes the 
+        same.
+    font_size : float, optional
+        Font size (in points) of the text in the plot.
+    fig : figure object, optional
+        Figure window to place the plot in.  The default behavior is to place 
+        the plot in a new, dedicated, figure window.
+    ax_pos : 1x2 list of floats, optional
+        Position (in mm) of the lower left corner of the data axes, relative 
+        to the lower left corner of the figure window.  (For reference, the 
+        default distance between tick marks is 20 mm.)
+
+    Other Parameters
+    ----------------    
+    See parameters in Axes.plot_matrix()    
+    
+    Returns
+    -------
+    fig : figure object
+        Figure object containing the plot.
+    ax : axes object
+        Axes object containing the data.
+    im : image object
+        Matrix plotted as an image
+    """
+    
+    #Set default values
+    c_bar = kwargs.pop('c_bar', True)
+    c_orient = kwargs.pop('c_orient', 'v')
+    c_label = kwargs.pop('c_label', None)
+    c_tick = kwargs.pop('c_tick', 'auto')
+    c_scale = kwargs.pop('c_scale', 'linear')
+    
+    [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
+    
+    im = ax.plot_matrix(x, y, z, c_scale = c_scale, **kwargs)
+    
+    if c_bar:
+        #Place color bar
+        c_bar = fig.add_color_bar(im, label = c_label, tick = c_tick, \
+            orient = c_orient, scale = c_scale)
+
+    #Update figure
+    fig.auto_adjust_layout()
+    
+    #Only save data if a filename has been given
+    if filename != '':
+        fig.save(filename)
+        
+    return(fig, ax, im)
+
 def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     """
     Create a contour plot from the x, y, and z data.
@@ -697,7 +819,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     plot_type = kwargs.get('plot_type', 'filled')
     c_bar = kwargs.pop('c_bar', True)
     c_orient = kwargs.pop('c_orient', 'v')
-    c_label = kwargs.pop('c_label', ['c\_label'])
+    c_label = kwargs.pop('c_label', None)
     c_tick = kwargs.pop('c_tick', 'auto')
     c_scale = kwargs.pop('c_scale', 'linear')
     
