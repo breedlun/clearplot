@@ -442,6 +442,22 @@ class _Axes_Base(object):
 
 class _Data_Axes_Base(_Axes_Base):   
     
+    def add_title(self, text, **kwargs):
+        """
+        Adds a title above axes.
+        
+        Parameters
+        ----------
+        text : string
+            LaTeX formatted string for the title
+        kwargs :
+            Keyword arguments to matplotlib's set_title function.  See the
+            `matplotlib documentation <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.set_title>`__
+            for further details
+        """
+        raw_text = _utl.raw_string(text)
+        self.mpl_ax.set_title('$' + raw_text + '$', **kwargs)    
+    
     def add_image(self, im, **kwargs):
         """
         Adds an image to the current axes
@@ -1818,12 +1834,6 @@ class Axes(_Data_Axes_Base):
             edge_styles[i] = lstyle_dict[lstyle]
         return(widths, colors, edge_styles, edge_widths, edge_colors)            
         
-    def add_title(self, text):
-        """
-        Adds a title above axes.  I plan to enhance this later...
-        """
-        self.mpl_ax.set_title(text)
-        
     def _get_unique_curves(self):
         if len(self.curves) > 0:
             #Collect the curve attributes and labels into a series of rows        
@@ -3024,19 +3034,19 @@ class Axes(_Data_Axes_Base):
             y-coordinates of points
         z : MxN numpy array
             z-coordinates of points. z-coordinates are used to create contours.
-        plot_type : ['filled' | 'image' | 'lines'], optional, default: 'filled'
+        plot_type : ['filled' | 'intensity map' | 'lines'], optional, default: 'filled'
             Type of contour plot.  Valid options are:
             
             - filled: the area between two neighboring contour lines is filled 
               in with a single color.
-            - image: contour lines are overlaid on the `z` data, which is 
-              plotted as an image.  The `x` and `y` data must be on a uniform 
-              grid.  In other words, all the columns of `x` must have the same 
-              spacing dx, and all the rows of `y` must have the same spacing 
-              dy.  (If your data is on an irregular grid, you can always 
-              interpolate it onto a uniform grid.)  Because a uniform grid is 
-              assumed, only the min and max values of `x` and `y` are used to 
-              place the image.
+            - intensity map: contour lines are overlaid on the `z` data, which 
+              is plotted as an intensity map.  The `x` and `y` data must be on 
+              a uniform grid.  In other words, all the columns of `x` must have
+              the same spacing dx, and all the rows of `y` must have the same 
+              spacing dy.  (If your data is on an irregular grid, you can 
+              always interpolate it onto a uniform grid.)  Because a uniform 
+              grid is assumed, only the min and max values of `x` and `y` are 
+              used to place the intensity map.
             - lines: plots only contour lines.
         
         c_map : string, optional
@@ -3132,7 +3142,7 @@ class Axes(_Data_Axes_Base):
             #Define the contour line width
             if plot_type == 'filled':
                 cl_width = 0.5
-            elif plot_type == 'image':
+            elif plot_type == 'intensity map':
                 cl_width = 1
             else:
                 cl_width = 2
@@ -3154,9 +3164,9 @@ class Axes(_Data_Axes_Base):
             #know
             b_obj._ui_c_lim = ui_c_lim
             b_obj.parent_ax = self
-        elif plot_type is 'image':
+        elif plot_type is 'intensity map':
             #Plot the background image
-            b_obj = self.plot_matrix(x, y, z, c_map = c_map, \
+            b_obj = self.plot_intensity_map(x, y, z, c_map = c_map, \
                 c_lim = c_lim, interp = im_interp)
 
             
