@@ -103,7 +103,7 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 	
 	./plot_image_and_add_curve/plot_image_and_add_curve.rst
 
-	./matrix_plot-log_scale/matrix_plot-log_scale.rst
+	./intensity_map-log_scale/intensity_map-log_scale.rst
 	
 	./contour_plot-filled/contour_plot-filled.rst
 	
@@ -281,10 +281,10 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 .. raw:: html
 
     <div class='figure align-center'>
-    <a href=./matrix_plot-log_scale/matrix_plot-log_scale.html>
-    <img src=../_images/matrix_plot-log_scale.png>
+    <a href=./intensity_map-log_scale/intensity_map-log_scale.html>
+    <img src=../_images/intensity_map-log_scale.png>
     <span class='figure-label'>
-    <p>Log Scaled Matrix Plot</p>
+    <p>Log Scaled Intensity Map</p>
     </span>
     </a>
     </div>

@@ -2927,10 +2927,9 @@ class Axes(_Data_Axes_Base):
             self._ui_tick_labels = 'auto'
         return(self.boxes[j:j+i])
 
-    def plot_matrix(self, x, y, z, **kwargs):
+    def plot_intensity_map(self, x, y, z, **kwargs):
         """
-        Plots a 2D matrix as an image on the axes.  The matrix values get 
-        mapped to colors.
+        Plots a intensity map (heat map) as an image on the axes.
         
         Parameters
         ----------

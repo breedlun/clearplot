@@ -20,7 +20,7 @@ z2 = mlab.bivariate_normal(xa, ya, 1.5, 0.5, 1, 1)
 za = 10.0 ** (5*(z2 - z1))
 za = za - np.min(za) + 0.01
 #Plot the matrix as an image
-pf.plot_matrix('matrix_plot-log_scale.png', xa, ya, za, \
+pf.plot_intensity_map('intensity_map-log_scale.png', xa, ya, za, \
     x_label = ['\tau_1', 'kg'], y_label = ['\tau_2', 'kg'], \
     x_lim = [-1.5, 1.5], y_lim = [-1.5, 1.5], \
     c_label = ['E', 'kJ'], c_scale = 'log')

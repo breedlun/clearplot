@@ -593,10 +593,9 @@ def plot_violins(filename, x, y, x_label = None, y_label = None, **kwargs):
         
     return(fig, ax, ax.violins)
 
-def plot_matrix(filename, x, y, z, x_label = None, y_label = None, **kwargs):
+def plot_intensity_map(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     """
-    Plots a 2D matrix as an image, where the matrix values get mapped to 
-    colors.
+    Plots a intensity map (heat map) as an image.
     
     Parameters
     ----------
@@ -699,7 +698,7 @@ def plot_matrix(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
     
-    im = ax.plot_matrix(x, y, z, c_scale = c_scale, **kwargs)
+    im = ax.plot_density_map(x, y, z, c_scale = c_scale, **kwargs)
     
     if c_bar:
         #Place color bar
