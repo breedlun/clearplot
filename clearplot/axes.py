@@ -138,7 +138,7 @@ class _Axes_Base(object):
         text: string
             Text to add to the axes.  Input an empty string ('') to omit text.
         x_1: 1x2 numpy array or list
-            Coordinates of the start of the annotation.  The coordinate 
+            Coordinates at start of the annotation.  The coordinate 
             system(s) is specified in `cs_1`.  If text is supplied, it is 
             placed at this location.
         cs_1: string or list
@@ -156,9 +156,8 @@ class _Axes_Base(object):
             * 'data'            : use the axes data coordinate system
             
         x_2: 1x2 numpy array, optional
-            Coordinates of the end of the annotation.  The coordinate system is 
-            specified in `cs_2`.  If an arrow is specified, the arrowhead is
-            placed at this location.
+            Coordinates at end of the annotation.  The coordinate system is 
+            specified in `cs_2`.
         cs_2: string or list, optional
             Coordinate system for the values in `x_2`.  See description for 
             `cs_1` for further information.
@@ -541,6 +540,7 @@ class _Data_Axes_Base(_Axes_Base):
                 if c_map == 'auto':
                     c_map = _cp.colors.c_maps['rainbow']
                 im_type = 'RGB'
+                c_lim = ui_c_lim[:]
             else:
                 raise ValueError(im_error)
         else:

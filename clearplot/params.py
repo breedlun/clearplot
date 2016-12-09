@@ -36,7 +36,7 @@ _mpl.rcParams['lines.linewidth'] = 2
 _mpl.rcParams['lines.solid_capstyle'] = 'butt'
 _mpl.rcParams['lines.dash_capstyle'] = 'butt'
 
-#Tick mark settings    
+#Tick mark settings (units = points)
 _mpl.rcParams['xtick.major.width'] = 1
 _mpl.rcParams['ytick.major.width'] = 1
 _mpl.rcParams['xtick.major.size'] = 4.5
