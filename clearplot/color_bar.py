@@ -24,6 +24,9 @@ class Color_Bar(axes._Axes_Base):
         position : 1x2 list or numpy array, optional
             Position of color bar lower left corner from the figure lower left 
             corner, in mm.
+        ax_2_bar_gap : float, optional
+            Gap between axes and color bar, in mm.  Only utilized if `postion`
+            is automatically determined.
         orient : ['v', 'h'], optional
             Orientation of the color bar
         tick : float, optional
@@ -62,6 +65,10 @@ class Color_Bar(axes._Axes_Base):
         #Store information
         self.sdim = 20.0
         self._tick_mm = self.sdim
+        self.ax_2_bar_gap = kwargs.pop('ax_2_bar_gap', 'auto')
+        if self.ax_2_bar_gap == 'auto':
+            self.ax_2_bar_gap = self.sdim * 0.5
+            
 
         #Create axes that will contain the color bar
         #(When you do not supply axes, fig.colorbar() creates a color bar by 
@@ -242,7 +249,6 @@ class Color_Bar(axes._Axes_Base):
         for da in self.data_ax:
             ax_bboxes.append(da.bbox)
         ax_bbox = _mpl.transforms.Bbox.union(ax_bboxes)         
-        ax_2_bar_gap = 0.5 * self.sdim
         bar_width = self.sdim/4.0
         if self.orient == 'h':
             self.size = _np.array([self._num_tick * self.tick_mm, bar_width])
@@ -250,7 +256,7 @@ class Color_Bar(axes._Axes_Base):
             if self._ui_pos is 'auto':
                 bar_pos = _np.array([\
                     ax_bbox.x0 + ax_bbox.width/2.0  - self._num_tick * self.sdim / 2.0, \
-                    ax_bbox.y0 - ax_2_bar_gap - bar_width])
+                    ax_bbox.y0 - self.ax_2_bar_gap - bar_width])
                 #We must immediately reset the user input position to 'auto'
                 #since the position setter method assumes any input was 
                 #supplied by the user.
@@ -263,7 +269,7 @@ class Color_Bar(axes._Axes_Base):
             #Place the color bar to the right of the data axes, vertically 
             #centered            
             if self._ui_pos == 'auto':
-                bar_pos = _np.array([ax_bbox.x1 + ax_2_bar_gap, \
+                bar_pos = _np.array([ax_bbox.x1 + self.ax_2_bar_gap, \
                     ax_bbox.y0 + ax_bbox.height/2.0 - self.size[1] / 2.0])
                 #We must immediately reset the user input position to 'auto'
                 #since the position setter method assumes any input was 
