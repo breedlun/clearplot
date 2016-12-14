@@ -272,7 +272,6 @@ def plot_markers(filename, x, y, labels = [None], \
     --------
     plot_functions.plot()
     """
-    labels = kwargs.pop('labels', [None])
     legend = kwargs.pop('legend', 'auto')
     legend_loc = kwargs.pop('legend_loc', 'best')
     legend_outside_ax = kwargs.pop('legend_outside_ax', False)
@@ -395,7 +394,6 @@ def plot_bars(filename, x, y, labels = [None], \
     bars: list
         Bar objects
     """
-    labels = kwargs.pop('labels', [None])
     legend = kwargs.pop('legend', 'auto')
     legend_loc = kwargs.pop('legend_loc', 'best')
     legend_outside_ax = kwargs.pop('legend_outside_ax', False)
