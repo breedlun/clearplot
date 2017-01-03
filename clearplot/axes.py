@@ -2393,6 +2393,134 @@ class Axes(_Data_Axes_Base):
         self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)
         self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)
         return(im_obj)
+        
+    def add_h_line(self, y, **kwargs):
+        """
+        Adds a horizontal line that spans the axes
+        
+        Parameters
+        ----------
+        y : float
+            y-coordinate of line
+        color : 1x3 list, optional
+            Color of line.  RGB values should be between 0 and 1.
+        width : float, optional
+            Width of line, in points.
+        line_style : string, optional
+            Style of line.  Valid styles include '-', '--', '-.', ':'.
+        kwargs:
+            Keyword arguments to matplotlib's line2D.  See the
+            `matplotlib documentation <http://matplotlib.org/api/lines_api.html#matplotlib.lines.Line2D>`__
+            for further details
+        
+        Returns
+        -------
+        line : line2D instance
+        """
+        line_width = kwargs.pop('line_width', 1.0)
+        color = kwargs.pop('color', [0,0,0])
+        line_style = kwargs.pop('line_style', '-')
+        line = self.mpl_ax.axhline(y, color = color, \
+            linewidth = line_width, linestyle = line_style, **kwargs)
+        return(line)
+        
+    def add_v_line(self, x, **kwargs):
+        """
+        Adds a vertical line that spans the axes
+        
+        Parameters
+        ----------
+        x : float
+            x-coordinate of line
+        color : 1x3 list, optional
+            Color of line.  RGB values should be between 0 and 1.
+        width : float, optional
+            Width of line, in points.
+        line_style : string, optional
+            Style of line.  Valid styles include '-', '--', '-.', ':'.
+        kwargs:
+            Keyword arguments to matplotlib's line2D.  See the
+            `matplotlib documentation <http://matplotlib.org/api/lines_api.html#matplotlib.lines.Line2D>`__
+            for further details
+        
+        Returns
+        -------
+        line : line2D instance
+        """
+        line_width = kwargs.pop('line_width', 1.0)
+        color = kwargs.pop('color', [0,0,0])
+        line_style = kwargs.pop('line_style', '-')
+        line = self.mpl_ax.axvline(x, color = color, \
+            linewidth = line_width, linestyle = line_style, **kwargs)
+        return(line)
+        
+    def add_h_rect(self, y, **kwargs):
+        """
+        Adds a horizontal rectangle that spans the axes
+        
+        Parameters
+        ----------
+        y : 1x2 numpy array
+            y-coordinates of rectangle's bottom and top edes
+        color : 1x3 list, optional
+            Color of rectangle.  RGB values should be between 0 and 1.
+        edge_color : 1x3 list, optional
+            Color of rectangle edges.  RGB values should be between 0 and 1.
+        edge_width : float, optional
+            Width of rectangle edges, in points.
+        edge_style : string, optional
+            Style of edges.  Valid styles include '-', '--', '-.', ':'.
+        kwargs:
+            Keyword arguments to matplotlib's polygon.  See the
+            `matplotlib documentation <http://matplotlib.org/api/patches_api.html#matplotlib.patches.Polygon>`__
+            for further details
+        
+        Returns
+        -------
+        span : polygon instance
+        """
+        edge_width = kwargs.pop('edge_width', 0.0)
+        color = kwargs.pop('color', [0.8,0.8,0.8])
+        edge_color = kwargs.pop('edge_color', [0,0,0])
+        edge_style = kwargs.pop('edge_style', '-')
+        span = self.mpl_ax.axhspan(y[0], y[1], facecolor = color, \
+            edgecolor = edge_color, linewidth = edge_width, \
+            linestyle = edge_style, **kwargs)
+        return(span)
+        
+    def add_v_rect(self, x, **kwargs):
+        """
+        Adds a vertical rectangle that spans the axes
+        
+        Parameters
+        ----------
+        x : 1x2 numpy array
+            x-coordinates of rectangle's left and right edges
+        color : 1x3 list, optional
+            Color of rectangle.  RGB values should be between 0 and 1.
+        edge_color : 1x3 list, optional
+            Color of rectangle edges.  RGB values should be between 0 and 1.
+        edge_width : float, optional
+            Width of rectangle edges, in points.
+        edge_style : string, optional
+            Style of edges.  Valid styles include '-', '--', '-.', ':'.
+        kwargs :
+            Keyword arguments to matplotlib's polygon.  See the
+            `matplotlib documentation <http://matplotlib.org/api/patches_api.html#matplotlib.patches.Polygon>`__
+            for further details
+        
+        Returns
+        -------
+        span : polygon instance
+        """
+        edge_width = kwargs.pop('edge_width', 0.0)
+        color = kwargs.pop('color', [0.8,0.8,0.8])
+        edge_color = kwargs.pop('edge_color', [0,0,0])
+        edge_style = kwargs.pop('edge_style', '-')
+        span = self.mpl_ax.axvspan(x[0], x[1], facecolor = color, \
+            edgecolor = edge_color, linewidth = edge_width, \
+            linestyle = edge_style, **kwargs)
+        return(span)
             
     def plot(self, x, y, labels = [None], **kwargs):
         """
@@ -2425,6 +2553,9 @@ class Axes(_Data_Axes_Base):
         marker_edge_colors: list of 1x3 lists, optional
             Colors of marker edges.  RGB values should be between 0 and 1.
 
+        Returns
+        -------
+        curves : list of curve instances
             
         See Also
         --------
@@ -2509,6 +2640,10 @@ class Axes(_Data_Axes_Base):
             Width of marker edges in points.
         edge_colors: list of 1x3 lists, optional
             Colors of marker edges.  RGB values should be between 0 and 1.
+        
+        Returns
+        -------
+        markers : list of marker instances
             
         See Also
         --------
@@ -2648,6 +2783,10 @@ class Axes(_Data_Axes_Base):
             Colors of bar edges.  RGB values should be between 0 and 1.
         align : ['center' | 'edge'], optional
             Specifies which part of the bar to align to the x coordinate
+            
+        Returns
+        -------
+        bars : list of bar instances
         """
         widths = kwargs.pop('widths', [0.5])
         colors = kwargs.pop('colors', \

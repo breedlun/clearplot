@@ -8,21 +8,21 @@ Created on Mon May 30 21:11:27 2016
 import clearplot.plot_functions as pf
 
 #Verification that duplicate legend labels are automatically removed
-x19a = [0,1]
-x19b = [0,1]
-x19c = [0,1]
-x19d = [0,1]
-x19e = [0,1]
-x19f = [0,1]
-y19a = [0,0.1]
-y19b = [0,0.2]
-y19c = [0,0.3]
-y19d = [0,0.4]
-y19e = [0,0.5]
-y19f = [0,0.6]
+xa = [0,1]
+xb = [0,1]
+xc = [0,1]
+xd = [0,1]
+xe = [0,1]
+xf = [0,1]
+ya = [0,0.1]
+yb = [0,0.2]
+yc = [0,0.3]
+yd = [0,0.4]
+ye = [0,0.5]
+yf = [0,0.6]
 pf.plot('duplicate_legend_labels', \
-    [x19a, x19b, x19c, x19d, x19e, x19f], \
-    [y19a, y19b, y19c, y19d, y19e, y19f], \
+    [xa, xb, xc, xd, xe, xf], \
+    [ya, yb, yc, yd, ye, yf], \
     curve_colors = [[1,0,0], [0,1,0], [0,1,0], [0,0,1], [0,0,1], [0,0,1]],\
     curve_widths = [1,2,2,3,3,3], \
     curve_styles = ['-', '--', '--', ':', ':', ':'],\
