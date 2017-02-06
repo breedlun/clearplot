@@ -696,7 +696,7 @@ def plot_intensity_map(filename, x, y, z, x_label = None, y_label = None, **kwar
     
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
     
-    im = ax.plot_density_map(x, y, z, c_scale = c_scale, **kwargs)
+    im = ax.plot_intensity_map(x, y, z, c_scale = c_scale, **kwargs)
     
     if c_bar:
         #Place color bar
@@ -825,7 +825,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     [bg, cl] = ax.plot_contours(x, y, z, c_scale = c_scale, **kwargs)
     
     if c_bar:
-        if plot_type is 'lines':
+        if plot_type == 'lines':
             c_obj = cl
         else:
             c_obj = bg
@@ -1066,7 +1066,7 @@ def show_im(filename, im_seq, **kwargs):
         
     if c_bar:
         #Place color bar
-        c_bar = fig.add_color_bar(im_ax, im_obj[0], \
+        c_bar = fig.add_color_bar(im_obj[0], \
             label = c_label, lim = c_lim, tick = c_tick, orient = c_orient)
 
     #Update canvas

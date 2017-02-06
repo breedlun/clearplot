@@ -21,7 +21,7 @@ ax.x_label = ['x', 'pix']
 ax.y_label = ['y', 'pix']
 im_obj = ax.add_image(im, im_interp = 'bilinear', c_map = cp.colors.c_maps['light_gray'])
 ax.x_tick = 50
-fig.add_color_bar(ax, im_obj)
+fig.add_color_bar(im_obj)
 fig.auto_adjust_layout()
 #As reported in issue #4260 on Github 
 #(https://github.com/matplotlib/matplotlib/issues/4260) matplotlib makes the

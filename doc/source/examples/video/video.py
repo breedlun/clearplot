@@ -41,6 +41,8 @@ ax.plot_markers(x_b, y_b, colors = [1,1,1], edge_widths = [2], sizes = [8])
 [fig, im_ax, imgs] = pf.show_im('', im[:, cols], scale_im = 1.15, \
     c_label = ['\bar{\varepsilon}^p', '\%'], c_lim = [0, 100], c_tick = 25, \
     c_bar = True, fig = fig, ax_pos = [140.0, 18.0], im_interp = 'bicubic')
+#Save the first image of the video (for the website)
+fig.save('video.png')
 
 #Get the marker and image objects to be updated with each frame
 marker = ax.markers[0]
@@ -66,7 +68,7 @@ def update_fig(i):
 anim = ani.FuncAnimation(fig.mpl_fig, update_fig, init_func = init, \
     frames = max(ndx_list)/2, interval = 2)
 #Specify ffmpeg installation path
-plt.rcParams['animation.ffmpeg_path'] = '/opt/local/bin/ffmpeg'
+plt.rcParams['animation.ffmpeg_path'] = u'/opt/local/bin/ffmpeg'
 #Save the animation
 writer = ani.FFMpegWriter(fps = 15, bitrate = 300)
 anim.save('video.mp4', writer = writer)

@@ -26,7 +26,7 @@ import matplotlib as _mpl
 _mpl.rcParams['backend'] = 'TkAgg'
 
 #Misc Settings
-#The default background is gray, change it to white 
+#The default background is gray prior to matplotlib v2.0.0, change it to white 
 _mpl.rcParams['figure.facecolor'] = 'white'
 _mpl.rcParams['image.interpolation'] = 'none'
 _mpl.rcParams['figure.figsize'] = [150.0/25.4, 150.0/25.4]
@@ -35,6 +35,7 @@ _mpl.rcParams['figure.figsize'] = [150.0/25.4, 150.0/25.4]
 _mpl.rcParams['lines.linewidth'] = 2
 _mpl.rcParams['lines.solid_capstyle'] = 'butt'
 _mpl.rcParams['lines.dash_capstyle'] = 'butt'
+_mpl.rcParams['axes.linewidth'] = 1
 
 #Tick mark settings (units = points)
 _mpl.rcParams['xtick.major.width'] = 1
@@ -51,8 +52,9 @@ _mpl.rcParams['xtick.direction'] = 'out'
 _mpl.rcParams['ytick.direction'] = 'out'
 
 #Legend settings
-_mpl.rcParams['legend.borderpad'] = 0.35
-_mpl.rcParams['legend.handletextpad'] = 0.25
+_mpl.rcParams['legend.borderpad'] = 0.4
+_mpl.rcParams['legend.handletextpad'] = 0.35
+_mpl.rcParams['legend.handlelength'] = 1.5
 
 #Font settings
 _mpl.rcParams['font.family'] = 'sans-serif'
@@ -65,8 +67,12 @@ _mpl.rcParams['font.size'] = 16
 _mpl.rcParams['legend.fontsize'] = 16
 #The font type must be set to 42 (TrueType) so that Acrobat/Illustrator can 
 #edit the text
-_mpl.rcParams['pdf.fonttype'] = 42
-_mpl.rcParams['ps.fonttype'] = 42
+if _mpl.__version__ == '2.0.0':
+    _mpl.rcParams['pdf.fonttype'] = 3
+    _mpl.rcParams['ps.fonttype'] = 3
+else:
+    _mpl.rcParams['pdf.fonttype'] = 42
+    _mpl.rcParams['ps.fonttype'] = 42
 
 #LaTeX Text Rendering
 ##If using latex to render everything, you may need to do 
@@ -107,7 +113,8 @@ auto_layout_pad = 2.0 #mm
 #videos to be all garbled (see https://github.com/matplotlib/matplotlib/issues/2483).
 _mpl.rcParams['savefig.format'] = 'pdf'
 #For some crazy reason, the default image dpi for files is different than the 
-#figure window dpi
+#figure window dpi prior to matplotlib v2.0.0
+_mpl.rcParams['figure.dpi'] = 80.0
 _mpl.rcParams['savefig.dpi'] = _mpl.rcParams['figure.dpi']
 _mpl.rcParams['path.snap'] = False
 _mpl.rcParams['path.simplify'] = False

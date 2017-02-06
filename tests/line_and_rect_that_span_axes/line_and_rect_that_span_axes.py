@@ -19,4 +19,4 @@ ax.add_h_line(1.0, color = [0,0,1])
 ax.add_v_rect(np.array([1.5, 2.5]), edge_width = 1)
 ax.add_h_rect(np.array([1.5, 2.5]), color = [0,0.6,0])
 
-fig.save('line_and_rect_that_span_axes.png')
+fig.save('line_and_rect_that_span_axes')

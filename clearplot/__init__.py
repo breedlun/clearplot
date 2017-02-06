@@ -41,9 +41,11 @@ mpl_version = _parse_version_string(_mpl.__version__)
 if mpl_version < _parse_version_string(min_mpl_version):
     raise ValueError('Matplotlib version must be ' + min_mpl_version + ' or greater')
 if mpl_version == (1,4,2):
-    _warnings.warn("Warning: Markers may not work properly due to a bug in matplotlib 1.4.2.")
+    _warnings.warn("Warning: Markers may not work properly due to a bug in matplotlib 1.4.2.", stacklevel = 2)
 if mpl_version == (1,4,3):
     raise ValueError("Matplotlib 1.4.3 is incompatible with clearplot.  Matplotlib 1.4.3 has a bug that causes annotations, including axis labels, to be placed incorrectly.")
+if mpl_version == (2,0,0):
+    _warnings.warn("Warning: Due to a bug in matplotlib 2.0.0, text will be saved as font type 3 instead of font type 42.  This means that text in PDF or PS files will not be editable if the file is opened in a vector graphics program such as Adobe Illustrator.", stacklevel = 2)
 
 #==============================================================================
 # Define Parameters

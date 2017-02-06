@@ -955,15 +955,13 @@ class Axes(_Data_Axes_Base):
         #hides the dashed lines.)
         self.mpl_ax.spines['x_zero'] = _mpl_Spine(self.mpl_ax, 'right', \
             _mpl_Path(([[ 0., 0.], [ 0.,  0.]]), None), \
-            linestyle = '--', linewidth = 1.0, facecolor = [0,0,0], \
-            clip_on = True, clip_box = self.mpl_ax.bbox)
+            linestyle = (0, (3, 3)), linewidth = 1.0, facecolor = [0,0,0], \
+            clip_on = True, clip_box = self.mpl_ax.bbox, zorder = 0)
         self.mpl_ax.spines['y_zero'] = _mpl_Spine(self.mpl_ax, 'top', \
             _mpl_Path(([[ 0., 0.], [ 0.,  0.]]), None), \
-            linestyle = '--', linewidth = 1.0, facecolor = [0,0,0], \
-            clip_on = True, clip_box = self.mpl_ax.bbox) 
+            linestyle = (0, (3, 3)), linewidth = 1.0, facecolor = [0,0,0], \
+            clip_on = True, clip_box = self.mpl_ax.bbox, zorder = 0) 
         
-
-
     @property
     def x_scale(self):
         """
@@ -1028,8 +1026,10 @@ class Axes(_Data_Axes_Base):
         #etc.  This results in only one minor tick mark for natural log scaled 
         #axes.  Instead we just place 9 linearly spaced tick marks.
         if _np.abs(b - _np.e) < 1e-12:
-            minor_ticks = _np.arange(0.1*(b-1.0)+1.0, \
-                0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
+            #(As detailed in https://github.com/matplotlib/matplotlib/issues/8023,
+            #minor ticks must be input as a list, at least in matplotlib 2.0.0.)
+            minor_ticks = list(_np.arange(0.1*(b-1.0)+1.0, \
+                0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0)))
         else:
             minor_ticks = None
         self.mpl_ax.set_yscale(y_scale, basey = b, subsy = minor_ticks)
@@ -1261,6 +1261,17 @@ class Axes(_Data_Axes_Base):
         spacing once.
         """
         #Get the data limits on current and linked axes
+        
+#        data_sets = []
+#        data_sets.extend(self.curves[:])
+#        data_sets.extend(self.markers[:])
+#        data_lims = []
+#        for data_set in data_sets:
+#            x = data_set.get_xdata()
+#            y = data_set.get_ydata()
+#            lgc = _np.logical_and(x>self._ui_x_lim[0], x<self._ui_x_lim[1])
+#            data_lims.append(_np.nanmin(y[lgc]), _np.nanmax(y[lgc]))
+        
         data_lims = []
         data_lims.append(self.mpl_ax.yaxis.get_data_interval())
         for la in self.linked_y_ax:
@@ -1458,7 +1469,7 @@ class Axes(_Data_Axes_Base):
                 data_set.get_linestyle())
             data_set.set_xdata(x_c)
             data_set.set_ydata(y_c)
-             
+        
     def _clip_data(self, x, y, lims, tick, ax_scale, ax_log_base, line_style):
         """Clips data to limits"""
 
@@ -1843,9 +1854,10 @@ class Axes(_Data_Axes_Base):
                 c_data.append([curve.get_label(), color[0], color[1], color[2], \
                     curve.get_linestyle(), curve.get_linewidth(), \
                     ])
-                if curve.get_marker() is not None:
+                if curve.get_marker() is not None and curve.get_marker() != 'None':
                     #We only care that two curves have different marker colors if
-                    #the curves have markers.
+                    #the curves have markers.  (We have to check for None and 
+                    #'None' because I think it changed to 'None' with mpl v2.0.0)
                     e_color = curve.get_markeredgecolor()
                     f_color = curve.get_markerfacecolor()
                     c_data[-1].extend([curve.get_marker(), \
@@ -1990,13 +2002,15 @@ class Axes(_Data_Axes_Base):
         #curves to label, but the dashed lines that mark zero cause it to get
         #confused, so I found I had to explicitly specify the curves to label.
         legend = self.mpl_ax.legend(artists, raw_labels, loc = loc, \
-            bbox_to_anchor = ax_coord, **kwargs)
+            bbox_to_anchor = ax_coord, edgecolor = [0,0,0,1], **kwargs)
         #The legend has some sort of clipping box that causes the 
         #fig.tight_bbox() code to ignore the legend.  fig.tight_bbox() is used
         #to appropriately size the figure window before saving, so this 
         #resulted in clipped legends.  The solution is to simply turn off the
         #clipping box.
         legend.set_clip_on(False)
+        frame = legend.get_frame()
+        frame.set_linewidth(0.75)
         return(legend)
                 
     def add_arrowheads_to_curves(self, **kwargs):
@@ -2311,7 +2325,7 @@ class Axes(_Data_Axes_Base):
                     if angles[n] == 'auto':
                         #Find the leader line length for each of the candidate 
                         #angles
-                        cand_ndx = _np.zeros(angle_cand.shape)
+                        cand_ndx = _np.zeros(angle_cand.shape, dtype = int)
                         cand_l = _np.zeros(angle_cand.shape)
                         for k, ac in enumerate(angle_cand):
                             cand_ndx[k] = _np.where(_np.nanmin(_np.abs(beta - ac)) \
@@ -3274,7 +3288,7 @@ class Axes(_Data_Axes_Base):
             cl_labels = _np.round(cl_labels, 12)
      
         #Verify that a proper plot type was specified   
-        if plot_type not in ['filled', 'image', 'lines']:
+        if plot_type not in ['filled', 'intensity map', 'lines']:
             raise IOError("Did not recognize the plot type")    
         
         if cl_width is 'auto':
@@ -3297,24 +3311,28 @@ class Axes(_Data_Axes_Base):
             cl_colors = _utl.adjust_depth(cl_colors, 2)
         
         #Generate background
-        if plot_type is 'filled':
+        if plot_type == 'filled':
             b_obj = self.mpl_ax.contourf(x, y, z, cl_levels, cmap = c_map)
             #Store info in case other methods, such as the colorbar, need to 
             #know
             b_obj._ui_c_lim = ui_c_lim
             b_obj.parent_ax = self
-        elif plot_type is 'intensity map':
+        elif plot_type == 'intensity map':
             #Plot the background image
             b_obj = self.plot_intensity_map(x, y, z, c_map = c_map, \
                 c_lim = c_lim, interp = im_interp)
 
             
         #Generate contour lines
-        if plot_type is 'lines':
+        if plot_type == 'lines':
+            #Color contour lines according to their elevation
             cl_obj = self.mpl_ax.contour(x, y, z, cl_levels, cmap = c_map, \
                 linewidths = cl_width, linestyles = cl_style)
+            cl_obj._ui_c_lim = ui_c_lim
+            cl_obj.parent_ax = self
             b_obj = None
         else:
+            #Color contour lines accordin to some other scheme
             cl_obj = self.mpl_ax.contour(x, y, z, cl_levels, colors = cl_colors, \
                 linewidths = cl_width, linestyles = cl_style)
         

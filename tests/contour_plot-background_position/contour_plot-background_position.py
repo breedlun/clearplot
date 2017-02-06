@@ -23,13 +23,13 @@ fig = cpfig.Figure(size = fig_size)
 #Add plots to figure window
 [fig, ax, bg, cl] = pf.plot_contours('', x, y, z, plot_type = 'filled', \
     fig = fig, ax_pos = [35, 30], c_label = ['z', 'mm'], x_tick = 1, y_tick = 1)
-ax.add_title('Filled')
-[fig, ax, bg, cl] = pf.plot_contours('', x, y, z, plot_type = 'image', \
+ax.add_title('\sf{Filled}')
+[fig, ax, bg, cl] = pf.plot_contours('', x, y, z, plot_type = 'intensity map', \
     fig = fig, ax_pos = [155, 30], c_label = ['z', 'mm'], \
     x_tick = 1, y_tick = 1, x_lim = [0,3], y_lim = [0,3])
-ax.add_title('Image')
+ax.add_title('\sf{Image}')
 [fig, ax, bg, cl] = pf.plot_contours('', x, y, z, plot_type = 'lines', \
     fig = fig, ax_pos = [275, 30], c_label = ['z', 'mm'], x_tick = 1, y_tick = 1)
-ax.add_title('Lines Only')
+ax.add_title('\sf{Lines\;Only}')
 #Save result
 fig.save('contour_plot-background_position')
