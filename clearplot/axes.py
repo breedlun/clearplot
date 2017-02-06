@@ -2703,7 +2703,7 @@ class Axes(_Data_Axes_Base):
         #Set the limits and ticks
         self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)
         self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)
-        return(self.markers[j:j+1])
+        return(self.markers[j:j+i])
     
     def plot_error_bars(self, x, y, **kwargs):
         """
