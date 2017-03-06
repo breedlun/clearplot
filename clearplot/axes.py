@@ -2002,7 +2002,7 @@ class Axes(_Data_Axes_Base):
         #curves to label, but the dashed lines that mark zero cause it to get
         #confused, so I found I had to explicitly specify the curves to label.
         legend = self.mpl_ax.legend(artists, raw_labels, loc = loc, \
-            bbox_to_anchor = ax_coord, edgecolor = [0,0,0,1], **kwargs)
+            bbox_to_anchor = ax_coord, **kwargs)
         #The legend has some sort of clipping box that causes the 
         #fig.tight_bbox() code to ignore the legend.  fig.tight_bbox() is used
         #to appropriately size the figure window before saving, so this 

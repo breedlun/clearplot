@@ -55,6 +55,7 @@ _mpl.rcParams['ytick.direction'] = 'out'
 _mpl.rcParams['legend.borderpad'] = 0.4
 _mpl.rcParams['legend.handletextpad'] = 0.35
 _mpl.rcParams['legend.handlelength'] = 1.5
+_mpl.rcParams['legend.edgecolor'] = [0,0,0,1]
 
 #Font settings
 _mpl.rcParams['font.family'] = 'sans-serif'
