@@ -34,7 +34,7 @@ def _parse_version_string(v):
             try:
                 v_list[i] = int(v_list[i])
             except ValueError:
-                print """WARNING: Cannot parse 'matplotlib.__version__'. Please manually verify that your version of matplotlib is greater than """ + min_mpl_version
+                print("""WARNING: Cannot parse 'matplotlib.__version__'. Please manually verify that your version of matplotlib is greater than """ + min_mpl_version)
     return v_list
 #Verify the minimum version of matplotlib is installed
 mpl_version = _parse_version_string(_mpl.__version__)
@@ -51,14 +51,14 @@ if mpl_version == (2,0,0):
 # Define Parameters
 #==============================================================================  
 
-import params
+from clearplot import params
 
 #==============================================================================
 # Import for Convenience
 #============================================================================== 
 
-import colors
-import figure
-import axes
-import color_bar
-import plot_functions
+from clearplot import colors
+from clearplot import figure
+from clearplot import axes
+from clearplot import color_bar
+from clearplot import plot_functions

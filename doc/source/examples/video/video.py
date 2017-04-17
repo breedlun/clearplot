@@ -66,7 +66,7 @@ def update_fig(i):
     
 #Create the animation
 anim = ani.FuncAnimation(fig.mpl_fig, update_fig, init_func = init, \
-    frames = max(ndx_list)/2, interval = 2)
+    frames = int(max(ndx_list)/2), interval = 2)
 #Specify ffmpeg installation path
 plt.rcParams['animation.ffmpeg_path'] = u'/opt/local/bin/ffmpeg'
 #Save the animation

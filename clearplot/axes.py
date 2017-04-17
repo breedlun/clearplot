@@ -6,15 +6,15 @@ import matplotlib as _mpl
 import matplotlib.pyplot as _plt
 import numpy as _np
 from copy import deepcopy
-import utilities as _utl
 import warnings as _warnings
 import matplotlib.patches as _mpl_patches
 from matplotlib.path import Path as _mpl_Path
 from matplotlib.lines import Line2D as _mpl_Line2D
 from matplotlib.spines import Spine as _mpl_Spine
 import clearplot as _cp
-import custom_annotations as _ca
-import axis_label as _axis_label
+from clearplot import utilities as _utl
+from clearplot import axis_label as _axis_label
+from clearplot import custom_annotations
 
 class _Axes_Base(object):
     def __init__(self, fig, **kwargs):
@@ -2074,9 +2074,9 @@ class Axes(_Data_Axes_Base):
             if pick.lower() not in ['tip', 'center', 'middle']:
                 raise ValueError("""The input for 'arrow_pick' was not recognized""")
             #Inform the user what to do
-            print 'Select the ' + pick.lower() + 'of the arrowhead location(s) for each curve of each axis.'
-            print 'Left click all the locations for a single curve, then press enter (or right click) to proceed to the next curve/axis.'
-            print 'Alternatively, press enter, without left clicking any locations, to skip to the next curve.'
+            print('Select the ' + pick.lower() + 'of the arrowhead location(s) for each curve of each axis.')
+            print('Left click all the locations for a single curve, then press enter (or right click) to proceed to the next curve/axis.')
+            print('Alternatively, press enter, without left clicking any locations, to skip to the next curve.')
         else:
             #If the arrow indices have been specified, make sure the list has the 
             #proper depth
@@ -2087,7 +2087,7 @@ class Axes(_Data_Axes_Base):
             xi = curve.full_x_data
             yi = curve.full_y_data
             if ndx_pick:
-                print 'Curve # %r' %(c + 1)
+                print('Curve # %r' %(c + 1))
                 #Get user specified location for text, in the data coordinate
                 #system
                 c_ndx = []
@@ -2131,9 +2131,9 @@ class Axes(_Data_Axes_Base):
                 self.mpl_ax.draw_artist(arrowhead)
             self.parent_fig.update()
         if ndx_pick:
-            print """Here are the arrow indices so that you can input them directly next time."""
-            print """arrow_ndx = """
-            print ndx
+            print("""Here are the arrow indices so that you can input them directly next time.""")
+            print("""arrow_ndx = """)
+            print(ndx)
             
     def label_curves(self, **kwargs):
         """
@@ -2241,11 +2241,11 @@ class Axes(_Data_Axes_Base):
                 ndx = ['auto']
                 if angles == ['auto']:
                     angles = [120]
-                print """Click on the plot to select the leader line root location for each curve of each axis."""
+                print("""Click on the plot to select the leader line root location for each curve of each axis.""")
             elif pick.lower() == 'text':
                 ndx = ['auto']
                 lengths = ['auto']
-                print """Click on the plot to select the label text location for each curve of each axis."""
+                print("""Click on the plot to select the label text location for each curve of each axis.""")
             else:
                 raise IOError("""The input for 'pick' was not recognized""")
         else:
@@ -2297,7 +2297,7 @@ class Axes(_Data_Axes_Base):
             xi = curves[c].full_x_data
             yi = curves[c].full_y_data
             if pick is not False:
-                print console_text
+                print(console_text)
                 #Get user specified location for text, in the data coordinate
                 #system
                 lpick = _plt.ginput(1)[0]
@@ -2382,14 +2382,14 @@ class Axes(_Data_Axes_Base):
         #After the last label has been placed, inform the user of the
         #following:
         if pick is not False:
-            print """Here is the label information so that you can input it 
-            directly next time."""
-            print """ndx = """
-            print ndx
-            print """angles = """
-            print angles
-            print """lengths = """
-            print lengths
+            print("""Here is the label information so that you can input it 
+            directly next time.""")
+            print("""ndx = """)
+            print(ndx)
+            print("""angles = """)
+            print(angles)
+            print("""lengths = """)
+            print(lengths)
             #TODO: Print label info in a more user friendly way.  Round numbers,
             #get rid of the latex formatting.
             
@@ -2926,7 +2926,7 @@ class Axes(_Data_Axes_Base):
                 linewidth = body_edge_widths[i], \
                 edgecolor = body_edge_colors[i])
             for key in ['cbars', 'cmins', 'cmeans', 'cmedians', 'cmaxes']:
-                if self.violins[i].has_key(key):
+                if key in self.violins[i]:
                     _plt.setp(self.violins[i][key], \
                         linestyle = line_styles[i], \
                         color = line_colors[i], \

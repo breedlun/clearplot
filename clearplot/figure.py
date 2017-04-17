@@ -9,9 +9,9 @@ from matplotlib.lines import Line2D as _mpl_Line2D
 from matplotlib.patches import Polygon as _mpl_Polygon
 import matplotlib.text as _mpl_text
 import clearplot as _cp
-import axes as _axes
-import color_bar as _color_bar
-import utilities as _utl
+from clearplot import axes as _axes
+from clearplot import color_bar as _color_bar
+from clearplot import utilities as _utl
 
 class Figure(object):
     """

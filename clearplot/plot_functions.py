@@ -3,10 +3,10 @@
 #@author: Benjamin Reedlunn
 
 import clearplot as _cp
-import figure as _figure
+from clearplot import figure as _figure
 import matplotlib as _mpl
 import numpy as _np
-import utilities as _utl
+from clearplot import utilities as _utl
 
 def _setup_plot(x_label, y_label, **kwargs):
     """
@@ -1000,7 +1000,7 @@ def show_im(filename, im_seq, **kwargs):
         if scale_im > 1:
             scale_im = 1
         else:
-            print 'Images scaled by %.3f to fit on screen' %(scale_im)  
+            print('Images scaled by %.3f to fit on screen' %(scale_im))
     #Define image axes width and height (in inches)
     ax_size = _np.array([_np.sum(im_seq_sizes[:,0]), \
         _np.max(im_seq_sizes[:,1])]) * scale_im / _cp.params.dpmm

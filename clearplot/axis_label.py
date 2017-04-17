@@ -3,7 +3,7 @@
 #author: Benjamin Reedlunn
 
 import numpy as _np
-import utilities as _utl
+from clearplot import utilities as _utl
 import matplotlib as _mpl
 import clearplot as _cp
 

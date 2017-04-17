@@ -55,15 +55,17 @@ class move_ttf(install):
                     old_path = os.path.join(cp_ttf_dir, file_name)
                     new_path = os.path.join(mpl_ttf_dir, file_name)
                     shutil.copyfile(old_path, new_path)
-                    print "Copying " + old_path + " -> " + new_path
+                    print("Copying " + old_path + " -> " + new_path)
             
             #Try to delete matplotlib's fontList cache
             mpl_cache_dir = mpl.get_cachedir()
             mpl_cache_dir_ls = os.listdir(mpl_cache_dir)
-            if 'fontList.cache' in mpl_cache_dir_ls:
-                fontList_path = os.path.join(mpl_cache_dir, 'fontList.cache')
-                os.remove(fontList_path)
-                print "Deleted the matplotlib fontList.cache"
+            font_list_cache_names = ["fontList.cache", "fontList.py3k.cache"]
+            for font_list_cache_name in font_list_cache_names:
+                if font_list_cache_name in mpl_cache_dir_ls:
+                    fontList_path = os.path.join(mpl_cache_dir, font_list_cache_name)
+                    os.remove(fontList_path)
+                    print("Deleted the matplotlib " + font_list_cache_name)
         except:
             warnings.warn("WARNING: An issue occured while installing the custom fonts for clearplot.")
 
@@ -88,8 +90,8 @@ setup(
         'License :: OSI Approved :: MIT License',
 	    # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2 :: Only',
         'Programming Language :: Python :: 2.7',
+        'Programming Language :: Python :: 3.6',
         # Indicate who your project is intended for
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Visualization'],

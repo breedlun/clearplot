@@ -4,14 +4,11 @@
 
 import matplotlib as _mpl
 import numpy as _np
-import matplotlib.text as _mpl_text
-from matplotlib.patches import Polygon as _mpl_Polygon
-from matplotlib.lines import Line2D as _mpl_Line2D
 from matplotlib.artist import Artist as _Artist
 from matplotlib.transforms import Transform as _Transform
 from matplotlib.transforms import Affine2D as _Affine2D
 from matplotlib.transforms import BboxBase as _BboxBase
-import axes as _axes
+import clearplot as _cp
 #import color_bar as _color_bar
 from itertools import cycle as _cycle
 from itertools import islice as _islice
@@ -143,7 +140,7 @@ class Offset_From(object):
             x, y = l + w * xf, b + h * yf
         elif isinstance(self._artist, _Transform):
             x, y = self._artist.transform_point(self._ref_coord)
-        elif isinstance(self._artist, _axes.Axes):
+        elif isinstance(self._artist, _cp.axes.Axes):
             l, b, w, h = self._artist.mpl_ax.bbox.bounds
             xf, yf = self._ref_pt
             x, y = l + w * xf, b + h * yf
@@ -273,7 +270,7 @@ def flatten(a):
     """
     flat_l = []
     for el in a:
-        if hasattr(el, "__iter__") and not isinstance(el, basestring):
+        if isinstance(el, list):
             flat_l.extend(flatten(el))
         else:
             flat_l.append(el)

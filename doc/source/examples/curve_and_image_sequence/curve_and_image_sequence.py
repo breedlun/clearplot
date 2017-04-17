@@ -27,8 +27,9 @@ for ndx in ndx_list:
     #Crop the field image and add to list
     im_seq.append(im[:,cols,:])
 #Create labels
-labels = range(1, len(ndx_list) + 1)
-labels = map(lambda x: str(x), labels)
+labels = []
+for i in range(1, len(ndx_list) + 1):
+    labels.append(str(i))
 
 #Plot curve
 [fig, ax, curves] = pf.plot('', data[:,0], data[:,1], \

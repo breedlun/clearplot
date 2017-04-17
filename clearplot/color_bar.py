@@ -3,12 +3,11 @@
 #@author: Benjamin Reedlunn
 
 import numpy as _np
-import utilities as _utl
-import axes
+from clearplot import utilities as _utl
+from clearplot import axes as _axes
 import matplotlib as _mpl
-import matplotlib.pyplot as _plt
 
-class Color_Bar(axes._Axes_Base):
+class Color_Bar(_axes._Axes_Base):
     """
     A color bar class
     """

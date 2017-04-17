@@ -6,6 +6,8 @@ Created on Sat Apr 18 20:38:43 2015
 """
 import os
 import clearplot
+#reload is not part of python 3's built-in library, so we must import it
+from imp import reload
 
 #Get the names of all the examples
 cwd = os.getcwd()
@@ -26,6 +28,12 @@ for d in dir_list:
         #the parameters.
         reload(clearplot.params)
         #Run the example script
-        execfile(d + '.py')
+        #(With python 2, you could just do 'execfile()', but python 3 forces you to read
+        #the file and execute the code yourself)
+        with open(d + '.py') as f:
+            #(The compile call isn't strictly needed, but it associates the filename with 
+            #the code object making debugging a little easier.)
+        	code = compile(f.read(), d + '.py', 'exec')
+        	exec(code)
 
 os.chdir(cwd)

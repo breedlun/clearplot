@@ -29,7 +29,7 @@ bg = _np.array([1.0, 1.0, 1.0])
 pastel_np = (1.0 - alpha) * bg + (alpha * std_np)
 c_lists['pastel'] = [list(a) for a in pastel_np]
 #Clean up so code introspection only shows variables the user may want to modify
-del alpha, bg, pastel_np, std_np, a
+del alpha, bg, pastel_np, std_np
 
 #Load custom colormaps
 #(These colormaps were originally stored in a pickle file and loaded upon
