@@ -5,6 +5,7 @@ Created on Sun May 10 09:20:28 2015
 @author: breedlu
 """
 import matplotlib as _mpl
+import clearplot as _cp
 
 #Set the backend for rendering the plot to screen.  (A different renderer is 
 #used for saving the plot to a file.) (It is important to do this before 
@@ -55,7 +56,9 @@ _mpl.rcParams['ytick.direction'] = 'out'
 _mpl.rcParams['legend.borderpad'] = 0.4
 _mpl.rcParams['legend.handletextpad'] = 0.35
 _mpl.rcParams['legend.handlelength'] = 1.5
-_mpl.rcParams['legend.edgecolor'] = [0,0,0,1]
+#Matplotlib 1.4.3 and earlier did not have the 'legend.edgecolor' rcParam
+if _cp.mpl_version > (1,4,3):
+	_mpl.rcParams['legend.edgecolor'] = [0,0,0,1]
 
 #Font settings
 _mpl.rcParams['font.family'] = 'sans-serif'
@@ -68,7 +71,7 @@ _mpl.rcParams['font.size'] = 16
 _mpl.rcParams['legend.fontsize'] = 16
 #The font type must be set to 42 (TrueType) so that Acrobat/Illustrator can 
 #edit the text
-if _mpl.__version__ == '2.0.0':
+if _cp.mpl_version == (2,0,0):
     _mpl.rcParams['pdf.fonttype'] = 3
     _mpl.rcParams['ps.fonttype'] = 3
 else:

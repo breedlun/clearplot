@@ -885,7 +885,7 @@ class Axes(_Data_Axes_Base):
             labelsize = self.font_size, right = False)
         if abs(scale_plot - 1.0) > 1e-10:
             _warnings.warn("""Warning: Due to a bug in matplotlib (github issue #4346)
-                the tick marks and the spaced between the tick marks and the
+                the tick marks and the spacing between the tick marks and the
                 tick mark labels cannot be scaled while creating the plot.  
                 You can, however, scale them after the plot has been created.""")
             
