@@ -1,6 +1,18 @@
 Version History
 ===============
 
+version 1.2.0
+
+1. Updated to be compatible with Python 3.
+2. Updated to be compatible with matplotlib 2.0.0
+3. Modified the color bar class so that multiple images can use the same color bar.
+4. Added the ability to plot an intensity map (heat map) as an image.
+5. Added the ability to place lines and rectangles that span the axes horizontally or vertically.
+6. Added the ability to specify the gap between the color bar and the axes.
+7. Fixed a bug where user input axes positions would sometimes work incorrectly if they were specified after axes instantiation.
+8. Fixed bug where user specified labels would be lost in pf.plot_markers() and pf.plot_bars().
+9. Fixed the bug so that all sets of markers, instead of just the first set, are output by ax.plot_markers().
+
 version 1.1.0
 
 1. Added the ability to have log scaled color bars.
@@ -14,7 +26,6 @@ version 1.1.0
 9. Fixed a bug that allowed markers to sometimes appear outside of the plotting area.
 10. Fixed a bug with auto-adjusting shared axes.  If x/y axis is shared then clearplot attempts to adjust the pair of y/x axes to make them have the same number of tick marks.  If it fails, then it will adjust the physical spacing between the tick marks.  This should be more robust now.
 11. Fixed a bug with picking label text and specifying the leader line angle.
-
 
 version 1.0.7
 
