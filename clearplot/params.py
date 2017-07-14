@@ -56,6 +56,9 @@ _mpl.rcParams['legend.borderpad'] = 0.4
 _mpl.rcParams['legend.handletextpad'] = 0.35
 _mpl.rcParams['legend.handlelength'] = 1.5
 _mpl.rcParams['legend.edgecolor'] = [0,0,0,1]
+#Mac powerpoint makes PDFs with transparent objects blurry, so we
+#avoid having a transparent legend.
+_mpl.rcParams['legend.framealpha'] = 1.0
 
 #Font settings
 _mpl.rcParams['font.family'] = 'sans-serif'
