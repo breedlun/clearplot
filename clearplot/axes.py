@@ -2420,7 +2420,7 @@ class Axes(_Data_Axes_Base):
             Color of line.  RGB values should be between 0 and 1.
         width : float, optional
             Width of line, in points.
-        line_style : string, optional
+        style : string, optional
             Style of line.  Valid styles include '-', '--', '-.', ':'.
         kwargs:
             Keyword arguments to matplotlib's line2D.  See the
@@ -2431,11 +2431,11 @@ class Axes(_Data_Axes_Base):
         -------
         line : line2D instance
         """
-        line_width = kwargs.pop('line_width', 1.0)
+        width = kwargs.pop('width', 1.0)
         color = kwargs.pop('color', [0,0,0])
-        line_style = kwargs.pop('line_style', '-')
+        style = kwargs.pop('style', '-')
         line = self.mpl_ax.axhline(y, color = color, \
-            linewidth = line_width, linestyle = line_style, **kwargs)
+            linewidth = width, linestyle = style, **kwargs)
         return(line)
         
     def add_v_line(self, x, **kwargs):
@@ -2450,7 +2450,7 @@ class Axes(_Data_Axes_Base):
             Color of line.  RGB values should be between 0 and 1.
         width : float, optional
             Width of line, in points.
-        line_style : string, optional
+        style : string, optional
             Style of line.  Valid styles include '-', '--', '-.', ':'.
         kwargs:
             Keyword arguments to matplotlib's line2D.  See the
@@ -2461,11 +2461,11 @@ class Axes(_Data_Axes_Base):
         -------
         line : line2D instance
         """
-        line_width = kwargs.pop('line_width', 1.0)
+        width = kwargs.pop('width', 1.0)
         color = kwargs.pop('color', [0,0,0])
-        line_style = kwargs.pop('line_style', '-')
+        style = kwargs.pop('style', '-')
         line = self.mpl_ax.axvline(x, color = color, \
-            linewidth = line_width, linestyle = line_style, **kwargs)
+            linewidth = width, linestyle = style, **kwargs)
         return(line)
         
     def add_h_rect(self, y, **kwargs):
