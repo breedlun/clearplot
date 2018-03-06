@@ -1,6 +1,10 @@
 Version History
 ===============
 
+next version
+
+1. Fixed a bug where axis arrows would get scaled when the distance between tick marks was scaled.
+
 version 1.2.0
 
 1. Updated to be compatible with Python 3.
