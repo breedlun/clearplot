@@ -37,6 +37,8 @@ class Axis_Label(object):
             self._tick_mm = ax.x_tick_mm
         else:
             self._tick_mm = ax.y_tick_mm
+        #Store scaling dimension for axes
+        self.sdim = ax.sdim
     
     @property
     def position(self):
@@ -102,9 +104,9 @@ class Axis_Label(object):
         arrow: annotation object
         """
         if length == 'auto':
-            length = self._tick_mm
+            length = self.sdim
         if head_length == 'auto':
-            head_length = 7.0 * self._tick_mm / 20.0
+            head_length = 7.0 * self.sdim / 20.0
         arrow = self.parent_ax.add_arrow('=)>', x, cs, \
             self.orient, length, head_length, head_aspect_ratio, color)
         return(arrow)
