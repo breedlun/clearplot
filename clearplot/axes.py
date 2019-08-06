@@ -2584,7 +2584,16 @@ class Axes(_Data_Axes_Base):
         marker_sizes = kwargs.pop('marker_sizes', [6])
         marker_colors = kwargs.pop('marker_colors', \
             _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.color_ndx))
-        marker_edge_widths = kwargs.pop('marker_edge_widths', [0.0])
+        if marker_colors == 'auto':
+            marker_colors = _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.color_ndx)
+        if 'x' in marker_shapes or '1' in marker_shapes or \
+           '2' in marker_shapes or '3' in marker_shapes or \
+           '+' in marker_shapes or '|' in marker_shapes or \
+           '_' in marker_shapes:
+            default_marker_edge_width = [2.0]
+        else:
+            default_marker_edge_width = [0.0]
+        marker_edge_widths = kwargs.pop('marker_edge_widths', default_marker_edge_width)
         marker_edge_colors = kwargs.pop('marker_edge_colors', [[0,0,0]])
         
         
@@ -2669,9 +2678,13 @@ class Axes(_Data_Axes_Base):
         sizes = kwargs.pop('sizes', [6])
         colors = kwargs.pop('colors', \
             _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.marker_color_ndx))
-        edge_widths = kwargs.pop('edge_widths', [0.0])
+        if 'x' in shapes or '1' in shapes or '2' in shapes or '3' in shapes or \
+           '+' in shapes or '|' in shapes or '_' in shapes:
+            default_edge_width = [2.0]
+        else:
+            default_edge_width = [0.0]
+        edge_widths = kwargs.pop('edge_widths', default_edge_width)
         edge_colors = kwargs.pop('edge_colors', [[0,0,0]])   
-          
         [x, y] = self._data_preprocessor(x, y, True, 1)
         C = len(x)
         labels = _utl.preprocess_input(labels, 1, C)

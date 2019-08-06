@@ -4,6 +4,7 @@ Version History
 next version
 
 1. Fixed a bug where axis arrows would get scaled when the distance between tick marks was scaled.
+2. Fixed a bug where explicitly specifying 'auto' for curve or marker colors would not get translated into the default color list.
 
 version 1.2.0
 
