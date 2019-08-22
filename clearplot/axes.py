@@ -2681,10 +2681,12 @@ class Axes(_Data_Axes_Base):
         if 'x' in shapes or '1' in shapes or '2' in shapes or '3' in shapes or \
            '+' in shapes or '|' in shapes or '_' in shapes:
             default_edge_width = [2.0]
+            default_edge_colors = colors
         else:
             default_edge_width = [0.0]
+            default_edge_colors = [[0.0, 0.0, 0.0]]
         edge_widths = kwargs.pop('edge_widths', default_edge_width)
-        edge_colors = kwargs.pop('edge_colors', [[0,0,0]])   
+        edge_colors = kwargs.pop('edge_colors', default_edge_colors)   
         [x, y] = self._data_preprocessor(x, y, True, 1)
         C = len(x)
         labels = _utl.preprocess_input(labels, 1, C)
