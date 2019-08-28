@@ -819,7 +819,7 @@ class Axes(_Data_Axes_Base):
             self.mpl_ax.set_xlim(0.0, self._x_tick * n_tick)
         else:
             #Set the position of the axes
-            if self._ui_pos is 'auto':
+            if self._ui_pos == 'auto':
                 position = _np.array([30, 30])
             else:
                 position = self._ui_pos
@@ -878,33 +878,23 @@ class Axes(_Data_Axes_Base):
                 sharey = link_mpl_y, **kwargs)
         
         #Set tick mark properties: fontsize, remove tick marks from top 
-        #and right of plot
-        self.mpl_ax.xaxis.set_tick_params(which = 'both', \
-            labelsize = self.font_size, top = False)
-        self.mpl_ax.yaxis.set_tick_params(which = 'both', \
-            labelsize = self.font_size, right = False)
-        if abs(scale_plot - 1.0) > 1e-10:
-            _warnings.warn("""Warning: Due to a bug in matplotlib (github issue #4346)
-                the tick marks and the spacing between the tick marks and the
-                tick mark labels cannot be scaled while creating the plot.  
-                You can, however, scale them after the plot has been created.""")
-            
-#        self.mpl_ax.xaxis.set_tick_params(which = 'major', \
-#            labelsize = self.font_size, top = False, \
-#            size = _mpl.rcParams['xtick.major.size'] * scale_plot, \
-#            pad = _mpl.rcParams['xtick.major.pad'] * scale_plot)
-#        self.mpl_ax.yaxis.set_tick_params(which = 'major', \
-#            labelsize = self.font_size, right = False, \
-#            size = _mpl.rcParams['ytick.major.size'] * scale_plot, \
-#            pad = _mpl.rcParams['ytick.major.pad'] * scale_plot)
-#        self.mpl_ax.xaxis.set_tick_params(which = 'minor', \
-#            labelsize = self.font_size, top = False, \
-#            size = _mpl.rcParams['xtick.minor.size'] * scale_plot, \
-#            pad = _mpl.rcParams['xtick.minor.pad'] * scale_plot)
-#        self.mpl_ax.yaxis.set_tick_params(which = 'minor', \
-#            labelsize = self.font_size, right = False, \
-#            size = _mpl.rcParams['ytick.minor.size'] * scale_plot, \
-#            pad = _mpl.rcParams['ytick.minor.pad'] * scale_plot)
+        #and right of plot            
+        self.mpl_ax.xaxis.set_tick_params(which = 'major', \
+            labelsize = self.font_size, top = False, \
+            size = _mpl.rcParams['xtick.major.size'] * scale_plot, \
+            pad = _mpl.rcParams['xtick.major.pad'] * scale_plot)
+        self.mpl_ax.yaxis.set_tick_params(which = 'major', \
+            labelsize = self.font_size, right = False, \
+            size = _mpl.rcParams['ytick.major.size'] * scale_plot, \
+            pad = _mpl.rcParams['ytick.major.pad'] * scale_plot)
+        self.mpl_ax.xaxis.set_tick_params(which = 'minor', \
+            labelsize = self.font_size, top = False, \
+            size = _mpl.rcParams['xtick.minor.size'] * scale_plot, \
+            pad = _mpl.rcParams['xtick.minor.pad'] * scale_plot)
+        self.mpl_ax.yaxis.set_tick_params(which = 'minor', \
+            labelsize = self.font_size, right = False, \
+            size = _mpl.rcParams['ytick.minor.size'] * scale_plot, \
+            pad = _mpl.rcParams['ytick.minor.pad'] * scale_plot)
             
         #Instantiate the x and y labels       
         self.x_label_obj = _axis_label.Axis_Label(self, 0)
