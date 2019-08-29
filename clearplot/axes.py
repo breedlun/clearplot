@@ -1950,7 +1950,7 @@ class Axes(_Data_Axes_Base):
         #$ delimiters.)
         raw_labels = _utl.flatten(labels[:])
         for i, el in enumerate(raw_labels):
-            if el[0] is not '$':
+            if el[0] != '$':
                 raw_labels[i] = '$' + _utl.raw_string(el) + '$'
         if outside_ax:
             if loc.lower() == 'best':
@@ -2248,7 +2248,7 @@ class Axes(_Data_Axes_Base):
         #angles causes the leader lines to look more orderly
         angle_cand = _np.array([30, 60, 120, 150, -150, -120, -60, -30])
         
-        if (style is 'balloon') or (style is 'balloons'):
+        if (style == 'balloon') or (style == 'balloons'):
             #As of matplotlib 1.5.0, you can specify the padding.  Earlier 
             #versions cannot.
             if _cp.mpl_version < (1,5,0):
@@ -2340,7 +2340,7 @@ class Axes(_Data_Axes_Base):
                             (delta_mm[0, ndx[n]]**2.0 + delta_mm[1, ndx[n]]**2.0)**0.5
                         lengths[n] = _np.round(lengths[n], decimals = 2)
             else:
-                if ndx[n] is 'auto':
+                if ndx[n] == 'auto':
                     ndx[n] = _np.round(len(yi) / 2.0)
             #Convert input angle from degrees to radians
             a = angles[n] * _np.pi/180.0
@@ -2359,7 +2359,7 @@ class Axes(_Data_Axes_Base):
                     connectionstyle='arc3, rad=0.0', fc='none', \
                     shrinkA = 0.0, shrinkB = 0.0))
                 self.mpl_ax.draw_artist(l_obj)
-                if style is 'balloon':
+                if style == 'balloon':
                     #Place the white background of the balloon behind the 
                     #label text
                     patch = l_obj.get_bbox_patch()
@@ -3264,7 +3264,7 @@ class Axes(_Data_Axes_Base):
         #to disregard c_obj.set_clim() and c_bar.set_clim().
         #Round is needed so that the contour line labels match up exactly with 
         #the levels.
-        if cl_levels is 'auto':
+        if cl_levels == 'auto':
             if c_scale == 'log':
                 log_base = 10.0
                 cl_levels = _np.round(_np.arange(c_lim[0], \
@@ -3287,7 +3287,7 @@ class Axes(_Data_Axes_Base):
             cl_levels = _np.round(_np.sort(cl_levels), 12)
         
         #Define the contour line labels
-        if cl_labels is 'auto':
+        if cl_labels == 'auto':
             cl_labels = cl_levels[::2]
         else:
             cl_labels = _np.round(cl_labels, 12)
@@ -3296,7 +3296,7 @@ class Axes(_Data_Axes_Base):
         if plot_type not in ['filled', 'intensity map', 'lines']:
             raise IOError("Did not recognize the plot type")    
         
-        if cl_width is 'auto':
+        if cl_width == 'auto':
             #Define the contour line width
             if plot_type == 'filled':
                 cl_width = 0.5
@@ -3305,10 +3305,10 @@ class Axes(_Data_Axes_Base):
             else:
                 cl_width = 2
         
-        if cl_colors is 'auto':
+        if cl_colors == 'auto':
             #If only showing contour lines, then color lines according to the 
             #colormap.  Otherwise make the lines black.
-            if plot_type is 'lines':
+            if plot_type == 'lines':
                 cl_colors = None
             else:
                 cl_colors = [[0, 0, 0]]
