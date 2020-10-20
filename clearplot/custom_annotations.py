@@ -109,13 +109,13 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
             #Find the angle of the intersection point, where the line hits the 
             #back of the arrowhead
             theta_0 = _np.arcsin(line_width/(2.0*head_R))               
-            theta_bot = _np.linspace(-_np.pi/2.0 + _np.pi/15.0, -theta_0, n/2)
+            theta_bot = _np.linspace(-_np.pi/2.0 + _np.pi/15.0, -theta_0, int(n/2))
             X_bot =  head_R * _np.array([_np.cos(theta_bot), _np.sin(theta_bot)])
             X_bot[0,:] = X_bot[0,:] - head_length
             #Straight line
             X_line = _np.array([[-length, -line_width/2.0], [-length, line_width/2.0]]).T
             #Top half of arrowhead back
-            theta_top = _np.linspace(theta_0, _np.pi/2.0 - _np.pi/15.0, n/2)
+            theta_top = _np.linspace(theta_0, _np.pi/2.0 - _np.pi/15.0, int(n/2))
             X_top =  head_R * _np.array([_np.cos(theta_top), _np.sin(theta_top)])
             X_top[0,:] = X_top[0,:] - head_length            
             #Put them together, and add extra point at the tip to close the path
