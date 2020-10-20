@@ -31,7 +31,7 @@ class Figure(object):
             Dots per mm
         """
         self._ui_size = size
-        if size is 'auto':
+        if size == 'auto':
             size_inch = _np.array(_mpl.rcParams['figure.figsize'])
         else:
             size_inch = _np.array(size) / 25.4
@@ -450,15 +450,15 @@ class Figure(object):
             Padding on edges of figure, in mm.
         """
         #Only adjust figure if the size has not been specified
-        if self._ui_size is 'auto':
+        if self._ui_size == 'auto':
             fig_bbox = self.tight_bbox
             #Collect the user input axes positions
             ui_ax_pos_auto = []
             for ax in self.axes:
-                ui_ax_pos_auto.append(ax._ui_pos is 'auto')
+                ui_ax_pos_auto.append(ax._ui_pos == 'auto')
             #Treat the colorbars as if they were axes
             for bar in self.color_bars:
-                ui_ax_pos_auto.append(bar._ui_pos is 'auto')
+                ui_ax_pos_auto.append(bar._ui_pos == 'auto')
             if False not in ui_ax_pos_auto:
                 #If the axes positions have not been specified then move the 
                 #axes all by the same amount, and resize the figure window.
@@ -500,9 +500,8 @@ class Figure(object):
     #This method is just a wrapper around the matplotlib fig.savefig() method
     #It allows the user to work in mm instead of inches, and implements many
     #of the defaults clearplot typically uses.
-    def save(self, file_name, dpmm = _cp.params.dpmm, face_color = 'w', \
-        edge_color = 'w', transparent = True, bbox = None, pad = 0, \
-        frame_on = False):
+    def save(self, file_name, dpmm = _cp.params.dpmm, face_color = [0,0,0,0], \
+        edge_color = [0,0,0,0], transparent = True, bbox = None, pad = 0):
         """
         Save the current figure.
 
@@ -535,10 +534,6 @@ class Figure(object):
             will be saved as is.
         pad : float
             Amount of padding around the figure when `bbox` is 'tight'.
-        frame_on : bool
-            If *True*, the figure patch will be colored, if *False*, the
-            figure background will be transparent.  If not provided, the
-            rcParam 'savefig.frameon' will be used.
         """
         if bbox is None or bbox == 'tight':
             bbox_inch = bbox
@@ -546,9 +541,9 @@ class Figure(object):
             bbox_inch = _np.array(bbox) / 25.4
         
         self.mpl_fig.savefig(file_name, dpi = dpmm * 25.4, \
-            face_color = face_color, edge_color = edge_color, \
+            facecolor = face_color, edgecolor = edge_color, \
             transparent = transparent, bbox_inches = bbox_inch, \
-            pad_inch = pad * 25.4, frame_on = frame_on)
+            pad_inches = pad * 25.4)
             
     def close(self):
         """
