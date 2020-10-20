@@ -84,11 +84,15 @@ class _Axes_Base(object):
     def tight_bbox(self):
         """
         Gets a bounding box in mm that includes the tick marks and tick mark 
-        labels, relative to the lower left corner of the figure area.
+        labels, relative to the lower left corner of the figure area.  Bounding
+        box does not include axes labels, axes title, or other annotations.
         """
         #mpl_ax.get_tightbbox() includes the tick mark labels, unlike
         #mpl_ax.get_position()
-        bbox_pix = self.mpl_ax.get_tightbbox(self.parent_fig.renderer)
+        #(The bbox_extra_artists = [] kwarg makes the bbox not include axes
+        #labels, axes title, or other annotations.)
+        bbox_pix = self.mpl_ax.get_tightbbox(self.parent_fig.renderer, \
+                                             bbox_extra_artists = [])
         #Transform the bbox from figure pixels to axes mm
         pix_to_mm = self.parent_fig.mm_to_pix_trans.inverted()
         bbox = bbox_pix.transformed(pix_to_mm)
