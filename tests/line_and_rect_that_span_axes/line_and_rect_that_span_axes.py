@@ -15,7 +15,7 @@ y = np.array([0.0, 2.0, 1.0, 3.0])
 
 [fig, ax, curves] = pf.plot('', x, y)
 
-ax.add_v_line(1.0, line_style = '--')
+ax.add_v_line(1.0, style = '--')
 ax.add_h_line(1.0, color = [0,0,1])
 #Matplotlib version 1.4.2 (and presumably 1.4.3) has a bug where axvspan and axhspan only
 #accept linestyle = ['solid' | 'dashed' | 'dashdot' | 'dotted'].  If you use  
