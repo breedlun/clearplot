@@ -98,18 +98,23 @@ def use_latex(boolean):
 #fonts and it has full math support.  Its sans-serif font is TeXGyreHeros (a 
 #Helvetica clone) and the greek letters in its math font are similar to 
 #computer modern, except they have heavier line weights, so they match the 
-#TeXGyreHeros line weights.  
-_mpl.rcParams['text.latex.preamble'] = [
-    r'\usepackage{newtxtext}',                        #loads a family of fonts
-    r'\renewcommand*\familydefault{\sfdefault}',    #causes the sans-serif font from the above font family to be used for normal text
-    r'\usepackage[italic]{mathastext}',             #causes the latin letters from the font family to be used in math mode
-    r'\usepackage{newtxmath}']
-#'text.latex.preview' must be set to True, otherwise the baseline will be 
-#underneath subscripts, which is wrong.  (I believe this setting causes
-#matplotlib to 'preview' the typeset version of the LaTeX string before placing
-#it.  This allows matplotlib to find the proper baseline rather than just 
-#using the bounding box.)
-_mpl.rcParams['text.latex.preview'] = True           
+#TeXGyreHeros line weights.
+#\usepackage{newtxtext}                   loads a family of fonts
+#\renewcommand*\familydefault{\sfdefault} causes the sans-serif font from the above font family to be used for normal text
+#\usepackage[italic]{mathastext}          causes the latin letters from the font family to be used in math mode
+_mpl.rcParams['text.latex.preamble'] = \
+    r'\usepackage{newtxtext}' \
+    + r'\renewcommand*\familydefault{\sfdefault}' \
+    + r'\usepackage[italic]{mathastext}' \
+    + r'\usepackage{newtxmath}'
+if _cp.mpl_version < (3,3,0):
+    #With older versions of matplotlib 'text.latex.preview' must be set to 
+    #True, otherwise the baseline will be underneath subscripts, which is 
+    #wrong.  (I believe this setting causes matplotlib to 'preview' the 
+    #typeset version of the LaTeX string before placing it.  This allows 
+    #matplotlib to find the proper baseline rather than just using the 
+    #bounding box.)
+    _mpl.rcParams['text.latex.preview'] = True           
 
 #Save settings
 #We add padding to the automaticaly selected layout and the save the figure 
