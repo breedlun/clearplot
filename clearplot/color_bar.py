@@ -188,20 +188,10 @@ class Color_Bar(_axes._Axes_Base):
     
     @scale.setter
     def scale(self, scale):
-        #It seems like I should not need to set all of these, but as of
-        #matplotlib 1.5.1 they need to all be set.
         if scale == 'log':
             self._ui_scale = scale
-            for data_obj in self.data_objs:
-                data_obj.set_norm(_mpl.colors.LogNorm())
-            self.mpl_bar.set_norm(_mpl.colors.LogNorm())
-            self.mpl_bar.formatter = _mpl.ticker.LogFormatterMathtext()
         elif scale == 'linear':
             self._ui_scale = scale
-            for data_obj in self.data_objs:
-                data_obj.set_norm(_mpl.colors.Normalize())
-            self.mpl_bar.set_norm(_mpl.colors.Normalize())
-            self.mpl_bar.formatter = _mpl.ticker.ScalarFormatter()
         else:
             raise IOError('ERROR: unrecognized scaling')
         self._set_lim_and_tick(self._ui_lim[:], self._ui_tick)
@@ -252,7 +242,7 @@ class Color_Bar(_axes._Axes_Base):
         if self.orient == 'h':
             self.size = _np.array([self._num_tick * self.tick_mm, bar_width])
             #Place the color bar below the data axes, horizontally centered            
-            if self._ui_pos is 'auto':
+            if self._ui_pos == 'auto':
                 bar_pos = _np.array([\
                     ax_bbox.x0 + ax_bbox.width/2.0  - self._num_tick * self.sdim / 2.0, \
                     ax_bbox.y0 - self.ax_2_bar_gap - bar_width])
@@ -320,26 +310,6 @@ class Color_Bar(_axes._Axes_Base):
         tick_list = _utl.gen_tick_list(tick_list, self.lim, self.tick, \
             self.scale, 10.0)
         self.mpl_bar.set_ticks(tick_list)
-        if self.scale == 'log':
-            #Minor log ticks do not seem to automatically appear in 
-            #matplotlib 1.5.1.  
-            #See https://github.com/matplotlib/matplotlib/issues/7141
-            #Here is a work around.
-            lim = self.lim
-            tick = self.tick
-            lim_diff = _np.log10(lim[1]) - _np.log10(lim[0])
-            num_dec = lim_diff / tick
-            minor_ticks = _np.array([])
-            for n in _np.arange(num_dec):
-                minor_ticks = _np.hstack([minor_ticks, \
-                    (lim[0]*10.0**n)*_np.arange(2, 10, 1)])
-            normalized_minor_ticks = self.data_objs[0].norm(minor_ticks)
-            if self.orient == 'h':
-                self.mpl_bar.ax.xaxis.set_ticks(\
-                    normalized_minor_ticks, minor = True)
-            else:
-                self.mpl_bar.ax.yaxis.set_ticks(\
-                    normalized_minor_ticks, minor = True)
         
     @property
     def tick_labels(self):
