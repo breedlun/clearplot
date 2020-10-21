@@ -7,7 +7,8 @@ Created on Mon May 30 21:07:54 2016
 
 import clearplot.figure as cpfig
 import clearplot as cp
-import os, scipy.misc
+import os
+import matplotlib.pyplot
 import numpy as np
 data_dir = os.path.join(os.path.dirname(os.path.dirname(cp.__file__)), \
     'doc', 'source', 'data')
@@ -15,7 +16,7 @@ data_dir = os.path.join(os.path.dirname(os.path.dirname(cp.__file__)), \
 #Verification that adding an image works with RGB images, and that we can 
 #specify the color bar orientation, position, limits, and tick marks
 path = os.path.join(data_dir, 'hi-rez_field_images', 's140302C-eqps_field-frame_252.png')
-im = scipy.misc.imread(path)
+im = matplotlib.pyplot.imread(path)
 cols = range(350,850)
 im13a = im[:, cols, :]
 fig = cpfig.Figure()
