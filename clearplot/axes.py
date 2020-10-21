@@ -968,27 +968,36 @@ class Axes(_Data_Axes_Base):
 
     @x_scale.setter
     def x_scale(self, scale):
-        b = self._x_scale_log_base
-        #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
-        #etc.  This results in only one minor tick mark for natural log scaled 
-        #axes.  Instead we just place 9 linearly spaced tick marks.
-        if _np.abs(b - _np.e) < 1e-12:
-            minor_ticks = _np.arange(0.1*(b-1.0)+1.0, \
-                0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
+        #Matplotlib v3.3 gives an warning that v3.4 will give an error when 
+        #the base keyword is used with linear axis scaling, so we must make 
+        #sure to only specify a base when using log axis scaling.
+        if scale == 'log':
+            b = self._x_scale_log_base
+            #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
+            #etc.  This results in only one minor tick mark for natural log 
+            #scaled axes.  Instead we just place 9 linearly spaced tick marks.
+            if _np.abs(b - _np.e) < 1e-12:
+                minor_ticks = _np.arange(0.1*(b-1.0)+1.0, \
+                    0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
+            else:
+                minor_ticks = None
+            self.mpl_ax.set_xscale(scale, base = b, subs = minor_ticks)
+            self._select_and_set_x_lim_and_tick(self._ui_x_lim[:], self._ui_x_tick)
+            #If using a base e logarithm, label major ticks using 'e^z' rather
+            #than 2.718281828459045^z
+            #(We need to put this here rather than inside the x_scale_log_base 
+            #setter because the mpl_ax.set_xscale() method overrides any 
+            #previously specified formatters.)
+            if _np.abs(b - _np.e) < 1e-12:
+                def ticks(n, pos):
+                    return r'e$^{:.0f}$'.format(_np.log(n))
+                self.mpl_ax.xaxis.set_major_formatter(\
+                    _mpl.ticker.FuncFormatter(ticks))
+        elif scale == 'linear':
+            self.mpl_ax.set_xscale(scale)
+            self._select_and_set_x_lim_and_tick(self._ui_x_lim[:], self._ui_x_tick)
         else:
-            minor_ticks = None
-        self.mpl_ax.set_xscale(scale, base = b, subs = minor_ticks)
-        self._select_and_set_x_lim_and_tick(self._ui_x_lim[:], self._ui_x_tick)
-        #If using a base e logarithm, label major ticks using 'e^z' rather
-        #than 2.718281828459045^z
-        #(We need to put this here rather than inside the x_scale_log_base 
-        #setter because the mpl_ax.set_xscale() method overrides any previously
-        #specified formatters.)
-        if _np.abs(b - _np.e) < 1e-12:
-            def ticks(n, pos):
-                return r'e$^{:.0f}$'.format(_np.log(n))
-            self.mpl_ax.xaxis.set_major_formatter(\
-                _mpl.ticker.FuncFormatter(ticks))
+            raise IOError("ERROR: x scaling not recognized.")
 
     @property
     def x_scale_log_base(self):
@@ -1015,27 +1024,36 @@ class Axes(_Data_Axes_Base):
     
     @y_scale.setter
     def y_scale(self, scale):
-        b = self._y_scale_log_base
-        #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
-        #etc.  This results in only one minor tick mark for natural log scaled 
-        #axes.  Instead we just place 9 linearly spaced tick marks.
-        if _np.abs(b - _np.e) < 1e-12:
-            minor_ticks = _np.arange(0.1*(b-1.0)+1.0, \
-                0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
+        #Matplotlib v3.3 gives an warning that v3.4 will give an error when 
+        #the base keyword is used with linear axis scaling, so we must make 
+        #sure to only specify a base when using log axis scaling.
+        if scale == 'log':
+            b = self._y_scale_log_base
+            #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
+            #etc.  This results in only one minor tick mark for natural log 
+            #scaled axes.  Instead we just place 9 linearly spaced tick marks.
+            if _np.abs(b - _np.e) < 1e-12:
+                minor_ticks = _np.arange(0.1*(b-1.0)+1.0, \
+                    0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
+            else:
+                minor_ticks = None
+            self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks)
+            self._select_and_set_y_lim_and_tick(self._ui_y_lim[:], self._ui_y_tick)
+            #If using a base e logarithm, label major ticks using 'e^z' rather
+            #than 2.718281828459045^z
+            #(We need to put this here rather than inside the y_scale_log_base 
+            #setter because the mpl_ax.set_yscale() method overrides any 
+            #previously specified formatters.)
+            if _np.abs(b - _np.e) < 1e-12:
+                def ticks(n, pos):
+                    return r'e$^{{{:.0f}}}$'.format(_np.log(n))
+                self.mpl_ax.yaxis.set_major_formatter(\
+                    _mpl.ticker.FuncFormatter(ticks))
+        elif scale == 'linear':
+            self.mpl_ax.set_yscale(scale)
+            self._select_and_set_y_lim_and_tick(self._ui_y_lim[:], self._ui_y_tick)
         else:
-            minor_ticks = None
-        self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks)
-        self._select_and_set_y_lim_and_tick(self._ui_y_lim[:], self._ui_y_tick)
-        #If using a base e logarithm, label major ticks using 'e^z' rather
-        #than 2.718281828459045^z
-        #(We need to put this here rather than inside the y_scale_log_base 
-        #setter because the mpl_ax.set_yscale() method overrides any previously
-        #specified formatters.)
-        if _np.abs(b - _np.e) < 1e-12:
-            def ticks(n, pos):
-                return r'e$^{{{:.0f}}}$'.format(_np.log(n))
-            self.mpl_ax.yaxis.set_major_formatter(\
-                _mpl.ticker.FuncFormatter(ticks))
+            raise IOError("ERROR: y scaling not recognized.")
 
             
     @property
