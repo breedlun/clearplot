@@ -7,7 +7,7 @@ Created on Sat Apr 18 20:38:43 2015
 import os
 import clearplot
 #reload is not part of python 3's built-in library, so we must import it
-from imp import reload
+from importlib import reload
 
 #Get the names of all the examples
 cwd = os.getcwd()
