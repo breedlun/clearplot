@@ -967,7 +967,7 @@ class Axes(_Data_Axes_Base):
         return(self.mpl_ax.get_xscale())
 
     @x_scale.setter
-    def x_scale(self, x_scale):
+    def x_scale(self, scale):
         b = self._x_scale_log_base
         #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
         #etc.  This results in only one minor tick mark for natural log scaled 
@@ -977,7 +977,7 @@ class Axes(_Data_Axes_Base):
                 0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
         else:
             minor_ticks = None
-        self.mpl_ax.set_xscale(x_scale, basex = b, subsx = minor_ticks)
+        self.mpl_ax.set_xscale(scale, base = b, subs = minor_ticks)
         self._select_and_set_x_lim_and_tick(self._ui_x_lim[:], self._ui_x_tick)
         #If using a base e logarithm, label major ticks using 'e^z' rather
         #than 2.718281828459045^z
@@ -1014,19 +1014,17 @@ class Axes(_Data_Axes_Base):
         return(self.mpl_ax.get_yscale())
     
     @y_scale.setter
-    def y_scale(self, y_scale):
+    def y_scale(self, scale):
         b = self._y_scale_log_base
         #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
         #etc.  This results in only one minor tick mark for natural log scaled 
         #axes.  Instead we just place 9 linearly spaced tick marks.
         if _np.abs(b - _np.e) < 1e-12:
-            #(As detailed in https://github.com/matplotlib/matplotlib/issues/8023,
-            #minor ticks must be input as a list, at least in matplotlib 2.0.0.)
-            minor_ticks = list(_np.arange(0.1*(b-1.0)+1.0, \
-                0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0)))
+            minor_ticks = _np.arange(0.1*(b-1.0)+1.0, \
+                0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
         else:
             minor_ticks = None
-        self.mpl_ax.set_yscale(y_scale, basey = b, subsy = minor_ticks)
+        self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks)
         self._select_and_set_y_lim_and_tick(self._ui_y_lim[:], self._ui_y_tick)
         #If using a base e logarithm, label major ticks using 'e^z' rather
         #than 2.718281828459045^z
