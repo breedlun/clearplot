@@ -100,38 +100,40 @@ class Figure(object):
         #It seems to matter if you have a draw command before getting the 
         #tight bbox
         self.draw()
-        #NOTE: this is a blatant copy from print_figure() in matplotlib's
-        #backend_bases.py, but I made a few changes:
-        #1) The padding was changed to mm units.
-        #2) The bbox width and height are checked to make sure they are not
-        # infinity.
         bbox_inches = self.mpl_fig.get_tightbbox(self.renderer) 
-        bbox_artists = self.mpl_fig.get_default_bbox_extra_artists()
-        bbox_filtered = []
-        for a in bbox_artists:
-            bbox = a.get_window_extent(self.renderer)
-            if a.get_clip_on():
-                clip_box = a.get_clip_box()
-                if clip_box is not None:
-                    bbox = _mpl.transforms.Bbox.intersection(bbox, clip_box)
-                clip_path = a.get_clip_path()
-                if clip_path is not None and bbox is not None:
-                    clip_path = clip_path.get_fully_transformed_path()
-                    bbox = _mpl.transforms.Bbox.intersection(bbox,
-                                             clip_path.get_extents())
-            if bbox is not None and (bbox.width != 0 or bbox.height != 0) and \
-                _np.abs(bbox.width) != _np.inf and \
-                _np.abs(bbox.height) != _np.inf:
-                bbox_filtered.append(bbox)
+        
+        # #NOTE: this is a blatant copy from print_figure() in matplotlib's
+        # #backend_bases.py, but I made a few changes:
+        # #1) The padding was changed to mm units.
+        # #2) The bbox width and height are checked to make sure they are not
+        # # infinity.
+        # bbox_inches = self.mpl_fig.get_tightbbox(self.renderer) 
+        # bbox_artists = self.mpl_fig.get_default_bbox_extra_artists()
+        # bbox_filtered = []
+        # for a in bbox_artists:
+        #     bbox = a.get_window_extent(self.renderer)
+        #     if a.get_clip_on():
+        #         clip_box = a.get_clip_box()
+        #         if clip_box is not None:
+        #             bbox = _mpl.transforms.Bbox.intersection(bbox, clip_box)
+        #         clip_path = a.get_clip_path()
+        #         if clip_path is not None and bbox is not None:
+        #             clip_path = clip_path.get_fully_transformed_path()
+        #             bbox = _mpl.transforms.Bbox.intersection(bbox,
+        #                                       clip_path.get_extents())
+        #     if bbox is not None and (bbox.width != 0 or bbox.height != 0) and \
+        #         _np.abs(bbox.width) != _np.inf and \
+        #         _np.abs(bbox.height) != _np.inf:
+        #         bbox_filtered.append(bbox)
 
-        if bbox_filtered:
-            _bbox = _mpl.transforms.Bbox.union(bbox_filtered)
-            trans = _mpl.transforms.Affine2D().scale(1.0 / self.mpl_fig.dpi)
-            bbox_extra = _mpl.transforms.TransformedBbox(_bbox, trans)
-            bbox_inches = _mpl.transforms.Bbox.union([bbox_inches, bbox_extra])
+        # if bbox_filtered:
+        #     _bbox = _mpl.transforms.Bbox.union(bbox_filtered)
+        #     trans = _mpl.transforms.Affine2D().scale(1.0 / self.mpl_fig.dpi)
+        #     bbox_extra = _mpl.transforms.TransformedBbox(_bbox, trans)
+        #     bbox_inches = _mpl.transforms.Bbox.union([bbox_inches, bbox_extra])
 
-        bbox_inches = bbox_inches.padded(self.tight_bbox_pad/25.4)      
-        #This is the end of the copy from matplotlib's print_figure()
+        # bbox_inches = bbox_inches.padded(self.tight_bbox_pad/25.4)      
+        # #This is the end of the copy from matplotlib's print_figure()
         
         #Convert the bbox from inches to mm        
         trans = _mpl.transforms.Affine2D()
@@ -391,9 +393,10 @@ class Figure(object):
         return(size)
     
     #This method was created because matplotlib's fig.set_size_inches() 
-    #automatically scales the content of the figure window.  Usually, we wish 
-    #to change the figure window size while the figure content remains the 
-    #same size.
+    #automatically scales the content of the figure window.  In clearplot, we 
+    #wish to change the figure window size while the figure content remains 
+    #the same size.  See https://stackoverflow.com/questions/25396766/matplotlib-resize-figure-window-without-scaling-figure-content
+    #for more info.
     @size.setter
     def size(self, size):
         #Get the size of the figure before changing it
@@ -404,10 +407,11 @@ class Figure(object):
         #Change the size of the figure
         size_inch = _np.array(size) / 25.4
         self.mpl_fig.set_size_inches(size_inch, forward = True)
-        #We must do a draw() command because drawing can cause the figure 
-        #window size to change slightly, so requests for the figure size
-        #would be wrong.
-        self.draw()
+
+        # #We must do a draw() command because drawing can cause the figure 
+        # #window size to change slightly, so requests for the figure size
+        # #would be wrong.
+        # self.draw()
                 
         #Scale the figure content back down to its original size
         
@@ -417,9 +421,16 @@ class Figure(object):
         
         #Cycle through the figure content and scale them back down to their
         #original sizes
-        for ax in self.mpl_fig.axes:
-            pos = ax.get_position()
-            ax.set_position([pos.x0 / sf[0], pos.y0 / sf[1], pos.width / sf[0], pos.height / sf[1]])     
+        
+        #Any axes that share a x-axis or y-axis will both be updated 
+        #simultaneously when either one is scaled.  This means we must collect 
+        #all the axes positions first and then scale each of them second.  
+        pos_list = []
+        for mpl_ax in self.mpl_fig.axes:
+            pos_list.append(mpl_ax.get_position()) 
+        for mpl_ax, pos in zip(self.mpl_fig.axes, pos_list):
+            mpl_ax.set_position([pos.x0 / sf[0], pos.y0 / sf[1], \
+                                 pos.width / sf[0], pos.height / sf[1]])     
          
         for text in self.mpl_fig.texts:
             pos = _np.array(text.get_position())
@@ -533,7 +544,7 @@ class Figure(object):
             contains the figure content.  If ``None``, then the figure window 
             will be saved as is.
         pad : float
-            Amount of padding around the figure when `bbox` is 'tight'.
+            Amount of padding in mm around the figure when `bbox` is 'tight'.
         """
         if bbox is None or bbox == 'tight':
             bbox_inch = bbox
@@ -543,7 +554,7 @@ class Figure(object):
         self.mpl_fig.savefig(file_name, dpi = dpmm * 25.4, \
             facecolor = face_color, edgecolor = edge_color, \
             transparent = transparent, bbox_inches = bbox_inch, \
-            pad_inches = pad * 25.4)
+            pad_inches = pad / 25.4)
             
     def close(self):
         """
