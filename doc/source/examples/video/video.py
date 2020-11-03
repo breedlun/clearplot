@@ -4,7 +4,7 @@ Created on Sat Apr 18 15:50:49 2015
 
 @author: Ben
 """
-import scipy.misc, clearplot, os
+import matplotlib.pyplot, clearplot, os
 import numpy as np
 import clearplot.figure as figure
 import clearplot.plot_functions as pf
@@ -27,7 +27,7 @@ y_b = np.array([data_a[0,1]])
 im_filename = os.path.join('lo-rez_field_images', \
     's140302C-eqps_field-frame_%r.png' %(1))
 im_path = os.path.join(data_dir, im_filename)
-im = scipy.misc.imread(im_path)
+im = matplotlib.pyplot.imread(im_path)
 
 #Create figure window (specify in pixels, but convert to mm)
 fig_size = np.array([680.0, 380.0]) / clearplot.params.dpmm
@@ -59,7 +59,7 @@ def update_fig(i):
     im_filename = os.path.join('lo-rez_field_images', \
         's140302C-eqps_field-frame_%r.png' %(2*i+1))
     im_path = os.path.join(data_dir, im_filename)
-    im = scipy.misc.imread(im_path)
+    im = matplotlib.pyplot.imread(im_path)
     #Update image
     img.set_data(im[:,cols])
     return marker, img,
