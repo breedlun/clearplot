@@ -12,4 +12,4 @@ y = np.sqrt(x)
 
 pf.plot('basic.png', x, y, \
 	x_label = ['\phi', '\%'], y_label = ['\psi', 'GPa'], \
-    x_lim = ['auto', 16], x_tick = 4);
+    x_lim = [None, 16], x_tick = 4);

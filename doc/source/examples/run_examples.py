@@ -7,7 +7,7 @@ Created on Sat Apr 18 20:38:43 2015
 import os
 import clearplot
 #reload is not part of python 3's built-in library, so we must import it
-from imp import reload
+from importlib import reload
 
 #Get the names of all the examples
 cwd = os.getcwd()
@@ -27,6 +27,7 @@ for d in dir_list:
         #Reload the default parameters in case any of the examples change 
         #the parameters.
         reload(clearplot.params)
+        print("Plotting " + d)
         #Run the example script
         #(With python 2, you could just do 'execfile()', but python 3 forces you to read
         #the file and execute the code yourself)

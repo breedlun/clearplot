@@ -4,7 +4,7 @@ from setuptools.command.install import install
 import warnings
 
 #Define the version of clearplot
-cp_version = '1.2.0'
+cp_version = '1.2.1'
 
 #Comment out this code in case we switch back to the Qt4Agg backend.
 ##For now we are using the Qt4Agg backend, which requires PyQt4 or PySide, but 
@@ -90,15 +90,13 @@ setup(
         'License :: OSI Approved :: MIT License',
 	    # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
-        'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
+        'Programming Language :: Python :: 3.8',
         # Indicate who your project is intended for
         'Intended Audience :: Science/Research',
         'Topic :: Scientific/Engineering :: Visualization'],
     #Specify the dependencies and versions
-    install_requires = ['matplotlib >= 1.4.0, !=1.4.3', 'numpy >= 1.6'],
+    install_requires = ['matplotlib >= 3.3.0', 'numpy >= 1.6'],
     #Specify any non-python files to be distributed with the package
     package_data = {'' : ['color_maps/*.csv', 'true_type_fonts/*.ttf']},
     #Specify the custom install class

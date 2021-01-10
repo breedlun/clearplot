@@ -23,7 +23,7 @@ class _Axes_Base(object):
         """
         self.parent_fig = fig
         self.parent_fig.axes.append(self)
-        self._ui_pos = kwargs.pop('position', 'auto')
+        self._ui_pos = kwargs.pop('position', None)
         scale_plot = kwargs.pop('scale_plot', 1.0)
         #Define a scaling dimension for the plot.  This dimension is used in a 
         #number of places to scale the distances between different objects.  
@@ -491,7 +491,7 @@ class _Data_Axes_Base(_Axes_Base):
         c_map : string, optional
             Image color map.
         c_lim : 1x2 list, optional
-            Color map limits.  To automatically chose a limit, input 'auto' for
+            Color map limits.  To automatically chose a limit, input None for
             either the upper or lower limit.
         c_scale : ['linear' | 'log'], optional
             Color scaling.
@@ -508,9 +508,9 @@ class _Data_Axes_Base(_Axes_Base):
         y = kwargs.pop('y', _np.array([0.0, float(im.shape[0])]))
         xy_coords = kwargs.pop('xy_coords', 'edges')
         im_origin = kwargs.pop('im_origin', 'upper left')
-        im_interp = kwargs.pop('im_interp', 'auto')
-        c_map = kwargs.pop('c_map', 'auto')
-        ui_c_lim = kwargs.pop('c_lim', ['auto','auto'])
+        im_interp = kwargs.pop('im_interp', None)
+        c_map = kwargs.pop('c_map', None)
+        ui_c_lim = kwargs.pop('c_lim', [None, None])
         c_scale = kwargs.pop('c_scale', 'linear')
         
         im_error = """Do not recognize image type.  Please verify you have 
@@ -519,20 +519,20 @@ class _Data_Axes_Base(_Axes_Base):
         if im.ndim == 2:
             if im.dtype is _np.dtype('uint8'):
                 #Set color map and limits for a grayscale image
-                if c_map == 'auto':
+                if c_map is None:
                     c_map = _mpl.cm.gray
-                if ui_c_lim[0] == 'auto' and ui_c_lim[1] == 'auto':
+                if ui_c_lim[0] is None and ui_c_lim[1] is None:
                     c_lim = [0, 255]
                 im_type = 'grayscale'
             else:
                 #Set the color map and limits for an image full of values
-                if c_map == 'auto':
+                if c_map is None:
                     c_map = _cp.colors.c_maps['rainbow']
                 #(Hard code auto tick spacing because the color bar tick 
                 #spacing will be recalculated when the color bar is added to 
                 #the figure.)
                 [c_lim, c_tick, n_tick] = _utl.find_and_select_lim_and_tick(\
-                    ui_c_lim, 'auto', [_np.nanmin(im), _np.nanmax(im)], \
+                    ui_c_lim, None, [_np.nanmin(im), _np.nanmax(im)], \
                     c_scale, 10.0, 0.0)
                 im_type = 'values'
         elif im.ndim == 3:
@@ -541,7 +541,7 @@ class _Data_Axes_Base(_Axes_Base):
 #                if _np.min(im) < 0 or _np.max(im) > 1:
 #                    raise ValueError("""The red, green, and blue channels in RGB 
 #                    images should contain values between 0 and 1.""")
-                if c_map == 'auto':
+                if c_map is None:
                     c_map = _cp.colors.c_maps['rainbow']
                 im_type = 'RGB'
                 c_lim = ui_c_lim[:]
@@ -583,7 +583,7 @@ class _Data_Axes_Base(_Axes_Base):
         #(Note this must be done before c_bar.solids.set_edgecolor('face'), 
         #which is inside color_bar, or else you get white lines on the color 
         #bar.)
-        if c_lim[0] != 'auto' and c_lim[1] != 'auto':
+        if c_lim[0] != None and c_lim[1] != None:
             im_obj.set_clim(c_lim[0], c_lim[1])
         #Select the proper interpolation type for the image
         _utl.set_im_interp(im_interp, im_obj, self)
@@ -617,7 +617,7 @@ class Invisible_Axes(_Data_Axes_Base):
         """
         self.parent_fig = fig
         self.parent_fig.axes.append(self)
-        self._ui_pos = kwargs.pop('position', 'auto')
+        self._ui_pos = kwargs.pop('position', None)
         scale_plot = kwargs.pop('scale_plot', 1.0)
         #Define a scaling dimension for the plot.  This dimension is used in a 
         #number of places to scale the distances between different objects.  
@@ -625,7 +625,7 @@ class Invisible_Axes(_Data_Axes_Base):
         #number of millimeters between tick marks.  
         self.sdim = 20.0 * scale_plot
         size = kwargs.pop('size', _np.array([100, 100]))
-        if self._ui_pos == 'auto':
+        if self._ui_pos is None:
             position = _np.array([30, 30])
         else:
             position = self._ui_pos
@@ -743,7 +743,7 @@ class Axes(_Data_Axes_Base):
         """      
         self.parent_fig = fig
         self.parent_fig.axes.append(self)
-        self._ui_pos = kwargs.pop('position', 'auto')
+        self._ui_pos = kwargs.pop('position', None)
         scale_plot = kwargs.pop('scale_plot', 1.0)
         #Define a scaling dimension for the plot.  This dimension is used in a 
         #number of places to scale the distances between different objects.  
@@ -764,14 +764,14 @@ class Axes(_Data_Axes_Base):
         self._y_scale_log_base = 10.0
         
         #Set default lims and ticks
-        self._ui_x_lim = ['auto', 'auto']
-        self._ui_y_lim = ['auto', 'auto']
-        self._ui_x_tick = 'auto'
-        self._ui_y_tick = 'auto'
-        self._ui_x_tick_list = 'auto'
-        self._ui_y_tick_list = 'auto'
-        self._ui_x_tick_labels = 'auto'
-        self._ui_y_tick_labels = 'auto'
+        self._ui_x_lim = [None, None]
+        self._ui_y_lim = [None, None]
+        self._ui_x_tick = None
+        self._ui_y_tick = None
+        self._ui_x_tick_list = None
+        self._ui_y_tick_list = None
+        self._ui_x_tick_labels = None
+        self._ui_y_tick_labels = None
         
         #Set the initial tick spacing values
         self._x_tick = 0.2
@@ -823,7 +823,7 @@ class Axes(_Data_Axes_Base):
             self.mpl_ax.set_xlim(0.0, self._x_tick * n_tick)
         else:
             #Set the position of the axes
-            if self._ui_pos == 'auto':
+            if self._ui_pos is None:
                 position = _np.array([30, 30])
             else:
                 position = self._ui_pos
@@ -845,7 +845,7 @@ class Axes(_Data_Axes_Base):
                 #Initialize the linked axis with the same physical distance
                 #between the tick marks
                 self._x_tick_mm = link_x_ax._x_tick_mm
-                if self._ui_pos == 'auto':
+                if self._ui_pos is None:
                     #Place the linked axes above the original axes
                     position = link_x_ax.position
                     position[1] = position[1] + link_x_ax.size[1] + self.sdim
@@ -868,7 +868,7 @@ class Axes(_Data_Axes_Base):
                 #Initialize the linked axis with the same physical distance
                 #between the tick marks
                 self._y_tick_mm = link_y_ax._y_tick_mm
-                if self._ui_pos == 'auto':
+                if self._ui_pos is None:
                     #Place the linked axes to the right of the original axes
                     position = link_y_ax.position
                     position[0] = position[0] + link_y_ax.size[0] + self.sdim
@@ -961,7 +961,7 @@ class Axes(_Data_Axes_Base):
         """
         Gets/sets the scaling for the x-axis.  Valid inputs include 'linear' 
         and 'log'.  Note: if you change the scaling when the axis limits 
-        and ticks are set to 'auto' (the default), then the limits and ticks 
+        and ticks are set to None (the default), then the limits and ticks 
         will be recomputed.
         """
         return(self.mpl_ax.get_xscale())
@@ -1017,7 +1017,7 @@ class Axes(_Data_Axes_Base):
         """
         Gets/sets the scaling for the y-axis.  Valid inputs include 'linear' 
         and 'log'.  Note: if you change the scaling when the axis limits 
-        and ticks are set to 'auto' (the default), then the limits and ticks 
+        and ticks are set to None (the default), then the limits and ticks 
         will be recomputed.
         """
         return(self.mpl_ax.get_yscale())
@@ -1073,7 +1073,7 @@ class Axes(_Data_Axes_Base):
     def x_lim(self):
         """
         Gets/sets the x axis limits.  Supply a 1x2 list of floats to 
-        explicitly set the upper and lower limits.  If the string 'auto' is 
+        explicitly set the upper and lower limits.  If the string None is 
         input instead of a float, then the corresponding limit will be 
         automaticaly selected.
         """
@@ -1091,7 +1091,7 @@ class Axes(_Data_Axes_Base):
     def x_tick(self):
         """
         Gets/sets the x axis tick mark spacing.  Supply a float to explicitly
-        set the tick marks spacing.  If `x_tick` is set to 'auto', then the 
+        set the tick marks spacing.  If `x_tick` is set to None, then the 
         tick mark spacing will be automatically selected.
         """
         return(self._x_tick)
@@ -1219,7 +1219,7 @@ class Axes(_Data_Axes_Base):
     def y_lim(self):
         """
         Gets/sets the y axis limits.  Supply a 1x2 list of floats to 
-        explicitly set the upper and lower limits.  If the string 'auto' is 
+        explicitly set the upper and lower limits.  If the string None is 
         input instead of a float, then the corresponding limit will be 
         automaticaly selected.
         """
@@ -1237,7 +1237,7 @@ class Axes(_Data_Axes_Base):
     def y_tick(self):
         """
         Gets/sets the y axis tick mark spacing.  Supply a float to explicitly
-        set the tick marks spacing.  If `y_tick` is set to 'auto', then the 
+        set the tick marks spacing.  If `y_tick` is set to None, then the 
         tick mark spacing will be automatically selected.
         """
         return(self._y_tick)
@@ -1391,9 +1391,9 @@ class Axes(_Data_Axes_Base):
                 return(lmt)
             
             #Find which, if any, limits are to be automatically selected
-            ndx_list = _np.where(_np.array(ui_lim) == 'auto')[0]
+            ndx_list = [i for i in range(len(ui_lim)) if ui_lim[i] is None]
             if len(ndx_list) > 1:
-                #If both limits are 'auto' selected and one limit is 
+                #If both limits are None selected and one limit is 
                 #currently at 0, then attempt to preserve it.  Otherwise,
                 #adjust the top limit.
                 if lim[1] == 0.0:
@@ -1415,12 +1415,12 @@ class Axes(_Data_Axes_Base):
             
             
         length_diff = n_tick * tick_mm - n_s_tick * s_tick_mm
-        if length_diff > 1e-12 and 'auto' in s_ui_lim:
+        if length_diff > 1e-12 and None in s_ui_lim:
             #If the current axes are longer than the shared, adjust the shared.
             n_tick_diff = _np.floor(length_diff / s_tick_mm + 1e-12)
             s_lim = select_and_adjust_lim(s_ui_lim, s_lim, length_diff, \
                 s_tick, s_ax_scale, s_ax_log_base)
-        elif length_diff < -1e-12 and 'auto' in ui_lim:
+        elif length_diff < -1e-12 and None in ui_lim:
             #If the current axes are shorter than the shared, adjust the 
             #current.
             n_tick_diff = -_np.floor(length_diff / tick_mm + 1e-12)
@@ -1595,7 +1595,7 @@ class Axes(_Data_Axes_Base):
         """
         Gets/sets x-axis tick mark positions.  Supply a list of values to 
         explicitly set the tick mark values.  If `x_tick_list` is set to 
-        'auto', then the tick marks will be automaticaly selected.
+        None, then the tick marks will be automaticaly selected.
         """
         return(self.mpl_ax.get_xticks())
         
@@ -1611,7 +1611,7 @@ class Axes(_Data_Axes_Base):
         """
         Gets/sets y-axis tick mark positions.  Supply a list of values to 
         explicitly set the tick mark values.  If `y_tick_list` is set to 
-        'auto', then the tick marks will be automaticaly selected.
+        None, then the tick marks will be automaticaly selected.
         """
         return(self.mpl_ax.get_yticks())
         
@@ -1633,7 +1633,7 @@ class Axes(_Data_Axes_Base):
     @x_tick_labels.setter
     def x_tick_labels(self, labels):
         self._ui_x_tick_labels = labels
-        if labels != 'auto':
+        if labels != None:
             set_tick_labels = []
             for label in labels:
                 txt = _utl.raw_string(label)
@@ -1651,7 +1651,7 @@ class Axes(_Data_Axes_Base):
     @y_tick_labels.setter
     def y_tick_labels(self, labels):
         self._ui_y_tick_labels = labels
-        if labels != 'auto':
+        if labels != None:
             set_tick_labels = []
             for label in labels:
                 txt = _utl.raw_string(label)
@@ -1924,7 +1924,7 @@ class Axes(_Data_Axes_Base):
             labels = _np.array([])
         return(bars, labels)
         
-    def add_legend(self, artists = 'auto', loc = 'best', outside_ax = False, \
+    def add_legend(self, artists = None, loc = 'best', outside_ax = False, \
         **kwargs):
         """
         Adds a legend using labels previously associated with artists
@@ -1932,7 +1932,7 @@ class Axes(_Data_Axes_Base):
         Parameters
         ----------
         artists : list of data objects, optional
-            Curves, markers, bars, etc. that will be labeled.  Input 'auto'
+            Curves, markers, bars, etc. that will be labeled.  Input None
             to label the artist type specified in ``artist type``.
         loc : string, optional
             Location of legend.  Valid options include, 'best', 'upper left',
@@ -1945,7 +1945,7 @@ class Axes(_Data_Axes_Base):
         -------
         legend : legend object
         """
-        if artists == 'auto':
+        if artists is None:
             [curves, curve_labels] = self._get_unique_curves()
             [markers, marker_labels] = self._get_unique_markers()
             [bars, bar_labels] = self._get_unique_bars()
@@ -2184,14 +2184,14 @@ class Axes(_Data_Axes_Base):
         --------
         Axes.label_curve : Place multiple labels on a single curve
         """
-        curves = kwargs.pop('curves', 'auto')
-        ndx = kwargs.pop('ndx', ['auto'])
-        angles = kwargs.pop('angles', ['auto'])
+        curves = kwargs.pop('curves', None)
+        ndx = kwargs.pop('ndx', [None])
+        angles = kwargs.pop('angles', [None])
         lengths = kwargs.pop('lengths', [12])
         pick = kwargs.pop('pick', False)
         style = kwargs.pop('style', 'normal')
         font_size = kwargs.pop('font_size', 16)
-        if curves == 'auto':
+        if curves is None:
             curves = self.curves
         labels = []
         for curve in curves:
@@ -2225,8 +2225,8 @@ class Axes(_Data_Axes_Base):
         --------
         Axes.label_curves : Place a label on each curve
         """
-        ndx = kwargs.pop('ndx', 'auto')
-        angles = kwargs.pop('angles', 'auto')
+        ndx = kwargs.pop('ndx', None)
+        angles = kwargs.pop('angles', None)
         lengths = kwargs.pop('lengths', [12])
         pick = kwargs.pop('pick', False)
         style = kwargs.pop('style', 'balloon')
@@ -2248,18 +2248,18 @@ class Axes(_Data_Axes_Base):
         #Preprocess the pick options
         if pick is not False:
             if pick.lower() == 'root':
-                ndx = ['auto']
-                if angles == ['auto']:
+                ndx = [None]
+                if angles == [None]:
                     angles = [120]
                 print("""Click on the plot to select the leader line root location for each curve of each axis.""")
             elif pick.lower() == 'text':
-                ndx = ['auto']
-                lengths = ['auto']
+                ndx = [None]
+                lengths = [None]
                 print("""Click on the plot to select the label text location for each curve of each axis.""")
             else:
                 raise IOError("""The input for 'pick' was not recognized""")
         else:
-            if angles == ['auto']:
+            if angles == [None]:
                 angles = [120]
 
         #Specify a list of candidate angles.  If auto selecting angle, then 
@@ -2332,7 +2332,7 @@ class Axes(_Data_Axes_Base):
                     #Find the angle of the label text to each of the data 
                     #points along the curve, in the data coordinate system
                     beta = _np.arctan2(delta_mm[1,:], delta_mm[0,:]) * 180.0/_np.pi
-                    if angles[n] == 'auto':
+                    if angles[n] is None:
                         #Find the leader line length for each of the candidate 
                         #angles
                         cand_ndx = _np.zeros(angle_cand.shape, dtype = int)
@@ -2360,7 +2360,7 @@ class Axes(_Data_Axes_Base):
                             (delta_mm[0, ndx[n]]**2.0 + delta_mm[1, ndx[n]]**2.0)**0.5
                         lengths[n] = _np.round(lengths[n], decimals = 2)
             else:
-                if ndx[n] == 'auto':
+                if ndx[n] is None:
                     ndx[n] = _np.round(len(yi) / 2.0)
             #Convert input angle from degrees to radians
             a = angles[n] * _np.pi/180.0
@@ -2594,7 +2594,7 @@ class Axes(_Data_Axes_Base):
         marker_sizes = kwargs.pop('marker_sizes', [6])
         marker_colors = kwargs.pop('marker_colors', \
             _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.color_ndx))
-        if marker_colors == 'auto':
+        if marker_colors is None:
             marker_colors = _utl.cycle_thru_list(_cp.colors.c_lists['std'], self.color_ndx)
         if 'x' in marker_shapes or '1' in marker_shapes or \
            '2' in marker_shapes or '3' in marker_shapes or \
@@ -3107,12 +3107,12 @@ class Axes(_Data_Axes_Base):
         #Boxplot resets the x-axis limits and tick marks.  This issue has been 
         #reported (https://github.com/matplotlib/matplotlib/issues/2921), but 
         #until it is fixed, it is important to set the limits and ticks after 
-        #the data has been plotted. (If the ticks labels are set to 'auto', the 
+        #the data has been plotted. (If the ticks labels are set to None, the 
         #self.x_tick_label setter does nothing.)
-        if self._ui_x_tick_labels == 'auto':
+        if self._ui_x_tick_labels is None:
             formatter = _mpl.ticker.ScalarFormatter()
             self.x_tick_labels = map(lambda x: formatter.format_data(x), self.x_tick_list)
-            self._ui_tick_labels = 'auto'
+            self._ui_tick_labels = None
         return(self.boxes[j:j+i])
 
     def plot_intensity_map(self, x, y, z, **kwargs):
@@ -3138,7 +3138,7 @@ class Axes(_Data_Axes_Base):
         c_map : string, optional
             Image color map.
         c_lim : 1x2 list, optional
-            Color map limits.  To automatically chose a limit, input 'auto' for
+            Color map limits.  To automatically chose a limit, input None for
             either the upper or lower limit.
         c_scale : ['linear' | 'log'], optional
             Color scaling.
@@ -3261,30 +3261,30 @@ class Axes(_Data_Axes_Base):
             bar
         """
         plot_type = kwargs.pop('plot_type', 'filled')
-        im_interp = kwargs.pop('im_interp', 'auto')
+        im_interp = kwargs.pop('im_interp', None)
         c_map = kwargs.pop('c_map', _cp.colors.c_maps['rainbow'])
-        ui_c_lim = kwargs.pop('c_lim', ['auto', 'auto'])
+        ui_c_lim = kwargs.pop('c_lim', [None, None])
         c_scale = kwargs.pop('c_scale', 'linear')
-        cl_levels = kwargs.pop('cl_levels', 'auto')
-        cl_labels = kwargs.pop('cl_labels', 'auto')
+        cl_levels = kwargs.pop('cl_levels', None)
+        cl_labels = kwargs.pop('cl_labels', None)
         cl_label_fsize = kwargs.pop('cl_label_fsize', 14)
         cl_label_fmt = kwargs.pop('cl_label_fmt', '%g')
-        cl_width = kwargs.pop('cl_width', 'auto')
+        cl_width = kwargs.pop('cl_width', None)
         cl_style = kwargs.pop('cl_style', '-')
-        cl_colors = kwargs.pop('cl_colors', 'auto')
+        cl_colors = kwargs.pop('cl_colors', None)
 
         #Select color bar limits and tick spacing
         #(Hard code auto tick spacing because the color bar tick spacing
         #will be recalculated when the color bar is added to the figure.)
         [c_lim_c, c_tick_c, n_tick_c] = _utl.find_candidate_lim_and_tick(\
-            ui_c_lim, 'auto', [_np.min(z), _np.max(z)], c_scale, 10.0, self.exceed_lim)
+            ui_c_lim, None, [_np.min(z), _np.max(z)], c_scale, 10.0, self.exceed_lim)
         [c_lim, c_tick, n_tick] = _utl.select_lim_and_tick(c_lim_c, c_tick_c, \
             n_tick_c)
         #We have to include the limits in the levels because the colorbar seems
         #to disregard c_obj.set_clim() and c_bar.set_clim().
         #Round is needed so that the contour line labels match up exactly with 
         #the levels.
-        if cl_levels == 'auto':
+        if cl_levels is None:
             if c_scale == 'log':
                 log_base = 10.0
                 cl_levels = _np.round(_np.arange(c_lim[0], \
@@ -3307,7 +3307,7 @@ class Axes(_Data_Axes_Base):
             cl_levels = _np.round(_np.sort(cl_levels), 12)
         
         #Define the contour line labels
-        if cl_labels == 'auto':
+        if cl_labels is None:
             cl_labels = cl_levels[::2]
         else:
             cl_labels = _np.round(cl_labels, 12)
@@ -3316,7 +3316,7 @@ class Axes(_Data_Axes_Base):
         if plot_type not in ['filled', 'intensity map', 'lines']:
             raise IOError("Did not recognize the plot type")    
         
-        if cl_width == 'auto':
+        if cl_width is None:
             #Define the contour line width
             if plot_type == 'filled':
                 cl_width = 0.5
@@ -3325,7 +3325,7 @@ class Axes(_Data_Axes_Base):
             else:
                 cl_width = 2
         
-        if cl_colors == 'auto':
+        if cl_colors is None:
             #If only showing contour lines, then color lines according to the 
             #colormap.  Otherwise make the lines black.
             if plot_type == 'lines':

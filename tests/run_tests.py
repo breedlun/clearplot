@@ -23,6 +23,7 @@ for d in dir_list:
         #Reload the default parameters in case any of the tests change 
         #the parameters.
         reload(clearplot.params)
+        print("Plotting " + d)
         #Run the test script
         #(With python 2, you could just do 'execfile()', but python 3 forces you to read
         #the file and execute the code yourself)

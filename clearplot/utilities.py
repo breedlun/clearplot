@@ -56,7 +56,7 @@ def set_im_interp(im_interp, im_obj, ax):
     Parameters
     ----------
     im_interp : str
-        Image interpolation type.  If 'auto', then algorithm choses either 
+        Image interpolation type.  If None, then algorithm choses either 
         'nearest' or 'none'.  If the image is blown up, then it uses 'nearest'.
         If the image is scaled down then it uses 'none'.  See
         `this matplotlib example <http://matplotlib.org/examples/images_contours_and_fields/interpolation_methods.html>`__
@@ -72,7 +72,7 @@ def set_im_interp(im_interp, im_obj, ax):
     #it matters if you use interpolation = 'none' or interpolation = 'nearest'
     #when images are placed in vector graphics files.  Since neither one is 
     #perfect for all cases, we must select the appropriate one.
-    if im_interp == 'auto':
+    if im_interp is None:
         #Get the bounding box for the image in display (pixel) coordinates
         bbox = get_im_window_extent(im_obj, ax)
         #Compare the size of the image on the screen to the size of the image array 
@@ -436,10 +436,10 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
     Parameters
     ----------
     ui_lim : 1x2 list or numpy array
-        User input axis limits.  Either element can be set to 'auto' to have 
+        User input axis limits.  Either element can be set to None to have 
         algorithm automatically select the low or high limit.
     ui_tick : float
-        User input tick mark spacing.  Set to 'auto' to automatically select
+        User input tick mark spacing.  Set to None to automatically select
         the tick mark spacing.
     data_lim : 1x2 list or numpy array
         Limits of the data on the axis.
@@ -465,18 +465,18 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
     #If there isn't any data on the axes, just act as if the user specified
     #some limits
     if (data_lim[0] == _np.inf) or (data_lim[1] == _np.inf):
-        if ui_lim[0] == 'auto' and ui_lim[1] == 'auto':
+        if ui_lim[0] is None and ui_lim[1] is None:
             if ax_scale == 'log':
                 ui_lim = [ax_log_base**(-5),1.0]
             else:
                 ui_lim = [0.0, 1.0]          
-        elif ui_lim[0] == 'auto':
-            if ui_tick != 'auto':                
+        elif ui_lim[0] is None:
+            if ui_tick is not None:                
                 ui_lim[0] = ui_lim[1] - 5.0 * ui_tick
             else:
                 ui_lim[0] = ui_lim[1] - 1.0
-        elif ui_lim[1] == 'auto':
-            if ui_tick != 'auto':                
+        elif ui_lim[1] is None:
+            if ui_tick is not None:                
                 ui_lim[1] = ui_lim[0] + 5.0 * ui_tick
             else:
                 ui_lim[1] = ui_lim[0] + 1.0
@@ -484,11 +484,11 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
     #Combine the user input limits and the data limits into one list
     #so that it is easy to get the range
     lim = _np.zeros([2])
-    if ui_lim[0] == 'auto':
+    if ui_lim[0] is None:
         lim[0] = data_lim[0]
     else:
         lim[0] = float(ui_lim[0])
-    if ui_lim[1] == 'auto':
+    if ui_lim[1] is None:
         lim[1] = data_lim[1]
     else:
         lim[1] = float(ui_lim[1])
@@ -498,7 +498,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
         #If tick mark spacing is not specified, select a tick mark spacing of 
         #either 1, 2, or 5, such that there are 3-6 tick marks, prefering less 
         #tick marks if multiple tick mark spacings qualify
-        if ui_tick == 'auto':
+        if ui_tick is None:
             #If data scaling is really small, alert the user and quit
             if abs(_np.diff(lim)) < 2 * 10**(-10):
                 raise ValueError("""Data scaling is too small: 
@@ -530,7 +530,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
                         spacing. Suggest specifying a tick mark spacing""")
                 lim_s = _np.zeros((len(tick_generic), 2))
                 tick_s = tick_generic * 10**s
-                if ui_lim[0] == 'auto':
+                if ui_lim[0] is None:
                     #round lmt for tick mark spacing candidate
                     lim_s_c = _np.floor(data_lim[0] / tick_s) * tick_s
                     #If minimum of data is nearly at the next tick mark, just 
@@ -542,7 +542,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
                 else:
                     lim_s[:,0] = float(ui_lim[0])
                 #round lmt for tick mark spacing candidate
-                if ui_lim[1] == 'auto':
+                if ui_lim[1] is None:
                     lim_s_c = _np.ceil(data_lim[1] / tick_s) * tick_s
                     #If maximum of data is nearly at the previous tick mark, 
                     #just use the previous tick mark as the limit and allow the 
@@ -569,7 +569,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
         else:
             tick_c = _np.array([float(ui_tick)])
 
-        if ui_lim[0] == 'auto':
+        if ui_lim[0] is None:
             #If limits were not specified, round limits to match tick mark 
             #spacing
             lo_lim_c = _np.floor(lim[0] / tick_c) * tick_c
@@ -581,7 +581,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
         else:
             lo_lim_c = float(ui_lim[0]) * _np.ones(len(tick_c))
         
-        if ui_lim[1] == 'auto':
+        if ui_lim[1] is None:
             #If limits were not specified, round limits to match tick mark 
             #spacing
             hi_lim_c = _np.ceil(lim[1] / tick_c) * tick_c
@@ -603,7 +603,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
     #If axis is on a log scale
     else:
         #If auto, set tick marks to be at powers of 10^1
-        if ui_tick == 'auto':
+        if ui_tick is None:
             tick_c = _np.array([1])  
         else:
             tick_c = ui_tick
@@ -613,18 +613,18 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
         #Automatically round limits to the closest power of 10
         if _np.all(lim >= 0):
             #If limits were not specified, round limits to match tick mark spacing
-            if ui_lim[0] == 'auto':
+            if ui_lim[0] is None:
                 exp = _np.floor(_np.log(data_lim[0]) / _np.log(ax_log_base))
                 lim_c[0][0] = ax_log_base**exp
-            if ui_lim[1] == 'auto':
+            if ui_lim[1] is None:
                 exp = _np.ceil(_np.log(data_lim[1]) / _np.log(ax_log_base))
                 lim_c[0][1] = ax_log_base**exp
         elif _np.all(lim <= 0):
             #If limits were not specified, round limits to match tick mark spacing
-            if ui_lim[0] == 'auto':
+            if ui_lim[0] is None:
                 exp = _np.ceil(_np.log(-data_lim[0]) / _np.log(ax_log_base))
                 lim_c[0][0] = -ax_log_base**exp
-            if ui_lim[1] == 'auto':
+            if ui_lim[1] is None:
                 exp = _np.floor(_np.log(-data_lim[1]) / _np.log(ax_log_base))
                 lim_c[0][1] = -ax_log_base**exp
         else:
@@ -701,8 +701,8 @@ def gen_tick_list(ui_tick_list, lim, tick, scale, log_base):
     
     Parameters
     ----------
-    ui_tick_list : list or 'auto'
-        User input list of tick mark values, or 'auto' to automatically 
+    ui_tick_list : list or None
+        User input list of tick mark values, or None to automatically 
         generate a tick mark list
     lim : 1x2 list or numpy array
         Axis limits.
@@ -718,7 +718,7 @@ def gen_tick_list(ui_tick_list, lim, tick, scale, log_base):
     tick_list : list of floats
         List of tick mark values
     """
-    if ui_tick_list is 'auto':
+    if ui_tick_list is None:
         #Set the list of tick marks
         if scale == 'log':
             #(range omits the last entry so we need to nudge it a bit)

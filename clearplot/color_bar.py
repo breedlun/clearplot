@@ -29,18 +29,17 @@ class Color_Bar(_axes._Axes_Base):
         orient : ['v', 'h'], optional
             Orientation of the color bar
         tick : float, optional
-            Tick mark spacing.  If `tick` is set to 'auto', then the tick mark 
+            Tick mark spacing.  If `tick` is set to None, then the tick mark 
             spacing will be automatically selected.
         tick_list : list, optional
-            Tick mark positions.  If `tick_list` is set to 'auto', then the 
+            Tick mark positions.  If `tick_list` is set to None, then the 
             tick marks will be automaticaly selected.
         tick_labels : list of strings, optional
-            Tick mark labels.  If `tick_labels` is set to 'auto', then the 
+            Tick mark labels.  If `tick_labels` is set to None, then the 
             tick marks will be automaticaly selected.
         lim : 1x2 list, optional
-            Lower and upper limits.  If the string 'auto' is input instead of 
-            a float, then the corresponding limit will be automaticaly 
-            selected.
+            Lower and upper limits.  If None is input instead of a float, then 
+            the corresponding limit will be automatically selected.
         scale : [ 'linear' | 'log' ], optional
             Color bar scaling.  The default is 'linear'.
         """
@@ -50,13 +49,13 @@ class Color_Bar(_axes._Axes_Base):
              self.data_ax.append(data_obj.parent_ax)
         self.parent_fig = self.data_objs[0].parent_ax.parent_fig
         self.parent_fig.color_bars.append(self)
-        self._ui_pos = kwargs.pop('position', 'auto')
+        self._ui_pos = kwargs.pop('position', None)
         self.orient = kwargs.pop('orient', 'v')
         #Set the font size
         self.font_size = kwargs.pop('font_size', _mpl.rcParams['font.size'])
-        self._ui_tick = kwargs.pop('tick', 'auto')
-        self._ui_tick_list = kwargs.pop('tick_list', 'auto')
-        self._ui_tick_labels = kwargs.pop('tick_labels', 'auto')
+        self._ui_tick = kwargs.pop('tick', None)
+        self._ui_tick_list = kwargs.pop('tick_list', None)
+        self._ui_tick_labels = kwargs.pop('tick_labels', None)
         #Use the user input color limits specified when the data object was 
         #added to the data axes as the default
         self._ui_lim = kwargs.pop('lim', data_obj._ui_c_lim)
@@ -64,8 +63,8 @@ class Color_Bar(_axes._Axes_Base):
         #Store information
         self.sdim = 20.0
         self._tick_mm = self.sdim
-        self.ax_2_bar_gap = kwargs.pop('ax_2_bar_gap', 'auto')
-        if self.ax_2_bar_gap == 'auto':
+        self.ax_2_bar_gap = kwargs.pop('ax_2_bar_gap', None)
+        if self.ax_2_bar_gap is None:
             self.ax_2_bar_gap = self.sdim * 0.5
             
 
@@ -134,9 +133,8 @@ class Color_Bar(_axes._Axes_Base):
     def lim(self):
         """
         Gets/sets the color bar limits.  Supply a 1x2 list of floats to 
-        explicitly set the upper and lower limits.  If the string 'auto' is 
-        input instead of a float, then the corresponding limit will be 
-        automaticaly selected.
+        explicitly set the upper and lower limits.  If None is input instead 
+        of a float, then the corresponding limit will be automaticaly selected.
         """
         return(self._lim)
         
@@ -151,7 +149,7 @@ class Color_Bar(_axes._Axes_Base):
     def tick(self):
         """
         Get/sets the color bar tick mark spacing.  Supply a float to 
-        explicitly set the tick marks spacing.  If `tick` is set to 'auto', 
+        explicitly set the tick marks spacing.  If `tick` is set to None, 
         then the tick mark spacing will be automatically selected.
         """
         return(self._tick)
@@ -181,7 +179,7 @@ class Color_Bar(_axes._Axes_Base):
         """
         Gets/sets the scaling for the color bar.  Valid inputs include 'linear' 
         and 'log'.  Note: if you change the scaling when the axis limits 
-        and ticks are set to 'auto' (the default), then the limits and ticks 
+        and ticks are set to None (the default), then the limits and ticks 
         will be recomputed.
         """
         return(self._ui_scale)
@@ -242,29 +240,29 @@ class Color_Bar(_axes._Axes_Base):
         if self.orient == 'h':
             self.size = _np.array([self._num_tick * self.tick_mm, bar_width])
             #Place the color bar below the data axes, horizontally centered            
-            if self._ui_pos == 'auto':
+            if self._ui_pos is None:
                 bar_pos = _np.array([\
                     ax_bbox.x0 + ax_bbox.width/2.0  - self._num_tick * self.sdim / 2.0, \
                     ax_bbox.y0 - self.ax_2_bar_gap - bar_width])
-                #We must immediately reset the user input position to 'auto'
+                #We must immediately reset the user input position to None
                 #since the position setter method assumes any input was 
                 #supplied by the user.
                 self.position = bar_pos
-                self._ui_pos = 'auto'
+                self._ui_pos = None
             else:
                 self.position = self._ui_pos
         elif self.orient == 'v':
             self.size = _np.array([bar_width, self._num_tick * self.tick_mm])
             #Place the color bar to the right of the data axes, vertically 
             #centered            
-            if self._ui_pos == 'auto':
+            if self._ui_pos is None:
                 bar_pos = _np.array([ax_bbox.x1 + self.ax_2_bar_gap, \
                     ax_bbox.y0 + ax_bbox.height/2.0 - self.size[1] / 2.0])
-                #We must immediately reset the user input position to 'auto'
+                #We must immediately reset the user input position to None
                 #since the position setter method assumes any input was 
                 #supplied by the user.
                 self.position = bar_pos
-                self._ui_pos = 'auto'
+                self._ui_pos = None
             else:
                 self.position = self._ui_pos
         else:
@@ -293,7 +291,7 @@ class Color_Bar(_axes._Axes_Base):
         """
         Gets/sets tick mark positions.  Supply a list of values to 
         explicitly set the tick mark positions.  If `tick_list` is set to 
-        'auto', then the tick marks will be automaticaly selected.
+        None, then the tick marks will be automaticaly selected.
         """
         #As of matplotlib 1.5.1, you can only get the normalized ticks, which 
         #you then must convert.
@@ -321,7 +319,7 @@ class Color_Bar(_axes._Axes_Base):
     @tick_labels.setter
     def tick_labels(self, labels):
         self._ui_tick_labels = labels
-        if labels != 'auto':
+        if labels is not None:
             set_tick_labels = []
             for label in labels:
                 txt = _utl.raw_string(label)

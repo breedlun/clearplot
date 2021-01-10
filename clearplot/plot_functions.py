@@ -13,18 +13,18 @@ def _setup_plot(x_label, y_label, **kwargs):
     Read standard kwargs from plot functions and apply them
     """
     #Set default values for arguments not passed into the axes plot methods
-    x_lim = kwargs.pop('x_lim', ['auto', 'auto'])
-    y_lim = kwargs.pop('y_lim', ['auto', 'auto'])
-    x_tick = kwargs.pop('x_tick', 'auto')
-    y_tick = kwargs.pop('y_tick', 'auto')
+    x_lim = kwargs.pop('x_lim', [None, None])
+    y_lim = kwargs.pop('y_lim', [None, None])
+    x_tick = kwargs.pop('x_tick', None)
+    y_tick = kwargs.pop('y_tick', None)
     x_scale = kwargs.pop('x_scale', 'linear')
     y_scale = kwargs.pop('y_scale', 'linear')
     scale_plot = kwargs.pop('scale_plot', 1)
     font_size = kwargs.pop('font_size', _mpl.rcParams['font.size'])
-    fig = kwargs.pop('fig', 'auto')
-    ax_pos = kwargs.pop('ax_pos', 'auto')
+    fig = kwargs.pop('fig', None)
+    ax_pos = kwargs.pop('ax_pos', None)
     
-    if fig == 'auto':
+    if fig == None:
         fig = _figure.Figure()
     ax = fig.add_axes(position = ax_pos, scale_plot = scale_plot, \
         font_size = font_size)
@@ -84,18 +84,16 @@ def plot(filename, x, y, labels = [None], \
     x_lim : 1x2 list, optional
         x-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     y_lim : list, optional
         y-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     x_tick : float or int, optional
-        Tick mark spacing for the x-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the x-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     y_tick : list, optional
-        Tick mark spacing for the y-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the y-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     x_scale : [ 'linear' | 'log' ], optional
         x-axis scaling.  The default is 'linear'.
@@ -144,7 +142,7 @@ def plot(filename, x, y, labels = [None], \
     --------
     plot_functions.plot_markers()
     """
-    legend = kwargs.pop('legend', 'auto')
+    legend = kwargs.pop('legend', None)
     legend_loc = kwargs.pop('legend_loc', 'best')
     legend_outside_ax = kwargs.pop('legend_outside_ax', False)
     legend_kwargs = kwargs.pop('legend_kwargs', dict())
@@ -154,7 +152,7 @@ def plot(filename, x, y, labels = [None], \
     ax.plot(x, y, labels = labels, **kwargs)
     
     #Generate legend
-    if legend == 'auto':
+    if legend == None:
         if len(x) > 1 and labels != [None]:
             legend = True
         else:
@@ -212,18 +210,16 @@ def plot_markers(filename, x, y, labels = [None], \
     x_lim : 1x2 list, optional
         x-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     y_lim : list, optional
         y-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     x_tick : float or int, optional
-        Tick mark spacing for the x-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the x-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     y_tick : list, optional
-        Tick mark spacing for the y-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the y-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     x_scale : [ 'linear' | 'log' ], optional
         x-axis scaling.  The default is 'linear'.
@@ -272,7 +268,7 @@ def plot_markers(filename, x, y, labels = [None], \
     --------
     plot_functions.plot()
     """
-    legend = kwargs.pop('legend', 'auto')
+    legend = kwargs.pop('legend', None)
     legend_loc = kwargs.pop('legend_loc', 'best')
     legend_outside_ax = kwargs.pop('legend_outside_ax', False)
     legend_kwargs = kwargs.pop('legend_kwargs', dict())
@@ -282,7 +278,7 @@ def plot_markers(filename, x, y, labels = [None], \
     ax.plot_markers(x, y, labels = labels, **kwargs)
     
     #Generate legend
-    if legend == 'auto':
+    if legend == None:
         if len(x) > 1 and labels != [None]:
             legend = True
         else:
@@ -338,18 +334,16 @@ def plot_bars(filename, x, y, labels = [None], \
     x_lim : 1x2 list, optional
         x-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     y_lim : list, optional
         y-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     x_tick : float or int, optional
-        Tick mark spacing for the x-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the x-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     y_tick : list, optional
-        Tick mark spacing for the y-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the y-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     x_scale : [ 'linear' | 'log' ], optional
         x-axis scaling.  The default is 'linear'.
@@ -394,7 +388,7 @@ def plot_bars(filename, x, y, labels = [None], \
     bars: list
         Bar objects
     """
-    legend = kwargs.pop('legend', 'auto')
+    legend = kwargs.pop('legend', None)
     legend_loc = kwargs.pop('legend_loc', 'best')
     legend_outside_ax = kwargs.pop('legend_outside_ax', False)
     legend_kwargs = kwargs.pop('legend_kwargs', dict())
@@ -404,7 +398,7 @@ def plot_bars(filename, x, y, labels = [None], \
     ax.plot_bars(x, y, labels = labels, **kwargs)
     
     #Generate legend
-    if legend == 'auto':
+    if legend == None:
         if len(x) > 1 and labels != [None]:
             legend = True
         else:
@@ -453,18 +447,16 @@ def plot_box_and_whiskers(filename, x, y, \
     x_lim : 1x2 list, optional
         x-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     y_lim : list, optional
         y-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     x_tick : float or int, optional
-        Tick mark spacing for the x-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the x-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     y_tick : list, optional
-        Tick mark spacing for the y-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the y-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     x_scale : [ 'linear' | 'log' ], optional
         x-axis scaling.  The default is 'linear'.
@@ -535,18 +527,16 @@ def plot_violins(filename, x, y, x_label = None, y_label = None, **kwargs):
     x_lim : 1x2 list, optional
         x-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     y_lim : list, optional
         y-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     x_tick : float or int, optional
-        Tick mark spacing for the x-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the x-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     y_tick : list, optional
-        Tick mark spacing for the y-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the y-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     x_scale : [ 'linear' | 'log' ], optional
         x-axis scaling.  The default is 'linear'.
@@ -623,18 +613,16 @@ def plot_intensity_map(filename, x, y, z, x_label = None, y_label = None, **kwar
     x_lim : 1x2 list, optional
         x-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     y_lim : list, optional
         y-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     x_tick : float or int, optional
-        Tick mark spacing for the x-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the x-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     y_tick : list, optional
-        Tick mark spacing for the y-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the y-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     c_bar : boolean, optional
         Specifies whether or not to place a color bar in the figure window.
@@ -644,12 +632,10 @@ def plot_intensity_map(filename, x, y, z, x_label = None, y_label = None, **kwar
     c_lim : 1x2 list, optional
         Colormap limits.  The first element should be the lower limit, while 
         the second element should be the upper limit.  Alternatively, either 
-        element may be the string 'auto' to have the algorithm automatically 
-        select the limits.
+        element may None to have the algorithm automatically select the limits.
     c_tick : float, optional
-        Tick mark spacing for the color bar.  Alternatively, input the string 
-        'auto' to have the algorithm automatically select the tick mark 
-        spacing.
+        Tick mark spacing for the color bar.  Alternatively, input None to 
+        have the algorithm automatically select the tick mark spacing.
     c_orient : the string 'h' or 'v', optional
         Orientation of the color bar.  The default is a vertical orientation.
     c_label : list, optional
@@ -691,7 +677,7 @@ def plot_intensity_map(filename, x, y, z, x_label = None, y_label = None, **kwar
     c_bar = kwargs.pop('c_bar', True)
     c_orient = kwargs.pop('c_orient', 'v')
     c_label = kwargs.pop('c_label', None)
-    c_tick = kwargs.pop('c_tick', 'auto')
+    c_tick = kwargs.pop('c_tick', None)
     c_scale = kwargs.pop('c_scale', 'linear')
     
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
@@ -746,18 +732,16 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     x_lim : 1x2 list, optional
         x-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     y_lim : list, optional
         y-axis limits.  The first list element is the lower limit, while the 
         second element is the upper limit.  Alternatively, either element may 
-        be the string 'auto' to have the algorithm automatically select the 
-        limits.
+        be None to have the algorithm automatically select the limits.
     x_tick : float or int, optional
-        Tick mark spacing for the x-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the x-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     y_tick : list, optional
-        Tick mark spacing for the y-axis.  Alternatively, input 'auto' to have 
+        Tick mark spacing for the y-axis.  Alternatively, input None to have 
         the algorithm automatically select the tick mark spacing.
     c_bar : boolean, optional
         Specifies whether or not to place a color bar in the figure window.
@@ -767,12 +751,11 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     c_lim : 1x2 list, optional
         Colormap limits.  The first element should be the lower limit, while 
         the second element should be the upper limit.  Alternatively, either 
-        element may be the string 'auto' to have the algorithm automatically 
-        select the limits.
+        element may be None to have the algorithm automatically select the 
+        limits.
     c_tick : float, optional
-        Tick mark spacing for the color bar.  Alternatively, input the string 
-        'auto' to have the algorithm automatically select the tick mark 
-        spacing.
+        Tick mark spacing for the color bar.  Alternatively, input None to 
+        have the algorithm automatically select the tick mark spacing.
     c_orient : the string 'h' or 'v', optional
         Orientation of the color bar.  The default is a vertical orientation.
     c_label : list, optional
@@ -817,7 +800,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     c_bar = kwargs.pop('c_bar', True)
     c_orient = kwargs.pop('c_orient', 'v')
     c_label = kwargs.pop('c_label', None)
-    c_tick = kwargs.pop('c_tick', 'auto')
+    c_tick = kwargs.pop('c_tick', None)
     c_scale = kwargs.pop('c_scale', 'linear')
     
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
@@ -887,12 +870,11 @@ def show_im(filename, im_seq, **kwargs):
     c_lim : 1x2 list, optional
         Colormap limits.  The first element should be the lower limit, while 
         the second element should be the upper limit.  Alternatively, either 
-        element may be the string 'auto' to have the algorithm automatically 
-        select the limits.
+        element may be None to have the algorithm automatically select the 
+        limits.
     c_tick : float, optional
-        Tick mark spacing for the color bar.  Alternatively, input the string 
-        'auto' to have the algorithm automatically select the tick mark 
-        spacing.
+        Tick mark spacing for the color bar.  Alternatively, input None to 
+        have the algorithm automatically select the tick mark spacing.
     c_orient : the string 'h' or 'v', optional
         Orientation of the color bar.  The default is a vertical orientation.
     c_label : list, optional
@@ -932,21 +914,21 @@ def show_im(filename, im_seq, **kwargs):
     """
     
     #Set default values
-    scale_im = kwargs.pop('scale_im', 'auto')
+    scale_im = kwargs.pop('scale_im', None)
     scale_gap = kwargs.pop('scale_gap', 1)
     scale_plot = kwargs.pop('scale_plot', 1)
     c_bar = kwargs.pop('c_bar', False)
     c_map = kwargs.pop('c_map', _cp.colors.c_maps['rainbow'])
-    c_lim = kwargs.pop('c_lim', ['auto','auto'])
-    c_tick = kwargs.pop('c_tick', 'auto')
+    c_lim = kwargs.pop('c_lim', [None, None])
+    c_tick = kwargs.pop('c_tick', None)
     c_orient = kwargs.pop('c_orient', 'v')
     c_label = kwargs.pop('c_label', ['c\_label'])
     b_labels = kwargs.pop('b_labels', False)
-    im_interp = kwargs.pop('im_interp', 'auto')
+    im_interp = kwargs.pop('im_interp', None)
     im_origin = kwargs.pop('im_origin', 'upper')
     font_size = kwargs.pop('fsize', _mpl.rcParams['font.size'])
     fig = kwargs.pop('fig', None)
-    ax_pos = kwargs.pop('ax_pos', 'auto')
+    ax_pos = kwargs.pop('ax_pos', None)
     if kwargs:
         # Catch unexpected keyword arguments
         raise TypeError("%r are invalid keyword arguments" % (kwargs.keys()))
@@ -976,7 +958,7 @@ def show_im(filename, im_seq, **kwargs):
         #Store the size of each continuous row of images
         im_seq_sizes[i,:] = [_np.sum(im_sizes[i][:,0]), _np.max(im_sizes[i][:,1])]
     
-    if scale_im == 'auto':
+    if scale_im == None:
         #If image resolution (+ margins and padding) is smaller than the 
         #computer screen resolution, then just display image as is.  Otherwise, 
         #scale it down.
@@ -1085,8 +1067,8 @@ def show_im(filename, im_seq, **kwargs):
     return(fig, im_ax, im_obj)        
 
 def plot_surface(filename, x, y, z, x_label='x', y_label='y', z_label='z', \
-    x_lim = ['auto','auto'], y_lim = ['auto','auto'], z_lim = ['auto','auto'],\
-    x_tick = 'auto', y_tick = 'auto', z_tick = 'auto', \
+    x_lim = [None,None], y_lim = [None,None], z_lim = [None,None],\
+    x_tick = None, y_tick = None, z_tick = None, \
     light_alt_angle = 0.0, light_azm_angle = 90.0, title = 'None'):
     """
     Plots a 3D surface.  In development...
@@ -1179,8 +1161,8 @@ def plot_surface(filename, x, y, z, x_label='x', y_label='y', z_label='z', \
     return(fig, axes3d, surf)   
     
 def plot_3d_scatter(filename, x, y, z, x_label='x', y_label='y', z_label='z', \
-    x_lim = ['auto','auto'], y_lim = ['auto','auto'], z_lim = ['auto','auto'],\
-    x_tick = 'auto', y_tick = 'auto', z_tick = 'auto', \
+    x_lim = [None,None], y_lim = [None,None], z_lim = [None,None],\
+    x_tick = None, y_tick = None, z_tick = None, \
     light_alt_angle = 0.0, light_azm_angle = 90.0, title = 'None'):
     """
     Plots a 3D scatter plot.  In development...

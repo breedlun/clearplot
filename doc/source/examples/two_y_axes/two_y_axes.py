@@ -19,7 +19,7 @@ ax1 = fig.add_axes()
 ax1.plot([xa, xb], [ya, yb], labels = ['\alpha', '\beta'])
 ax1.x_label = ['A', 'mm^2']
 ax1.y_label = ['\alpha,\,\beta', 'kJ']
-ax1.y_lim = [-1,'auto']
+ax1.y_lim = [-1, None]
 ax1.add_legend(loc = 'upper left')
 
 ax2 = fig.add_axes(share_x_ax = ax1)

@@ -19,7 +19,7 @@ class Figure(object):
     
     """
     
-    def __init__(self, size = 'auto', dpmm = _cp.params.dpmm):
+    def __init__(self, size = None, dpmm = _cp.params.dpmm):
         """
         Instantiates a figure object        
         
@@ -31,7 +31,7 @@ class Figure(object):
             Dots per mm
         """
         self._ui_size = size
-        if size == 'auto':
+        if size is None:
             size_inch = _np.array(_mpl.rcParams['figure.figsize'])
         else:
             size_inch = _np.array(size) / 25.4
@@ -77,11 +77,11 @@ class Figure(object):
         ax = _axes.Invisible_Axes(self, **kwargs)
         return(ax)
         
-#    def add_axes_grid(self, n_row = 1, n_col = 1, position = 'auto', **kwargs):
+#    def add_axes_grid(self, n_row = 1, n_col = 1, position = None, **kwargs):
 #        ax_list = []
 #        for i in range(n_row):
 #            if i == 0:
-#                position = 'auto'
+#                position = None
 #            else:
 #                ax_upper_left = ax_list[0].position
 #                ax_upper_left[1] = ax_upper_left[1] + ax_list[0].size[1]
@@ -461,28 +461,28 @@ class Figure(object):
             Padding on edges of figure, in mm.
         """
         #Only adjust figure if the size has not been specified
-        if self._ui_size == 'auto':
+        if self._ui_size is None:
             fig_bbox = self.tight_bbox
             #Collect the user input axes positions
             ui_ax_pos_auto = []
             for ax in self.axes:
-                ui_ax_pos_auto.append(ax._ui_pos == 'auto')
+                ui_ax_pos_auto.append(ax._ui_pos is None)
             #Treat the colorbars as if they were axes
             for bar in self.color_bars:
-                ui_ax_pos_auto.append(bar._ui_pos == 'auto')
+                ui_ax_pos_auto.append(bar._ui_pos is None)
             if False not in ui_ax_pos_auto:
                 #If the axes positions have not been specified then move the 
                 #axes all by the same amount, and resize the figure window.
-                #(We must immediately reset the user input position to 'auto'
+                #(We must immediately reset the user input position to None
                 #since the position setter method assumes any input was 
                 #supplied by the user.)
                 dx = - _np.array([fig_bbox.x0 - pad, fig_bbox.y0 - pad])
                 for ax in self.axes:
                     ax.position = ax.position + dx
-                    ax._ui_pos = 'auto'
+                    ax._ui_pos = None
                 for bar in self.color_bars:
                     bar.position = bar.position + dx
-                    bar._ui_pos = 'auto'
+                    bar._ui_pos = None
                 self.size = [fig_bbox.width + 2*pad, fig_bbox.height + 2*pad]
             else:
                 #If any of the axes positions have been specified, then just

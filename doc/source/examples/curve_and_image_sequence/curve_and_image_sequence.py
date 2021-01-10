@@ -5,7 +5,8 @@ Created on Sat Apr 18 15:43:55 2015
 @author: Ben
 """
 import clearplot.plot_functions as pf
-import os, scipy.misc
+import matplotlib.pyplot
+import os
 import numpy as np
 
 #Load global response
@@ -23,7 +24,7 @@ for ndx in ndx_list:
     #Load field image
     im_filename = 's140302C-eqps_field-frame_%r.png' %(ndx)
     im_path = os.path.join(data_dir, 'hi-rez_field_images', im_filename)
-    im = scipy.misc.imread(im_path)
+    im = matplotlib.pyplot.imread(im_path)
     #Crop the field image and add to list
     im_seq.append(im[:,cols,:])
 #Create labels

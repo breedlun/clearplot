@@ -99,14 +99,15 @@ def use_latex(boolean):
 #Helvetica clone) and the greek letters in its math font are similar to 
 #computer modern, except they have heavier line weights, so they match the 
 #TeXGyreHeros line weights.
-#\usepackage{newtxtext}                   loads a family of fonts
+#\usepackage{newtxtext}                   loads a family of text fonts
+#\usepackage{newtxmath}                   loads a family of math fonts
 #\renewcommand*\familydefault{\sfdefault} causes the sans-serif font from the above font family to be used for normal text
 #\usepackage[italic]{mathastext}          causes the latin letters from the font family to be used in math mode
 _mpl.rcParams['text.latex.preamble'] = \
     r'\usepackage{newtxtext}' \
+    + r'\usepackage{newtxmath}' \
     + r'\renewcommand*\familydefault{\sfdefault}' \
-    + r'\usepackage[italic]{mathastext}' \
-    + r'\usepackage{newtxmath}'
+    + r'\usepackage[italic]{mathastext}'
 if _cp.mpl_version < (3,3,0):
     #With older versions of matplotlib 'text.latex.preview' must be set to 
     #True, otherwise the baseline will be underneath subscripts, which is 

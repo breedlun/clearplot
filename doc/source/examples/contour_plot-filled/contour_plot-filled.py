@@ -6,15 +6,14 @@ Created on Sat Apr 18 17:36:03 2015
 """
 import clearplot.plot_functions as pf
 import numpy as np
-import matplotlib.mlab as mlab
 
 delta = 0.025
-x1d = np.arange(-1.5, 1.5 + delta/100, delta)
-y1d = np.arange(-1.5, 1.5 + delta/100, delta)
-x, y = np.meshgrid(x1d, y1d)
-z1 = mlab.bivariate_normal(x, y, 1.0, 1.0, 0.0, 0.0)
-z2 = mlab.bivariate_normal(x, y, 1.5, 0.5, 1, 1)
-z = 10.0 * (z2 - z1)
+x = np.arange(-2.0, 3.0, delta)
+y = np.arange(-2.0, 3.0, delta)
+X, Y = np.meshgrid(x, y)
+Z1 = np.exp(-X**2 - Y**2)
+Z2 = np.exp(-(X - 1)**2 - (Y - 1)**2)
+Z = (Z1 - Z2) * 2
 
-pf.plot_contours('contour_plot-filled.png', x, y, z, ['\tau_1', 'kg'], \
+pf.plot_contours('contour_plot-filled.png', X, Y, Z, ['\tau_1', 'kg'], \
     ['\tau_2', 'kg'], x_tick = 0.5, y_tick = 0.5, c_label = ['E', 'kJ']);

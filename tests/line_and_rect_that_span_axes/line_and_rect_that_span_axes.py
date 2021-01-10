@@ -7,7 +7,6 @@ Created on Tue Jan  3 08:10:15 2017
 """
 
 import clearplot.plot_functions as pf
-import clearplot as cp
 import numpy as np
 
 x = np.array([0.0, 1.0, 2.0, 3.0])

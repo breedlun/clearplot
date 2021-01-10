@@ -20,3 +20,5 @@ ax3.y_tick = 0.1
 ax3.x_lim = [0, 1.5]
 fig.auto_adjust_layout()
 fig.save('multiple_y_axes-linked_x_axes')
+# import clearplot.params as cp_params
+# fig.save('multiple_y_axes-linked_x_axes', bbox='tight', pad = cp_params.auto_layout_pad)
