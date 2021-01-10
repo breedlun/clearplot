@@ -6,6 +6,8 @@ version 1.2.1
 1. Updated to be compatible with matplotlib 3.3.0.
 2. Fixed a bug where axis arrows would get scaled when the distance between tick marks was scaled.
 3. Changed the default marker edge width to be 2 points when a non-filled marker such as 'x' is specified.
+4. Made the dark color lists not quite so dark.
+5. Changed the default optional argument from 'auto' to the more pythonic None.
 
 version 1.2.0
 
