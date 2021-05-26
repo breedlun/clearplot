@@ -1458,11 +1458,24 @@ class Axes(_Data_Axes_Base):
         data_sets.extend(self.curves[:])
         data_sets.extend(self.markers[:])
         for data_set in data_sets:
-            #Save the full data set before clipping
+            #Get the data set
+            if hasattr(data_set, 'get_offsets'):
+                #PathCollections, which are produced from mpl_ax.scatter(),
+                #do not have get_xdata() or get_ydata() methods, so we need to 
+                #use special techniques to get the data
+                data = data_set.get_offsets().data
+                x_data = data[:,0]
+                y_data = data[:,1]
+            else:
+                #Everything else seems to have the get_xdata() and get_ydata()
+                #methods
+                x_data = data_set.get_xdata()
+                y_data = data_set.get_ydata()
+            #Save the full data set before clipping 
             if not hasattr(data_set, 'full_x_data'):
-                data_set.full_x_data = data_set.get_xdata()
+                data_set.full_x_data = x_data
             if not hasattr(data_set, 'full_y_data'):
-                data_set.full_y_data = data_set.get_ydata()
+                data_set.full_y_data = y_data
             #Perform the clipping on a copy of the full data set 
             x = _np.copy(data_set.full_x_data)
             y = _np.copy(data_set.full_y_data)
@@ -1471,14 +1484,26 @@ class Axes(_Data_Axes_Base):
             [x_c, y_c] = self._clip_data(x, y, \
                 self.x_lim, self.x_tick, self.x_scale, self._x_scale_log_base, \
                 data_set.get_linestyle())
-            data_set.set_xdata(x_c)
-            data_set.set_ydata(y_c)
+            if hasattr(data_set, 'get_offsets'):
+                #PathCollections, which are produced from mpl_ax.scatter(),
+                #store their data in masked arrays, so we need to use
+                #special techniques to set the data
+                data_set.set_offsets(_np.ma.array(_np.hstack([x_c[:,None], y_c[:,None]])))
+            else:
+                data_set.set_xdata(x_c)
+                data_set.set_ydata(y_c)
             #Clip the y data second
             [y_c, x_c] = self._clip_data(y_c, x_c, \
                 self.y_lim, self.y_tick, self.y_scale, self._y_scale_log_base, \
                 data_set.get_linestyle())
-            data_set.set_xdata(x_c)
-            data_set.set_ydata(y_c)
+            if hasattr(data_set, 'get_offsets'):
+                #PathCollections, which are produced from mpl_ax.scatter(),
+                #store their data in masked arrays, so we need to use
+                #special techniques to set the data
+                data_set.set_offsets(_np.ma.array(_np.hstack([x_c[:,None], y_c[:,None]])))
+            else:
+                data_set.set_xdata(x_c)
+                data_set.set_ydata(y_c)
         
     def _clip_data(self, x, y, lims, tick, ax_scale, ax_log_base, line_style):
         """Clips data to limits"""
@@ -1514,31 +1539,32 @@ class Axes(_Data_Axes_Base):
         for lgc, lim in zip(lgcs, lims):
             #We only want to interpolate to the axis limits if lines are being 
             #drawn between the data points
-            if line_style.lower() != 'none':
-                #Find the indices where the data crosses the limit
-                cross_ndx = _np.where(_np.diff(lgc))[0]
-                #The data can increase or decrease with index number. In either 
-                #case, we want the data point just inside and just outside the limit.
-                inside_ndx = _np.concatenate((cross_ndx[lgc[cross_ndx]] + 1, \
-                    cross_ndx[~lgc[cross_ndx]]))
-                outside_ndx = _np.concatenate((cross_ndx[lgc[cross_ndx]], \
-                    cross_ndx[~lgc[cross_ndx]] + 1))
-                for i_ndx, o_ndx in zip(inside_ndx, outside_ndx):
-                    #Create data points right at the limits using linear 
-                    #interpolation
-                    #It is important to use only a subset of the data during 
-                    #interpolation because there may not always be a 1-to-1 mapping 
-                    #between x and y
-                    ndx = _np.sort(_np.array([i_ndx,o_ndx]))
-                    #Interpolant requires monotonically increasing values of x
-                    if _np.diff(x[ndx]) >= 0:
-                        y[o_ndx] = _np.interp(lim, x[ndx], y[ndx])
-                    else:
-                        xr = x[ndx]
-                        yr = y[ndx]
-                        y[o_ndx] = _np.interp(lim, xr[::-1], yr[::-1])
-                    x[o_ndx] = lim
-                    lgc[o_ndx] = False
+            if hasattr(line_style, 'lower'):
+                if line_style.lower() != 'none':
+                    #Find the indices where the data crosses the limit
+                    cross_ndx = _np.where(_np.diff(lgc))[0]
+                    #The data can increase or decrease with index number. In either 
+                    #case, we want the data point just inside and just outside the limit.
+                    inside_ndx = _np.concatenate((cross_ndx[lgc[cross_ndx]] + 1, \
+                        cross_ndx[~lgc[cross_ndx]]))
+                    outside_ndx = _np.concatenate((cross_ndx[lgc[cross_ndx]], \
+                        cross_ndx[~lgc[cross_ndx]] + 1))
+                    for i_ndx, o_ndx in zip(inside_ndx, outside_ndx):
+                        #Create data points right at the limits using linear 
+                        #interpolation
+                        #It is important to use only a subset of the data during 
+                        #interpolation because there may not always be a 1-to-1 mapping 
+                        #between x and y
+                        ndx = _np.sort(_np.array([i_ndx,o_ndx]))
+                        #Interpolant requires monotonically increasing values of x
+                        if _np.diff(x[ndx]) >= 0:
+                            y[o_ndx] = _np.interp(lim, x[ndx], y[ndx])
+                        else:
+                            xr = x[ndx]
+                            yr = y[ndx]
+                            y[o_ndx] = _np.interp(lim, xr[::-1], yr[::-1])
+                        x[o_ndx] = lim
+                        lgc[o_ndx] = False
             #Clip the data outside the limits
             #(If the user input a list of integers then they must be converted to
             #floats, since nan is a float)
