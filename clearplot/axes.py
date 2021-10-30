@@ -959,10 +959,10 @@ class Axes(_Data_Axes_Base):
     @property
     def x_scale(self):
         """
-        Gets/sets the scaling for the x-axis.  Valid inputs include 'linear' 
-        and 'log'.  Note: if you change the scaling when the axis limits 
-        and ticks are set to None (the default), then the limits and ticks 
-        will be recomputed.
+        Gets/sets the scaling for the x-axis.  Valid inputs include 'linear', 
+        'log', and 'symlog'.  Note: if you change the scaling when the axis 
+        limits and ticks are set to None (the default), then the limits and 
+        ticks will be recomputed.
         """
         return(self.mpl_ax.get_xscale())
 
@@ -971,7 +971,7 @@ class Axes(_Data_Axes_Base):
         #Matplotlib v3.3 gives an warning that v3.4 will give an error when 
         #the base keyword is used with linear axis scaling, so we must make 
         #sure to only specify a base when using log axis scaling.
-        if scale == 'log':
+        if scale == 'log' or scale == 'symlog':
             b = self._x_scale_log_base
             #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
             #etc.  This results in only one minor tick mark for natural log 
@@ -1015,10 +1015,10 @@ class Axes(_Data_Axes_Base):
     @property
     def y_scale(self):
         """
-        Gets/sets the scaling for the y-axis.  Valid inputs include 'linear' 
-        and 'log'.  Note: if you change the scaling when the axis limits 
-        and ticks are set to None (the default), then the limits and ticks 
-        will be recomputed.
+        Gets/sets the scaling for the y-axis.  Valid inputs include 'linear',  
+        'log', and 'symlog'.  Note: if you change the scaling when the axis 
+        limits and ticks are set to None (the default), then the limits and 
+        ticks will be recomputed.
         """
         return(self.mpl_ax.get_yscale())
     
@@ -1027,7 +1027,7 @@ class Axes(_Data_Axes_Base):
         #Matplotlib v3.3 gives an warning that v3.4 will give an error when 
         #the base keyword is used with linear axis scaling, so we must make 
         #sure to only specify a base when using log axis scaling.
-        if scale == 'log':
+        if scale == 'log' or scale == 'symlog':
             b = self._y_scale_log_base
             #Matplotlib places floor(b) - 2 minor ticks at 2*b^n, 3*b^n, 4*b^n, 
             #etc.  This results in only one minor tick mark for natural log 
@@ -1037,7 +1037,10 @@ class Axes(_Data_Axes_Base):
                     0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
             else:
                 minor_ticks = None
-            self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks)
+            if scale == 'log':
+                self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks)
+            else:
+                self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks, linthresh = 1e-12)
             self._select_and_set_y_lim_and_tick(self._ui_y_lim[:], self._ui_y_tick)
             #If using a base e logarithm, label major ticks using 'e^z' rather
             #than 2.718281828459045^z
@@ -1109,9 +1112,9 @@ class Axes(_Data_Axes_Base):
         Gets the number of x-axis tick marks
         """
         lim = self.x_lim
-        if self.x_scale == 'log':
-            num_tick = (_np.log(lim[1])/_np.log(self._x_scale_log_base) - \
-                _np.log(lim[0])/_np.log(self._x_scale_log_base)) / self.x_tick
+        if self.x_scale == 'log' or self.x_scale == 'symlog':
+            num_tick = _np.abs(_np.log(_np.abs(lim[1]))/_np.log(self._x_scale_log_base) - \
+                _np.log(_np.abs(lim[0]))/_np.log(self._x_scale_log_base)) / self.x_tick
         else:
             num_tick = (lim[1] - lim[0]) / self.x_tick
         return(num_tick)
@@ -1255,9 +1258,9 @@ class Axes(_Data_Axes_Base):
         Gets the number of y-axis tick marks
         """
         lim = self.y_lim
-        if self.y_scale == 'log':
-            num_tick = (_np.log(lim[1])/_np.log(self._y_scale_log_base) - \
-                _np.log(lim[0])/_np.log(self._y_scale_log_base)) / self.y_tick
+        if self.y_scale == 'log' or self.y_scale == 'symlog':
+            num_tick = _np.abs(_np.log(_np.abs(lim[1]))/_np.log(self._y_scale_log_base) - \
+                _np.log(_np.abs(lim[0]))/_np.log(self._y_scale_log_base)) / self.y_tick
         else:
             num_tick = (lim[1] - lim[0]) / self.y_tick
         return(num_tick)
@@ -1383,7 +1386,7 @@ class Axes(_Data_Axes_Base):
             ax_scale, ax_log_base):
             #Define a function to adjust the limits            
             def adjust_lim(lmt, n_tick_diff, tick, sign, ax_scale, ax_log_base):
-                if ax_scale == 'log':
+                if ax_scale == 'log' or ax_scale == 'symlog':
                     lmt = ax_log_base**(_np.log(lmt)/_np.log(ax_log_base) \
                         + sign * n_tick_diff * tick)
                 else:
@@ -1429,7 +1432,7 @@ class Axes(_Data_Axes_Base):
         
         #Define a function to calculate the number of tick marks along an axis
         def calc_n_tick(lim, tick, ax_scale, ax_log_base):
-            if ax_scale == 'log':
+            if ax_scale == 'log' or ax_scale == 'symlog':
                 n_tick = (_np.log(lim[1])/_np.log(ax_log_base) - \
                     _np.log(lim[0])/_np.log(ax_log_base)) / tick
             else:
@@ -1524,7 +1527,7 @@ class Axes(_Data_Axes_Base):
         #Don't clip data if the max or min is just slightly beyond the limit
         #(The distance beyond the limit must be calculated differently if 
         #axis has a log scale instead of a normal linear scale.)
-        if ax_scale == 'log':
+        if ax_scale == 'log' or ax_scale == 'symlog':
             diff = [_np.log(lims[0])/_np.log(ax_log_base) - \
                 _np.log(_np.nanmin(x))/_np.log(ax_log_base), \
                 _np.log(_np.nanmax(x))/_np.log(ax_log_base) - \
@@ -2162,9 +2165,8 @@ class Axes(_Data_Axes_Base):
 #                pos_tip_pix = self.mpl_ax.transData.transform(pos_tip.T).T
 #                pos_tip_fig = self.parent_fig.mpl_fig.transFigure.inverted().transform(pos_tip_pix.T).T
                 #Print the arrowhead
-                arrowhead = self.add_arrowhead(pos_tip, 'data', orient, \
+                self.add_arrowhead(pos_tip, 'data', orient, \
                     length = length, color = color)
-                self.mpl_ax.draw_artist(arrowhead)
             self.parent_fig.update()
         if ndx_pick:
             print("""Here are the arrow indices so that you can input them directly next time.""")
@@ -2404,7 +2406,7 @@ class Axes(_Data_Axes_Base):
                     arrowprops=dict(arrowstyle='-', \
                     connectionstyle='arc3, rad=0.0', fc='none', \
                     shrinkA = 0.0, shrinkB = 0.0))
-                self.mpl_ax.draw_artist(l_obj)
+                # self.mpl_ax.draw_artist(l_obj)
                 if style == 'balloon':
                     #Place the white background of the balloon behind the 
                     #label text

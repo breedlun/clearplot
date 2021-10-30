@@ -466,7 +466,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
     #some limits
     if (data_lim[0] == _np.inf) or (data_lim[1] == _np.inf):
         if ui_lim[0] is None and ui_lim[1] is None:
-            if ax_scale == 'log':
+            if ax_scale == 'log' or ax_scale == 'symlog':
                 ui_lim = [ax_log_base**(-5),1.0]
             else:
                 ui_lim = [0.0, 1.0]          
@@ -720,12 +720,15 @@ def gen_tick_list(ui_tick_list, lim, tick, scale, log_base):
     """
     if ui_tick_list is None:
         #Set the list of tick marks
-        if scale == 'log':
-            #(range omits the last entry so we need to nudge it a bit)
-            log_tick_list = _np.arange(\
-                _np.log(lim[0]) / _np.log(log_base), \
-                _np.log(lim[1]) / _np.log(log_base) + tick/100.0, tick)
-            tick_list = log_base**log_tick_list
+        if scale == 'log' or scale == 'symlog':
+            if _np.sign(lim[0]) == _np.sign(lim[1]):
+                #(range omits the last entry so we need to nudge it a bit)
+                log_tick_list = _np.arange(\
+                    _np.log(_np.abs(lim[0])) / _np.log(log_base), \
+                    _np.log(_np.abs(lim[1])) / _np.log(log_base) +  _np.sign(lim[0]) * tick/100.0, _np.sign(lim[0]) * tick)
+                tick_list = _np.sign(lim[0]) * log_base**log_tick_list
+            else:
+                raise IOError("ERROR: tick mark lists for log axes spanning zero have not been implemented")
         else:
             #(range omits the last entry so we need to nudge it a bit)
             tick_list = _np.arange(lim[0], lim[1] + tick/100.0, tick)
