@@ -3196,12 +3196,18 @@ class Axes(_Data_Axes_Base):
         clip_edges = kwargs.pop('clip_edges', True)
         
         #Verify that x and y data are appropriate
-        dx = _np.diff(x, axis = 1)
+        if self.x_scale == 'log' or self.x_scale == 'symlog':
+            dx = _np.diff(_np.log(x)/_np.log(self.x_scale_log_base), axis = 1)
+        else:
+            dx = _np.diff(x, axis = 1)
         avg_dx = _np.mean(dx)
         if ((_np.max(dx) - avg_dx) / avg_dx > 10e-3) or \
             ((avg_dx - _np.min(dx)) / avg_dx > 10e-3):
             raise IOError("x-data must be evenly spaced for 'image' plot type.")
-        dy = _np.diff(y, axis = 0)
+        if self.y_scale == 'log' or self.y_scale == 'symlog':
+            dy = _np.diff(_np.log(y)/_np.log(self.y_scale_log_base), axis = 0)
+        else:
+            dy = _np.diff(y, axis = 0)
         avg_dy = _np.mean(dy)
         if ((_np.max(dy) - avg_dy) / avg_dy > 10e-3) or \
             ((avg_dy - _np.min(dy)) / avg_dy > 10e-3):
