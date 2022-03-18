@@ -3155,14 +3155,6 @@ class Axes(_Data_Axes_Base):
             Matrix y position.
         z : MxN numpy array
             Matrix to be plotted
-        clip_edges : bool, optional
-            Specifies whether to clip the extra half pixel along the edges of 
-            the matrix, so that the edges of the matrix conform to the min and
-            max of x and y.
-        im_interp : string, optional
-            Image interpolation method.  See the `matplotlib documentation
-            <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.imshow>`__
-            for acceptable values.
         c_map : string, optional
             Image color map.
         c_lim : 1x2 list, optional
@@ -3193,7 +3185,9 @@ class Axes(_Data_Axes_Base):
         specify the x/y limits explicitly, increase ax.exceed_lim, or reduce
         the size of the pixel relative to the tick mark spacing.
         """
-        clip_edges = kwargs.pop('clip_edges', True)
+        c_map = kwargs.pop('c_map', _cp.colors.c_maps['rainbow'])
+        ui_c_lim = kwargs.pop('c_lim', [None, None])
+        c_scale = kwargs.pop('c_scale', 'linear')
         
         #Verify that x and y data are appropriate
         if self.x_scale == 'log' or self.x_scale == 'symlog':
@@ -3212,22 +3206,26 @@ class Axes(_Data_Axes_Base):
         if ((_np.max(dy) - avg_dy) / avg_dy > 10e-3) or \
             ((avg_dy - _np.min(dy)) / avg_dy > 10e-3):
             raise IOError("y-data must be evenly spaced for 'image' plot type")
-        del dx, dy        
+        del dx, dy
         
-        #Plot the matrix
-        im_obj = self.add_image(z, x = [x.min(), x.max()], \
-            y = [y.min(), y.max()], xy_coords = 'pixel centers', \
-            im_origin = 'lower left', **kwargs)
+        if c_scale == 'linear':
+            norm = _mpl.colors.Normalize()
+        elif c_scale == 'log':
+            norm = _mpl.colors.LogNorm()
+        else:
+            raise IOError("ERROR: c_scale must be 'linear' or 'log'")
         
-        if clip_edges:
-            #Clip the extra half a pixel on the edges
-            xy_clip = _np.array([[_np.min(x), _np.min(y)], \
-                                 [_np.max(x), _np.min(y)], \
-                                 [_np.max(x), _np.max(y)], \
-                                 [_np.min(x), _np.max(y)]])
-            clip_patch = _mpl_patches.Polygon(xy_clip, \
-                transform = self.mpl_ax.transData)
-            im_obj.set_clip_path(clip_patch)
+        #Plot intensity map using pcolormesh instead of add_image since 
+        #add_image cannot handle log scaled x and/or y axes.
+        #(Rasterize the output to avoid thin white lines between the quads)
+        im_obj = self.mpl_ax.pcolormesh(x, y, z, rasterized = True, \
+                                        vmin = ui_c_lim[0], vmax = ui_c_lim[1], \
+                                        cmap = c_map, norm = norm, shading = 'auto')
+        im_obj.parent_ax = self
+        im_obj._ui_c_lim = ui_c_lim
+        #A high resolution is neeeded for saving rasterized images, or else 
+        #the image placement will slightly be slightly off for some reason.
+        self.parent_fig.dpmm = 10.0
             
         #Set the limits and ticks
         self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)

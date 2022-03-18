@@ -46,6 +46,8 @@ class Figure(object):
         self.axes = []
         #Initialize the color_bar container
         self.color_bars = []
+        #Set the dots per millimeter for saving
+        self.dpmm = dpmm
     
     def add_axes(self, **kwargs):
         """
@@ -511,7 +513,7 @@ class Figure(object):
     #This method is just a wrapper around the matplotlib fig.savefig() method
     #It allows the user to work in mm instead of inches, and implements many
     #of the defaults clearplot typically uses.
-    def save(self, file_name, dpmm = _cp.params.dpmm, face_color = [0,0,0,0], \
+    def save(self, file_name, dpmm = None, face_color = [0,0,0,0], \
         edge_color = [0,0,0,0], transparent = True, bbox = None, pad = 0):
         """
         Save the current figure.
@@ -550,6 +552,8 @@ class Figure(object):
             bbox_inch = bbox
         else:
             bbox_inch = _np.array(bbox) / 25.4
+        if dpmm is None:
+            dpmm = self.dpmm
         
         self.mpl_fig.savefig(file_name, dpi = dpmm * 25.4, \
             facecolor = face_color, edgecolor = edge_color, \
