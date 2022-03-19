@@ -3191,7 +3191,7 @@ class Axes(_Data_Axes_Base):
         
         #Verify that x and y data are appropriate
         if self.x_scale == 'log' or self.x_scale == 'symlog':
-            dx = _np.diff(_np.log(x)/_np.log(self.x_scale_log_base), axis = 1)
+            dx = _np.diff(_np.log(x)/_np.log(self.x_scale_log_base), axis = -1)
         else:
             dx = _np.diff(x, axis = 1)
         avg_dx = _np.mean(dx)
@@ -3209,9 +3209,9 @@ class Axes(_Data_Axes_Base):
         del dx, dy
         
         if c_scale == 'linear':
-            norm = _mpl.colors.Normalize()
+            norm = _mpl.colors.Normalize(vmin = ui_c_lim[0], vmax = ui_c_lim[1])
         elif c_scale == 'log':
-            norm = _mpl.colors.LogNorm()
+            norm = _mpl.colors.LogNorm(vmin = ui_c_lim[0], vmax = ui_c_lim[1])
         else:
             raise IOError("ERROR: c_scale must be 'linear' or 'log'")
         
@@ -3219,7 +3219,6 @@ class Axes(_Data_Axes_Base):
         #add_image cannot handle log scaled x and/or y axes.
         #(Rasterize the output to avoid thin white lines between the quads)
         im_obj = self.mpl_ax.pcolormesh(x, y, z, rasterized = True, \
-                                        vmin = ui_c_lim[0], vmax = ui_c_lim[1], \
                                         cmap = c_map, norm = norm, shading = 'auto')
         im_obj.parent_ax = self
         im_obj._ui_c_lim = ui_c_lim
