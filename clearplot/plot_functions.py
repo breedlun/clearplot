@@ -1069,7 +1069,8 @@ def show_im(filename, im_seq, **kwargs):
 def plot_surface(filename, x, y, z, x_label='x', y_label='y', z_label='z', \
     x_lim = [None,None], y_lim = [None,None], z_lim = [None,None],\
     x_tick = None, y_tick = None, z_tick = None, \
-    light_alt_angle = 0.0, light_azm_angle = 90.0, title = 'None'):
+    light_alt_angle = 0.0, light_azm_angle = 90.0, title = 'None', \
+    c_map = _cp.colors.c_maps['plain_red']):
     """
     Plots a 3D surface.  In development...
     """    
@@ -1136,20 +1137,17 @@ def plot_surface(filename, x, y, z, x_label='x', y_label='y', z_label='z', \
     
     #Specify the viewing angle 
     #(elev = angle above z plane, azim = angle about the z-axis)
-    axes3d.view_init(elev=20, azim=-25)
+    axes3d.view_init(elev=20, azim=-30)
     # create light source object.
     #(I could not find any documentation on  on using a lightsource with a surface,
     #but the following forum post described what to do:
     #http://matplotlib.1069221.n5.nabble.com/Is-it-possible-to-have-different-color-for-inner-and-outer-face-of-a-3D-plot-td38979.html)
-    #(altdeg = angle above z plane, azdeg = angle about the z-axis)    
-    ls = mplc.LightSource(altdeg=light_alt_angle, \
-        azdeg=light_azm_angle, \
-        hsv_min_val = 0.25, hsv_min_sat = 0.75,\
-        hsv_max_val = 0.75, hsv_max_sat = 0.25)
-    plain_cmap = mplc.ListedColormap([0,0,1])
+    #(altdeg = angle above z plane, azdeg = angle about the z-axis)
+    ls = mplc.LightSource(light_alt_angle, light_azm_angle)
+    illuminated_surf = ls.shade(xyz[2], cmap = c_map)
     surf = axes3d.plot_surface(xyz[0], xyz[1], xyz[2], \
-        linewidth = 0, rstride = 1, cstride = 1, antialiased = False, \
-        shade = True, cmap = plain_cmap, facecolors = 'b', lightsource = ls)
+        rstride=1, cstride=1, linewidth=0, antialiased=False, \
+        facecolors = illuminated_surf)
         
     #Add Title
     if title != 'None':
