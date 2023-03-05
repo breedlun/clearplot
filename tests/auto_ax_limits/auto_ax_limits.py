@@ -15,3 +15,4 @@ ax = fig.add_axes()
 ax.x_lim = [0, 1]
 
 ax.plot(x, y)
+fig.save('auto_ax_limits')

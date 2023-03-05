@@ -24,3 +24,4 @@ im_obj = ax.add_image(im, im_interp = 'bilinear', c_map = cp.colors.c_maps['ligh
 ax.x_tick = 50
 fig.add_color_bar(im_obj)
 fig.auto_adjust_layout()
+fig.save('add_grayscale_image_to_plot')

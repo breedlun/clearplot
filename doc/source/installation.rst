@@ -23,7 +23,7 @@ Hard (Manual) Way
 
     a.  Find where Matplotlib stores its True Type fonts.  In a python interpreter, type the following two commands: ``import matplotlib``, ``matplotlib.matplotlib_fname()``.  On a mac, you should get something like ``.../site-packages/matplotlib/mpl-data/matplotlibrc``.  The True Type fonts are stored in ``.../site-packages/matplotlib/mpl-data/fonts/ttf/``.
     
-    b.  Grab the fonts in the directories inside ``clearplot/Font_Files/`` and place them in: ``.../python2.7/site-packages/matplotlib/mpl-data/fonts/ttf/``.
+    b.  Grab the fonts in the directories inside ``clearplot/Font_Files/`` and place them in: ``.../python3.8/site-packages/matplotlib/mpl-data/fonts/ttf/``.
     
     c.  Find where Matplotlib stores its cache files.  In a python interpreter, enter ``matplotlib.get_cachedir()``.  On a mac, you should get something like ``/Users/[username]/.matplotlib``.
     

@@ -1,6 +1,12 @@
 Version History
 ===============
 
+version 1.2.2
+
+1. Added the ability to specify symlog scaled axes.
+2. Modified axes.plot_intensity_map() to use pcolormesh instead of add_image since pcolormesh can handle nonlinearly scaled x and y axes.
+3. Fixed a bug in the developmental plot_surface() function.
+
 version 1.2.1
 
 1. Updated to be compatible with matplotlib 3.3.0.

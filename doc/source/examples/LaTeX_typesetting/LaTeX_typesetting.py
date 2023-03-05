@@ -18,4 +18,4 @@ pf.plot('math_text_typesetting.png', x, y, \
 clearplot.params.use_latex(True)
 [fig, ax, curves] = pf.plot('LaTeX_typesetting.png', x, y, \
     x_label = ['\int_0^x \exp\left[\hat{x}\right]\,\mathrm{d}\hat{x}'], \
-    y_label = ['\displaystyle \frac{P}{A}', 'GPa'])
+    y_label = ['\displaystyle \dfrac{P}{A}', 'GPa'])

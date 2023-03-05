@@ -54,7 +54,7 @@ def init():
 #Define how the figure will be updated with each new frame
 def update_fig(i):
     #Update marker position
-    marker.set_data(data_a[2*i,0], data_a[2*i,1])
+    marker.set_data([data_a[2*i,0]], [data_a[2*i,1]])
     ##Load field image
     im_filename = os.path.join('lo-rez_field_images', \
         's140302C-eqps_field-frame_%r.png' %(2*i+1))
