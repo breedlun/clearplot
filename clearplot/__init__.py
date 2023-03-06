@@ -16,10 +16,9 @@ import warnings as _warnings
 #Define the minimimum version of matplotlib 
 min_mpl_version = '3.3.0'
 if 'sphinx' in _sys.modules:
-    #Sphinx just documents the package, so it isn't necessary to have some 
-    #of the newer features of matplotlib
+    #Assume that Sphinx was loaded to document the package. 
     _warnings.warn("Warning: Clearplot detected that sphinx was loaded.  Sphinx just documents the package, so clearplot will allow older versions of matplotlib to be loaded.  Normally matplotlib " + min_mpl_version + " or greater is required.")
-    min_mpl_version = '3.3.0'
+    min_mpl_version = '2.2.0'
  
 def _parse_version_string(v):
     """Attempts to converts a version string to a tuple of integers."""
