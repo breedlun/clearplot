@@ -1466,7 +1466,7 @@ class Axes(_Data_Axes_Base):
                 #PathCollections, which are produced from mpl_ax.scatter(),
                 #do not have get_xdata() or get_ydata() methods, so we need to 
                 #use special techniques to get the data
-                data = data_set.get_offsets().data
+                data = data_set.get_offsets()
                 x_data = data[:,0]
                 y_data = data[:,1]
             else:
