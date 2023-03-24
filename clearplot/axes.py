@@ -1953,8 +1953,7 @@ class Axes(_Data_Axes_Base):
             labels = _np.array([])
         return(bars, labels)
         
-    def add_legend(self, artists = None, loc = 'best', outside_ax = False, \
-        **kwargs):
+    def add_legend(self, artists = None, loc = 'best', **kwargs):
         """
         Adds a legend using labels previously associated with artists
         
@@ -1964,11 +1963,13 @@ class Axes(_Data_Axes_Base):
             Curves, markers, bars, etc. that will be labeled.  Input None
             to label the artist type specified in ``artist type``.
         loc : string, optional
-            Location of legend.  Valid options include, 'best', 'upper left',
-            'upper center, 'upper right', 'center left', 'center', 
-            'center right', 'lower left', 'lower center', 'lower right'.
-        outside_ax : bool, optional
-            Specifies whether to place the legend outside the axes.
+            Location of legend.  The first word specifies the vertical position
+            and should be either 'upper', 'center', or 'lower'.  The second
+            word specifies the horizontal position of the legend and should be
+            either 'left', 'middle', or 'right'.  One can also add 'outside' 
+            before either word to place the legend outside the plot axes.  For
+            example, 'upper outside right' aligns the top of the legend with 
+            top of the axes and to the right of the plot axes. 
                 
         Returns
         -------
@@ -2001,37 +2002,50 @@ class Axes(_Data_Axes_Base):
         for i, el in enumerate(raw_labels):
             if el[0] != '$':
                 raw_labels[i] = '$' + _utl.raw_string(el) + '$'
-        if outside_ax:
-            if loc.lower() == 'best':
-                #If legend is to be placed outside of data axes, select a new
-                #default location
-                loc = 'upper center'
-            #Matplotlib's behavior for placing legends outside of the data axes
-            #is a bit confusing.  When you do not specify the 'bbox_to_anchor'
-            #keyword, then the 'loc' keyword specifies where to place the 
-            #legend.  When you do specify the 'bbox_to_anchor' keyword, then 
-            #the 'loc' keyword specifies what part of the legend box that the
-            #'bbox_to_anchor' coordinates pertain to.  The dictionary below 
-            #translates between these two behaviors so the user doesn't have to
-            #worry about it.
-            loc_dict = {'upper right' : ['upper left', 1 , 1],
-                        'upper_right' : ['upper left', 1 , 1],
-                        'right' : ['center left', 1, 0.5],
-                        'center right' : ['center left', 1, 0.5],
-                        'center_right' : ['center left', 1, 0.5],
-                        'lower right' : ['lower left', 1, 0],
-                        'lower_right' : ['lower left', 1, 0],
-                        'upper center' : ['lower center', 0.5, 1],
-                        'upper_center' : ['lower center', 0.5, 1]}
+        #Replace underscore with a space
+        loc.replace('_', ' ')
+        #Matplotlib's behavior for placing legends is a bit confusing.  
+        #When placing the legend inside the axes, you don't need to specify the 
+        #'bbox_to_anchor' keyword and the 'loc' keyword specifies where to 
+        #place the legend, which is straightforward enough.  When placing 
+        #the legend outside the axes, however, the 'bbox_to_anchor' keyword 
+        #specifies the legend location in axes coordinates and the 'loc' 
+        #keyword specifies what part of the legend box that the 
+        #'bbox_to_anchor' coordinates pertain to.  For the sake of simplicity
+        #we just always specify the 'bbox_to_anchor' and use a dictionary to 
+        #handle various cases.
+        loc_dict = {'left' : ['center left', 0, 0.5],
+                    'middle' : ['center', 0.5, 0.5], 
+                    'center' : ['center', 0.5, 0.5],
+                    'right' : ['center right', 1, 0.5],
+                    'upper' : ['upper center', 0.5, 1],
+                    'lower' : ['lower center', 0.5, 0],
+                    'upper left' : ['upper left', 0, 1],
+                    'upper middle' : ['upper center', 0.5, 1],
+                    'upper right' : ['upper right', 1, 1],
+                    'center left' : ['center left', 0, 0.5],
+                    'center middle' : ['center', 0.5, 0.5],
+                    'center right' : ['center right', 1, 0.5],
+                    'lower left' : ['lower left', 0, 0],
+                    'lower middle' : ['lower center', 0.5, 0],
+                    'lower right' : ['lower right', 1, 0],
+                    'outside upper left' : ['lower left', 0, 1],
+                    'outside upper middle' : ['lower center', 0.5, 1],
+                    'outside upper right' : ['lower right', 1, 1],
+                    'upper outside right' : ['upper left', 1, 1],
+                    'center outside right' : ['center left', 1, 0.5],
+                    'lower outside right' : ['lower left', 1, 0],}
+        if loc == 'best':
+            ax_coord = None
+            mpl_loc = 'best'
+        else:
             try:
                 ax_coord = loc_dict[loc][1:]                
-                loc = loc_dict[loc][0]                
+                mpl_loc = loc_dict[loc][0]                
             except KeyError:
-                _warnings.warn("Warning: The legend_pos keyword argument was not recognized.  Defaulting to 'upper center' instead.")
-                ax_coord = loc_dict['upper center'][1:]
-                loc = loc_dict['upper center'][0]                
-        else:
-            ax_coord = None
+                _warnings.warn("Warning: The legend 'loc' keyword argument was not recognized.  Defaulting to 'upper center' instead.")
+                ax_coord = loc_dict['upper middle'][1:]
+                mpl_loc = loc_dict['upper middle'][0]
         if self.mpl_ax.legend_ is not None:
             #We must add the previous legend to the axes, so that the next 
             #call to legend() creates a new legend instead of overwriting the 
@@ -2040,7 +2054,7 @@ class Axes(_Data_Axes_Base):
         #The legend command normally works without explicitly specifying which 
         #curves to label, but the dashed lines that mark zero cause it to get
         #confused, so I found I had to explicitly specify the curves to label.
-        legend = self.mpl_ax.legend(artists, raw_labels, loc = loc, \
+        legend = self.mpl_ax.legend(artists, raw_labels, loc = mpl_loc, \
             bbox_to_anchor = ax_coord, **kwargs)
         #The legend has some sort of clipping box that causes the 
         #fig.tight_bbox() code to ignore the legend.  fig.tight_bbox() is used
