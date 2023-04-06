@@ -632,8 +632,9 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
                 across negative and positive numbers""")
 
         #Calculate the number of tick marks
-        n_tick_c = (_np.log(lim_c[0][1]) / _np.log(ax_log_base) \
-            - _np.log(lim_c[0][0]) / _np.log(ax_log_base)) / tick_c
+        #(abs and sign functions are needed to accommodate symlog axes)
+        n_tick_c = (_np.sign(lim_c[0][1]) * _np.log(_np.abs(lim_c[0][1])) / _np.log(ax_log_base) \
+            - _np.sign(lim_c[0][0]) * _np.log(_np.abs(lim_c[0][0])) / _np.log(ax_log_base)) / tick_c
         
     return(lim_c, tick_c, n_tick_c)
     
@@ -723,9 +724,13 @@ def gen_tick_list(ui_tick_list, lim, tick, scale, log_base):
         if scale == 'log' or scale == 'symlog':
             if _np.sign(lim[0]) == _np.sign(lim[1]):
                 #(range omits the last entry so we need to nudge it a bit)
+                #(round off error can cause tick marks to be labeled as 
+                #1.0 x 10^0 instead of 10^0, so we round the exponent to the 
+                #nearest integer)
                 log_tick_list = _np.arange(\
                     _np.log(_np.abs(lim[0])) / _np.log(log_base), \
-                    _np.log(_np.abs(lim[1])) / _np.log(log_base) +  _np.sign(lim[0]) * tick/100.0, _np.sign(lim[0]) * tick)
+                    _np.log(_np.abs(lim[1])) / _np.log(log_base) +  _np.sign(lim[0]) * tick/100.0, \
+                    _np.sign(lim[0]) * tick).round()
                 tick_list = _np.sign(lim[0]) * log_base**log_tick_list
             else:
                 raise IOError("ERROR: tick mark lists for log axes spanning zero have not been implemented")

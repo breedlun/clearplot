@@ -763,6 +763,11 @@ class Axes(_Data_Axes_Base):
         self._x_scale_log_base = 10.0
         self._y_scale_log_base = 10.0
         
+        #Set the half width for linear scaled axes
+        #(These are only used with symlog or similar axis scalings.)
+        self.x_lin_half_width = 1.0
+        self.y_lin_half_width = 1.0
+        
         #Set default lims and ticks
         self._ui_x_lim = [None, None]
         self._ui_y_lim = [None, None]
@@ -981,7 +986,11 @@ class Axes(_Data_Axes_Base):
                     0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
             else:
                 minor_ticks = None
-            self.mpl_ax.set_xscale(scale, base = b, subs = minor_ticks)
+            if scale == 'symlog':
+                self.mpl_ax.set_xscale(scale, base = b, subs = minor_ticks, \
+                                       linthresh = self.x_lin_half_width)
+            else:
+                self.mpl_ax.set_xscale(scale, base = b, subs = minor_ticks)
             self._select_and_set_x_lim_and_tick(self._ui_x_lim[:], self._ui_x_tick)
             #If using a base e logarithm, label major ticks using 'e^z' rather
             #than 2.718281828459045^z
@@ -1037,10 +1046,11 @@ class Axes(_Data_Axes_Base):
                     0.9*(b-1.0)+1.0+b/100.0, 0.1*(b-1.0))
             else:
                 minor_ticks = None
-            if scale == 'log':
-                self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks)
+            if scale == 'symlog':
+                self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks, \
+                                       linthresh = self.y_lin_half_width)
             else:
-                self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks, linthresh = 1e-12)
+                self.mpl_ax.set_yscale(scale, base = b, subs = minor_ticks)
             self._select_and_set_y_lim_and_tick(self._ui_y_lim[:], self._ui_y_tick)
             #If using a base e logarithm, label major ticks using 'e^z' rather
             #than 2.718281828459045^z
@@ -1528,10 +1538,10 @@ class Axes(_Data_Axes_Base):
         #(The distance beyond the limit must be calculated differently if 
         #axis has a log scale instead of a normal linear scale.)
         if ax_scale == 'log' or ax_scale == 'symlog':
-            diff = [_np.log(lims[0])/_np.log(ax_log_base) - \
-                _np.log(_np.nanmin(x))/_np.log(ax_log_base), \
-                _np.log(_np.nanmax(x))/_np.log(ax_log_base) - \
-                _np.log(lims[1])/_np.log(ax_log_base)]
+            diff = [_np.sign(lims[0]) * _np.log(_np.abs(lims[0]))/_np.log(ax_log_base) - \
+                _np.sign(_np.nanmin(x)) * _np.log(_np.abs(_np.nanmin(x)))/_np.log(ax_log_base), \
+                _np.sign(_np.nanmax(x)) * _np.log(_np.abs(_np.nanmax(x)))/_np.log(ax_log_base) - \
+                _np.sign(lims[1]) * _np.log(_np.abs(lims[1]))/_np.log(ax_log_base)]
         else:
             diff = [lims[0] - _np.nanmin(x), _np.nanmax(x) - lims[1]]
         if diff[0] < tick * self.exceed_lim:
@@ -1632,7 +1642,7 @@ class Axes(_Data_Axes_Base):
     def x_tick_list(self, tick_list):
         self._ui_x_tick_list = tick_list
         tick_list = _utl.gen_tick_list(tick_list, self.x_lim, self.x_tick, \
-            self.x_scale, self._y_scale_log_base)
+            self.x_scale, self._x_scale_log_base)
         self.mpl_ax.set_xticks(tick_list)
         
     @property
