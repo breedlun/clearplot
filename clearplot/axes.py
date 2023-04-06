@@ -1397,7 +1397,7 @@ class Axes(_Data_Axes_Base):
             #Define a function to adjust the limits            
             def adjust_lim(lmt, n_tick_diff, tick, sign, ax_scale, ax_log_base):
                 if ax_scale == 'log' or ax_scale == 'symlog':
-                    lmt = ax_log_base**(_np.log(lmt)/_np.log(ax_log_base) \
+                    lmt = ax_log_base**(_np.sign(lmt) * _np.log(_np.abs(lmt))/_np.log(ax_log_base) \
                         + sign * n_tick_diff * tick)
                 else:
                     lmt = lmt + sign * n_tick_diff * tick
@@ -1443,8 +1443,8 @@ class Axes(_Data_Axes_Base):
         #Define a function to calculate the number of tick marks along an axis
         def calc_n_tick(lim, tick, ax_scale, ax_log_base):
             if ax_scale == 'log' or ax_scale == 'symlog':
-                n_tick = (_np.log(lim[1])/_np.log(ax_log_base) - \
-                    _np.log(lim[0])/_np.log(ax_log_base)) / tick
+                n_tick = _np.abs(_np.log(_np.abs(lim[1]))/_np.log(ax_log_base) - \
+                    _np.log(_np.abs(lim[0]))/_np.log(ax_log_base)) / tick
             else:
                 n_tick = (lim[1] - lim[0]) / tick
             return(n_tick)
@@ -3215,21 +3215,21 @@ class Axes(_Data_Axes_Base):
         
         #Verify that x and y data are appropriate
         if self.x_scale == 'log' or self.x_scale == 'symlog':
-            dx = _np.diff(_np.log(x)/_np.log(self.x_scale_log_base), axis = -1)
+            dx = _np.abs(_np.diff(_np.log(_np.abs(x))/_np.log(self.x_scale_log_base), axis = -1))
         else:
             dx = _np.diff(x, axis = 1)
         avg_dx = _np.mean(dx)
         if ((_np.max(dx) - avg_dx) / avg_dx > 10e-3) or \
             ((avg_dx - _np.min(dx)) / avg_dx > 10e-3):
-            raise IOError("x-data must be evenly spaced for 'image' plot type.")
+            raise IOError("x-data must be evenly spaced.")
         if self.y_scale == 'log' or self.y_scale == 'symlog':
-            dy = _np.diff(_np.log(y)/_np.log(self.y_scale_log_base), axis = 0)
+            dy = _np.abs(_np.diff(_np.log(_np.abs(y))/_np.log(self.y_scale_log_base), axis = 0))
         else:
             dy = _np.diff(y, axis = 0)
         avg_dy = _np.mean(dy)
         if ((_np.max(dy) - avg_dy) / avg_dy > 10e-3) or \
             ((avg_dy - _np.min(dy)) / avg_dy > 10e-3):
-            raise IOError("y-data must be evenly spaced for 'image' plot type")
+            raise IOError("y-data must be evenly spaced.")
         del dx, dy
         
         if c_scale == 'linear':
