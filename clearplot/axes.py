@@ -763,10 +763,10 @@ class Axes(_Data_Axes_Base):
         self._x_scale_log_base = 10.0
         self._y_scale_log_base = 10.0
         
-        #Set the half width for linear scaled axes
-        #(These are only used with symlog or similar axis scalings.)
-        self.x_lin_half_width = 1.0
-        self.y_lin_half_width = 1.0
+        #Sets the half width for the linear scaled region within symlog (or 
+        #similar) axis scalings.
+        self._x_lin_half_width = 1.0
+        self._y_lin_half_width = 1.0
         
         #Set default lims and ticks
         self._ui_x_lim = [None, None]
@@ -1020,6 +1020,22 @@ class Axes(_Data_Axes_Base):
         self._x_scale_log_base = log_base
         #Reset the axis scaling
         self.x_scale = self.x_scale
+        
+    @property
+    def x_lin_half_width(self):
+        """
+        Gets/sets the half width of the linear region within a symlog scaled 
+        x-axis.
+        """
+        #This property's name does not mention symlog so that the property 
+        #could also be used with arcsinh scaled axes in the future.
+        return(self._x_lin_half_width)
+       
+    @x_lin_half_width.setter
+    def x_lin_half_width(self, half_width):
+        self._x_lin_half_width = half_width
+        #Reset the axis scaling
+        self.x_scale = self.x_scale
     
     @property
     def y_scale(self):
@@ -1079,6 +1095,22 @@ class Axes(_Data_Axes_Base):
     @y_scale_log_base.setter
     def y_scale_log_base(self, log_base):
         self._y_scale_log_base = log_base
+        #Reset the axis scaling
+        self.y_scale = self.y_scale
+    
+    @property
+    def y_lin_half_width(self):
+        """
+        Gets/sets the half width of the linear region within a symlog scaled 
+        x-axis.
+        """
+        #This property's name does not mention symlog so that the property 
+        #could also be used with arcsinh scaled axes in the future.
+        return(self._y_lin_half_width)
+       
+    @y_lin_half_width.setter
+    def y_lin_half_width(self, half_width):
+        self._y_lin_half_width = half_width
         #Reset the axis scaling
         self.y_scale = self.y_scale
         
