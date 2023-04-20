@@ -14,6 +14,7 @@ fig = cp_fig.Figure()
 ax = fig.add_axes()
 ax.x_scale = 'symlog'
 ax.y_scale = 'symlog'
+ax.x_tick_mm = 20.0
 ax.x_lin_half_width = 1e-2
 ax.y_lin_half_width = 1e-2
 ax.x_lim = [-1e1, 1e2]

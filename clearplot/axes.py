@@ -1318,7 +1318,7 @@ class Axes(_Data_Axes_Base):
                 num_neg_tick = (-_np.log(self.y_lin_half_width)/_np.log(self._y_scale_log_base) + \
                     _np.log(-lim[0])/_np.log(self._y_scale_log_base)) / self.y_tick 
                 num_pos_tick = (_np.log(lim[1])/_np.log(self._y_scale_log_base) - \
-                    _np.log(self.y_lin_half_width)/_np.log(self._y_scale_log_base)) / self.x_tick
+                    _np.log(self.y_lin_half_width)/_np.log(self._y_scale_log_base)) / self.y_tick
                 num_tick = num_neg_tick + num_pos_tick + 1
             else:
                 num_tick = _np.abs(_np.log(_np.abs(lim[1]))/_np.log(self._y_scale_log_base) - \
