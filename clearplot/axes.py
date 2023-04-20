@@ -1548,7 +1548,7 @@ class Axes(_Data_Axes_Base):
             #Clip the x data first
             [x_c, y_c] = self._clip_data(x, y, \
                 self.x_lim, self.x_tick, self.x_scale, self._x_scale_log_base, \
-                data_set.get_linestyle())
+                data_set.get_linestyle(), self.x_lin_half_width)
             if hasattr(data_set, 'get_offsets'):
                 #PathCollections, which are produced from mpl_ax.scatter(),
                 #store their data in masked arrays, so we need to use
@@ -1560,7 +1560,7 @@ class Axes(_Data_Axes_Base):
             #Clip the y data second
             [y_c, x_c] = self._clip_data(y_c, x_c, \
                 self.y_lim, self.y_tick, self.y_scale, self._y_scale_log_base, \
-                data_set.get_linestyle())
+                data_set.get_linestyle(), self.y_lin_half_width)
             if hasattr(data_set, 'get_offsets'):
                 #PathCollections, which are produced from mpl_ax.scatter(),
                 #store their data in masked arrays, so we need to use
@@ -1570,7 +1570,7 @@ class Axes(_Data_Axes_Base):
                 data_set.set_xdata(x_c)
                 data_set.set_ydata(y_c)
         
-    def _clip_data(self, x, y, lims, tick, ax_scale, ax_log_base, line_style):
+    def _clip_data(self, x, y, lims, tick, ax_scale, ax_log_base, line_style, x_lin_half_width):
         """Clips data to limits"""
 
         #If clip_on = True in ax.plot(), then each curve has it's own 
@@ -1580,40 +1580,50 @@ class Axes(_Data_Axes_Base):
         #Instead, I have set clip_on = False, and do the clipping by setting
         #the data outside the clipping mask to nan.
         
-        #Find the data outside the limits
+        #Find the data outside the limits.
         #(The following can give "RuntimeWarning: invalid value encountered in 
         #less/greater" when x contains nan, so we temporarily turn off the 
         #warning)
         with _np.errstate(invalid = 'ignore'):
-            lgcs = [x < lims[0], x > lims[1]]
+            outside_lims = [x < lims[0], x > lims[1]]
         #Don't clip data if the max or min is just slightly beyond the limit
         #(The distance beyond the limit must be calculated differently if 
         #axis has a log scale instead of a normal linear scale.)
-        if ax_scale == 'log' or ax_scale == 'symlog':
-            diff = [_np.sign(lims[0]) * _np.log(_np.abs(lims[0]))/_np.log(ax_log_base) - \
-                _np.sign(_np.nanmin(x)) * _np.log(_np.abs(_np.nanmin(x)))/_np.log(ax_log_base), \
-                _np.sign(_np.nanmax(x)) * _np.log(_np.abs(_np.nanmax(x)))/_np.log(ax_log_base) - \
-                _np.sign(lims[1]) * _np.log(_np.abs(lims[1]))/_np.log(ax_log_base)]
+        if ax_scale == 'log':
+            diff = [lims[0] * _np.log(lims[0])/_np.log(ax_log_base) - \
+                _np.log(_np.nanmin(x))/_np.log(ax_log_base), \
+                _np.log(_np.nanmax(x))/_np.log(ax_log_base) - \
+                _np.log(lims[1])/_np.log(ax_log_base)]
+        elif ax_scale == 'symlog':
+            diff = [0, 0]
+            #Lower limit (ignoring difference due to linear region)
+            lim_2_lin = _np.sign(lims[0]) * _np.log(_np.abs(lims[0])) / _np.log(ax_log_base) - _np.sign(lims[0]) * _np.log(x_lin_half_width) / _np.log(ax_log_base)
+            lin_2_min = _np.sign(_np.nanmin(x)) * _np.log(x_lin_half_width) / _np.log(ax_log_base) - _np.sign(_np.nanmin(x)) * _np.log(_np.abs(_np.nanmin(x)))/_np.log(ax_log_base)
+            diff[0] = lim_2_lin + lin_2_min
+            #Upper limit (ignoring difference due to linear region)
+            lim_2_lin = _np.sign(lims[1]) * _np.log(_np.abs(lims[1])) / _np.log(ax_log_base) - _np.sign(lims[1]) * _np.log(x_lin_half_width) / _np.log(ax_log_base)
+            lin_2_min = _np.sign(_np.nanmax(x)) * _np.log(_np.abs(_np.nanmax(x)))/_np.log(ax_log_base) - _np.sign(_np.nanmax(x)) * _np.log(x_lin_half_width) / _np.log(ax_log_base) 
+            diff[1] = lim_2_lin + lin_2_min
         else:
             diff = [lims[0] - _np.nanmin(x), _np.nanmax(x) - lims[1]]
         if diff[0] < tick * self.exceed_lim:
-            lgcs[0] = _np.array([False] * len(x), bool)
+            outside_lims[0] = _np.array([False] * len(x), bool)
         if diff[1] < tick * self.exceed_lim:
-            lgcs[1] = _np.array([False] * len(x), bool)
+            outside_lims[1] = _np.array([False] * len(x), bool)
         #Cycle thru the limits
-        for lgc, lim in zip(lgcs, lims):
+        for outside_lim, lim in zip(outside_lims, lims):
             #We only want to interpolate to the axis limits if lines are being 
             #drawn between the data points
             if hasattr(line_style, 'lower'):
                 if line_style.lower() != 'none':
                     #Find the indices where the data crosses the limit
-                    cross_ndx = _np.where(_np.diff(lgc))[0]
+                    cross_ndx = _np.where(_np.diff(outside_lim))[0]
                     #The data can increase or decrease with index number. In either 
                     #case, we want the data point just inside and just outside the limit.
-                    inside_ndx = _np.concatenate((cross_ndx[lgc[cross_ndx]] + 1, \
-                        cross_ndx[~lgc[cross_ndx]]))
-                    outside_ndx = _np.concatenate((cross_ndx[lgc[cross_ndx]], \
-                        cross_ndx[~lgc[cross_ndx]] + 1))
+                    inside_ndx = _np.concatenate((cross_ndx[outside_lim[cross_ndx]] + 1, \
+                        cross_ndx[~outside_lim[cross_ndx]]))
+                    outside_ndx = _np.concatenate((cross_ndx[outside_lim[cross_ndx]], \
+                        cross_ndx[~outside_lim[cross_ndx]] + 1))
                     for i_ndx, o_ndx in zip(inside_ndx, outside_ndx):
                         #Create data points right at the limits using linear 
                         #interpolation
@@ -1629,20 +1639,20 @@ class Axes(_Data_Axes_Base):
                             yr = y[ndx]
                             y[o_ndx] = _np.interp(lim, xr[::-1], yr[::-1])
                         x[o_ndx] = lim
-                        lgc[o_ndx] = False
+                        outside_lim[o_ndx] = False
             #Clip the data outside the limits
             #(If the user input a list of integers then they must be converted to
             #floats, since nan is a float)
             try:
-                x[lgc] = _np.nan
+                x[outside_lim] = _np.nan
             except ValueError:
                 x = x.astype(float)
-                x[lgc] = _np.nan
+                x[outside_lim] = _np.nan
             try:
-                y[lgc] = _np.nan
+                y[outside_lim] = _np.nan
             except ValueError:
                 y = y.astype(float)
-                y[lgc] = _np.nan
+                y[outside_lim] = _np.nan
         return(x, y)
 
     @property
