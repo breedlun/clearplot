@@ -1154,9 +1154,19 @@ class Axes(_Data_Axes_Base):
         Gets the number of x-axis tick marks
         """
         lim = self.x_lim
-        if self.x_scale == 'log' or self.x_scale == 'symlog':
-            num_tick = _np.abs(_np.log(_np.abs(lim[1]))/_np.log(self._x_scale_log_base) - \
-                _np.log(_np.abs(lim[0]))/_np.log(self._x_scale_log_base)) / self.x_tick
+        if self.x_scale == 'log':
+            num_tick = (_np.log(lim[1])/_np.log(self._x_scale_log_base) - \
+                _np.log(lim[0])/_np.log(self._x_scale_log_base)) / self.x_tick
+        elif self.x_scale == 'symlog':
+            if lim[0] < 0 and lim[1] > 0:
+                num_neg_tick = (-_np.log(self.x_lin_half_width)/_np.log(self._x_scale_log_base) + \
+                    _np.log(-lim[0])/_np.log(self._x_scale_log_base)) / self.x_tick 
+                num_pos_tick = (_np.log(lim[1])/_np.log(self._x_scale_log_base) - \
+                    _np.log(self.x_lin_half_width)/_np.log(self._x_scale_log_base)) / self.x_tick
+                num_tick = num_neg_tick + num_pos_tick + 1
+            else:
+                num_tick = _np.abs(_np.log(_np.abs(lim[1]))/_np.log(self._x_scale_log_base) - \
+                    _np.log(_np.abs(lim[0]))/_np.log(self._x_scale_log_base)) / self.x_tick
         else:
             num_tick = (lim[1] - lim[0]) / self.x_tick
         return(num_tick)
@@ -1300,9 +1310,19 @@ class Axes(_Data_Axes_Base):
         Gets the number of y-axis tick marks
         """
         lim = self.y_lim
-        if self.y_scale == 'log' or self.y_scale == 'symlog':
-            num_tick = _np.abs(_np.log(_np.abs(lim[1]))/_np.log(self._y_scale_log_base) - \
-                _np.log(_np.abs(lim[0]))/_np.log(self._y_scale_log_base)) / self.y_tick
+        if self.y_scale == 'log':
+            num_tick = (_np.log(lim[1])/_np.log(self._y_scale_log_base) - \
+                        _np.log(lim[0])/_np.log(self._y_scale_log_base)) / self.y_tick
+        elif self.y_scale == 'symlog':
+            if lim[0] < 0 and lim[1] > 0:
+                num_neg_tick = (-_np.log(self.y_lin_half_width)/_np.log(self._y_scale_log_base) + \
+                    _np.log(-lim[0])/_np.log(self._y_scale_log_base)) / self.y_tick 
+                num_pos_tick = (_np.log(lim[1])/_np.log(self._y_scale_log_base) - \
+                    _np.log(self.y_lin_half_width)/_np.log(self._y_scale_log_base)) / self.x_tick
+                num_tick = num_neg_tick + num_pos_tick + 1
+            else:
+                num_tick = _np.abs(_np.log(_np.abs(lim[1]))/_np.log(self._y_scale_log_base) - \
+                    _np.log(_np.abs(lim[0]))/_np.log(self._y_scale_log_base)) / self.y_tick
         else:
             num_tick = (lim[1] - lim[0]) / self.y_tick
         return(num_tick)
@@ -1674,7 +1694,7 @@ class Axes(_Data_Axes_Base):
     def x_tick_list(self, tick_list):
         self._ui_x_tick_list = tick_list
         tick_list = _utl.gen_tick_list(tick_list, self.x_lim, self.x_tick, \
-            self.x_scale, self._x_scale_log_base)
+            self.x_scale, self._x_scale_log_base, self.x_lin_half_width)
         self.mpl_ax.set_xticks(tick_list)
         
     @property
@@ -1690,7 +1710,7 @@ class Axes(_Data_Axes_Base):
     def y_tick_list(self, tick_list):
         self._ui_y_tick_list = tick_list
         tick_list = _utl.gen_tick_list(tick_list, self.y_lim, self.y_tick, \
-            self.y_scale, self._y_scale_log_base)
+            self.y_scale, self._y_scale_log_base, self.y_lin_half_width)
         self.mpl_ax.set_yticks(tick_list)
     
     @property

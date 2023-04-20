@@ -60,6 +60,9 @@ class Color_Bar(_axes._Axes_Base):
         #added to the data axes as the default
         self._ui_lim = kwargs.pop('lim', data_obj._ui_c_lim)
         self._ui_scale = kwargs.pop('scale', 'linear')
+        #Set the half width for the linear scaled region within symlog (or 
+        #similar) axis scalings.
+        self._lin_half_width = 1.0
         #Store information
         self.sdim = 20.0
         self._tick_mm = self.sdim
@@ -186,13 +189,27 @@ class Color_Bar(_axes._Axes_Base):
     
     @scale.setter
     def scale(self, scale):
-        if scale == 'log':
-            self._ui_scale = scale
-        elif scale == 'linear':
+        if scale == 'log' or scale == 'symlog' or scale == 'linear':
             self._ui_scale = scale
         else:
             raise IOError('ERROR: unrecognized scaling')
         self._set_lim_and_tick(self._ui_lim[:], self._ui_tick)
+        
+    @property
+    def lin_half_width(self):
+        """
+        Gets/sets the half width of the linear region within a symlog scaled 
+        axis.
+        """
+        #This property's name does not mention symlog so that the property 
+        #could also be used with arcsinh scaled axes in the future.
+        return(self._lin_half_width)
+       
+    @lin_half_width.setter
+    def lin_half_width(self, half_width):
+        self._lin_half_width = half_width
+        #Reset the axis scaling
+        self.scale = self.scale
 
     def _set_lim_and_tick(self, lim, tick):
         """Sets the limits and the tick spacing.  The lim and tick 
@@ -306,7 +323,7 @@ class Color_Bar(_axes._Axes_Base):
     def tick_list(self, tick_list):
         self._ui_tick_list = tick_list
         tick_list = _utl.gen_tick_list(tick_list, self.lim, self.tick, \
-            self.scale, 10.0)
+            self.scale, 10.0, self.lin_half_width)
         self.mpl_bar.set_ticks(tick_list)
         
     @property

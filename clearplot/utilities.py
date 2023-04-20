@@ -600,7 +600,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
         #(rounding needed to get rid of numerical error)
         n_tick_c = _np.round(_np.diff(lim_c, axis = 1).flatten() / tick_c, 1)
     
-    #If axis is on a log scale
+    #If axis is on a log or symlog scale
     else:
         #If auto, set tick marks to be at powers of 10^1
         if ui_tick is None:
@@ -611,25 +611,36 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
         #Initialize the limit candidates with the user input limits
         lim_c = _np.array([lim])      
         #Automatically round limits to the closest power of 10
-        if _np.all(lim >= 0):
-            #If limits were not specified, round limits to match tick mark spacing
-            if ui_lim[0] is None:
-                exp = _np.floor(_np.log(data_lim[0]) / _np.log(ax_log_base))
-                lim_c[0][0] = ax_log_base**exp
-            if ui_lim[1] is None:
-                exp = _np.ceil(_np.log(data_lim[1]) / _np.log(ax_log_base))
-                lim_c[0][1] = ax_log_base**exp
-        elif _np.all(lim <= 0):
-            #If limits were not specified, round limits to match tick mark spacing
-            if ui_lim[0] is None:
-                exp = _np.ceil(_np.log(-data_lim[0]) / _np.log(ax_log_base))
-                lim_c[0][0] = -ax_log_base**exp
-            if ui_lim[1] is None:
-                exp = _np.floor(_np.log(-data_lim[1]) / _np.log(ax_log_base))
-                lim_c[0][1] = -ax_log_base**exp
-        else:
-            raise ValueError("""You cannot have a logarithmic axis that spans 
-                across negative and positive numbers""")
+        if ui_lim[0] is None:
+            if data_lim[0] < 0:
+                exp = _np.ceil(_np.log(_np.abs(lim[0])) / _np.log(ax_log_base))
+            else:
+                exp = _np.floor(_np.log(_np.abs(lim[0])) / _np.log(ax_log_base))
+            lim_c[0][0] = _np.sign(data_lim[0]) * ax_log_base**exp
+        if ui_lim[1] is None:
+            if data_lim[1] < 0:
+                exp = _np.floor(_np.log(_np.abs(lim[1])) / _np.log(ax_log_base))
+            else:
+                exp = _np.ceil(_np.log(_np.abs(lim[1])) / _np.log(ax_log_base))
+        # if _np.all(lim >= 0):              
+        #     #If limits were not specified, round limits to match tick mark spacing
+        #     if ui_lim[0] is None:
+        #         exp = _np.floor(_np.log(data_lim[0]) / _np.log(ax_log_base))
+        #         lim_c[0][0] = ax_log_base**exp
+        #     if ui_lim[1] is None:
+        #         exp = _np.ceil(_np.log(data_lim[1]) / _np.log(ax_log_base))
+        #         lim_c[0][1] = ax_log_base**exp
+        # elif _np.all(lim <= 0):
+        #     #If limits were not specified, round limits to match tick mark spacing
+        #     if ui_lim[0] is None:
+        #         exp = _np.ceil(_np.log(-data_lim[0]) / _np.log(ax_log_base))
+        #         lim_c[0][0] = -ax_log_base**exp
+        #     if ui_lim[1] is None:
+        #         exp = _np.floor(_np.log(-data_lim[1]) / _np.log(ax_log_base))
+        #         lim_c[0][1] = -ax_log_base**exp
+        # else:
+        #     raise ValueError("""You cannot have a logarithmic axis that spans 
+        #         across negative and positive numbers""")
 
         #Calculate the number of tick marks
         #(abs and sign functions are needed to accommodate symlog axes)
@@ -696,7 +707,7 @@ def find_and_select_lim_and_tick(ui_lim, ui_tick, data_lim, \
     return(lim, tick, n_tick)
 
     
-def gen_tick_list(ui_tick_list, lim, tick, scale, log_base):
+def gen_tick_list(ui_tick_list, lim, tick, scale, log_base, lin_half_width):
     """
     Generates a list of tick mark values
     
@@ -709,10 +720,12 @@ def gen_tick_list(ui_tick_list, lim, tick, scale, log_base):
         Axis limits.
     tick : float
         Tick mark spacing
-    scale : ['log' | 'linear']
+    scale : ['linear' | 'log' | 'symlog']
         Axis scaling
     log_base : float
         Logarithm base for log scaled axes
+    lin_half_width : float
+        Half width of linear region within symlog scaled axes.
         
     Returns
     -------
@@ -721,21 +734,35 @@ def gen_tick_list(ui_tick_list, lim, tick, scale, log_base):
     """
     if ui_tick_list is None:
         #Set the list of tick marks
-        if scale == 'log' or scale == 'symlog':
-            if _np.sign(lim[0]) == _np.sign(lim[1]):
-                #(range omits the last entry so we need to nudge it a bit)
-                #(round off error can cause tick marks to be labeled as 
-                #1.0 x 10^0 instead of 10^0, so we round the exponent to the 
-                #nearest integer)
+        #(range omits the last entry so we need to nudge it a bit)
+        #(round off error can cause tick marks to be labeled as 
+        #1.0 x 10^0 instead of 10^0, so we round the exponent to the 
+        #nearest integer)
+        if scale == 'log':
+            log_tick_list = _np.arange(\
+                _np.log(lim[0]) / _np.log(log_base), \
+                _np.log(lim[1]) / _np.log(log_base) + tick/100.0, \
+                tick).round()
+            tick_list = log_base**log_tick_list
+        elif scale == 'symlog':
+            if lim[0] < 0 and lim[1] > 0:
+                neg_log_tick_list = _np.arange(\
+                    _np.log(-lim[0]) / _np.log(log_base), \
+                    _np.log(lin_half_width) / _np.log(log_base) - tick/100.0, \
+                    -tick).round()
+                pos_log_tick_list = _np.arange(\
+                    _np.log(lin_half_width) / _np.log(log_base), \
+                    _np.log(lim[1]) / _np.log(log_base) + tick/100.0, \
+                    tick).round()
+                tick_list = _np.hstack([-log_base**neg_log_tick_list, 0, \
+                                         log_base**pos_log_tick_list])
+            else:
                 log_tick_list = _np.arange(\
                     _np.log(_np.abs(lim[0])) / _np.log(log_base), \
                     _np.log(_np.abs(lim[1])) / _np.log(log_base) +  _np.sign(lim[0]) * tick/100.0, \
                     _np.sign(lim[0]) * tick).round()
                 tick_list = _np.sign(lim[0]) * log_base**log_tick_list
-            else:
-                raise IOError("ERROR: tick mark lists for log axes spanning zero have not been implemented")
         else:
-            #(range omits the last entry so we need to nudge it a bit)
             tick_list = _np.arange(lim[0], lim[1] + tick/100.0, tick)
     else:
         tick_list = ui_tick_list[:]

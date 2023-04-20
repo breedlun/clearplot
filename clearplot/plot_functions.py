@@ -104,10 +104,6 @@ def plot(filename, x, y, labels = [None], \
     legend_loc : 1x2 list or string, optional
         Legend location.  For the proper syntax, see the matplotlib 
         documentation for the legend 'loc' keyword argument.
-    legend_outside_ax : bool, optional
-        Specifies whether to place the legend outside of the data axes.  If 
-        True then the `legend_loc` sets the legend position within the axes.  
-        If False, then `legend_loc` sets the legend postion outside the axes.
     legend_kwargs : dict, optional
         Keyword arguments to customize the legend appearance.  This is passed 
         directly into the matplotlib legend function.  See the matplotlib 
@@ -158,8 +154,7 @@ def plot(filename, x, y, labels = [None], \
         else:
             legend = False 
     if legend:
-        ax.add_legend(loc = legend_loc, \
-            outside_ax = legend_outside_ax, **legend_kwargs)
+        ax.add_legend(loc = legend_loc, **legend_kwargs)
 
 #    # Catch unexpected keyword arguments
 #    if kwargs:
@@ -354,10 +349,6 @@ def plot_bars(filename, x, y, labels = [None], \
     legend_loc : 1x2 list or string, optional
         Legend location.  For the proper syntax, see the matplotlib 
         documentation for the legend 'loc' keyword argument.
-    legend_outside_ax : bool, optional
-        Specifies whether to place the legend outside of the data axes.  If 
-        True then the `legend_loc` sets the legend position within the axes.  
-        If False, then `legend_loc` sets the legend postion outside the axes.
     legend_kwargs : dict, optional
         Keyword arguments to customize the legend appearance.  This is passed 
         directly into the matplotlib legend function.  See the matplotlib 
@@ -404,8 +395,7 @@ def plot_bars(filename, x, y, labels = [None], \
         else:
             legend = False 
     if legend:
-        ax.add_legend(loc = legend_loc, \
-        outside_ax = legend_outside_ax, **legend_kwargs)
+        ax.add_legend(loc = legend_loc, **legend_kwargs)
 
     #Update canvas
     fig.auto_adjust_layout()
