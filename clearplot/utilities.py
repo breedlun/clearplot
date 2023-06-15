@@ -606,7 +606,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
         if ui_tick is None:
             tick_c = _np.array([1])  
         else:
-            tick_c = ui_tick
+            tick_c = _np.array([float(ui_tick)])
             
         #Initialize the limit candidates with the user input limits
         lim_c = _np.array([lim])      
