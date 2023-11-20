@@ -1541,12 +1541,13 @@ class Axes(_Data_Axes_Base):
                 data_set.full_x_data = x_data
             if not hasattr(data_set, 'full_y_data'):
                 data_set.full_y_data = y_data
-            #Perform the clipping on a copy of the full data set 
-            x = _np.copy(data_set.full_x_data)
-            y = _np.copy(data_set.full_y_data)
+            #Create a copy of the data, since we will add a data point each 
+            #time the curve exceeds a limit.
+            x_c = _np.copy(data_set.full_x_data)
+            y_c = _np.copy(data_set.full_y_data)
             #Clip the copy and update the curve with the clipped data
             #Clip the x data first
-            [x_c, y_c] = self._clip_data(x, y, \
+            [x_c, y_c] = self._clip_data(x_c, y_c, \
                 self.x_lim, self.x_tick, self.x_scale, self._x_scale_log_base, \
                 data_set.get_linestyle(), self.x_lin_half_width)
             if hasattr(data_set, 'get_offsets'):
@@ -1571,7 +1572,8 @@ class Axes(_Data_Axes_Base):
                 data_set.set_ydata(y_c)
         
     def _clip_data(self, x, y, lims, tick, ax_scale, ax_log_base, line_style, x_lin_half_width):
-        """Clips data to limits"""
+        """Clips x data to limits.  Rerun with x and y swapped to clip y data 
+        to limits"""
 
         #If clip_on = True in ax.plot(), then each curve has it's own 
         #clipping mask, which is really annoying when you just want to 
@@ -1580,12 +1582,34 @@ class Axes(_Data_Axes_Base):
         #Instead, I have set clip_on = False, and do the clipping by setting
         #the data outside the clipping mask to nan.
         
-        #Find the data outside the limits.
         #(The following can give "RuntimeWarning: invalid value encountered in 
         #less/greater" when x contains nan, so we temporarily turn off the 
         #warning)
         with _np.errstate(invalid = 'ignore'):
+            #Insert a duplicate data point right before the curve enters the
+            #plotting region and a duplicate data point right after it exits 
+            #the plotting region.  Each duplicate data will be moved to the 
+            #limit by interpolating along the line that crossed the limit. 
+            #(Creating duplicate data points outside the limits
+            #is crucial if the curve exits the plotting region with only one
+            #or two data points and returns within the plotting region.)
+            def insert_pt_outside_lim(x, y, outside_lim):
+                # outside_lim_pad = _np.hstack([ [False], outside_lim, [False] ])  # padding
+                # d = _np.diff(outside_lim_pad.astype(int))
+                # o_ndx = _np.where(d == 1)[0]
+                cross_ndx = _np.where(_np.diff(outside_lim))[0]
+                o_ndx = _np.concatenate((cross_ndx[outside_lim[cross_ndx]], \
+                    cross_ndx[~outside_lim[cross_ndx]] + 1))
+                x = _np.insert(x, o_ndx, x[o_ndx])
+                y = _np.insert(y, o_ndx, y[o_ndx])
+                return(x, y)
+            outside_lim = x < lims[0]
+            [x, y] = insert_pt_outside_lim(x, y, outside_lim)
+            outside_lim = x > lims[1]
+            [x, y] = insert_pt_outside_lim(x, y, outside_lim)
+            #Find the data outside the limits.
             outside_lims = [x < lims[0], x > lims[1]]
+        
         #Don't clip data if the max or min is just slightly beyond the limit
         #(The distance beyond the limit must be calculated differently if 
         #axis has a log scale instead of a normal linear scale.)
