@@ -15,5 +15,8 @@ fig = cpfig.Figure()
 ax = fig.add_axes()
 ax.plot_markers(x, y)
 ax.x_lim = [0, 1.0]
+#(For the time being, we must "remind" clearplot to auto select the y-axis 
+#limits.)
+ax.y_lim = [None, None]
 fig.auto_adjust_layout()
 fig.save('curve_cropping-markers')

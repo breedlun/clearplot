@@ -19,9 +19,8 @@ yb = np.linspace(0,20,10)
 ax1.x_label = ['x1']
 ax1.y_label = ['y1']
 ax1.plot(xa, ya)
-ax1.x_tick = 1
 ax1.x_lim = [0, 5]
-ax1.y_tick = 0.5
+ax1.y_tick = 0.25
 ax2 = fig.add_axes(link_x_ax = ax1)
 ax2.y_label = ['y2']
 ax2.y_tick = 5

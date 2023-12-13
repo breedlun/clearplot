@@ -1179,13 +1179,41 @@ class Axes(_Data_Axes_Base):
         user interface simple.  This method computes the limits and tick 
         spacing once.
         """
-        #Get the data limits on current and linked axes
         data_lims = []
-        data_lims.append(self.mpl_ax.xaxis.get_data_interval())
-        for la in self.linked_x_ax:
-            data_lims.append(la.mpl_ax.xaxis.get_data_interval()) 
+        axes = [self]
+        axes.extend(self.linked_x_ax)
+        for ax in axes:
+            data_sets = []
+            data_sets.extend(self.curves[:])
+            data_sets.extend(self.markers[:])
+            for data_set in data_sets:
+                x = data_set.full_x_data
+                y = data_set.full_y_data
+                if self._ui_y_lim[0] is not None:
+                    lgc_lo = y > self._ui_y_lim[0]
+                else:
+                    lgc_lo = _np.ones(y.shape, dtype = bool)
+                if self._ui_y_lim[1] is not None:
+                    lgc_hi = y < self._ui_y_lim[1]
+                else:
+                    lgc_hi = _np.ones(y.shape, dtype = bool)
+                lgc = _np.logical_and(lgc_lo, lgc_hi)
+                if _np.any(lgc):
+                    data_lims.append([_np.nanmin(x[lgc]), _np.nanmax(x[lgc])])
+                else:
+                    data_lims.append(ax.mpl_ax.xaxis.get_data_interval())
+        if len(data_lims) < 1:
+            data_lims = [ax.mpl_ax.xaxis.get_data_interval()]
         data_lims = _np.array(data_lims)
-        data_lim = [_np.min(data_lims[:,0]), _np.max(data_lims[:,1])]
+        data_lim = [_np.min(data_lims[:,0]), _np.max(data_lims[:,1])] 
+
+        # #Get the data limits on current and linked axes
+        # data_lims = []
+        # data_lims.append(self.mpl_ax.xaxis.get_data_interval())
+        # for la in self.linked_x_ax:
+        #     data_lims.append(la.mpl_ax.xaxis.get_data_interval()) 
+        # data_lims = _np.array(data_lims)
+        # data_lim = [_np.min(data_lims[:,0]), _np.max(data_lims[:,1])]
         #Automatically select candidates for the limits and tick mark spacing
         [lim_c, tick_c, n_tick_c] = _utl.find_candidate_lim_and_tick(lim, \
             tick, data_lim, self.x_scale, self._x_scale_log_base, self.exceed_lim)
@@ -1335,24 +1363,42 @@ class Axes(_Data_Axes_Base):
         user interface simple.  This method computes the limits and tick 
         spacing once.
         """
-        #Get the data limits on current and linked axes
-        
-#        data_sets = []
-#        data_sets.extend(self.curves[:])
-#        data_sets.extend(self.markers[:])
-#        data_lims = []
-#        for data_set in data_sets:
-#            x = data_set.get_xdata()
-#            y = data_set.get_ydata()
-#            lgc = _np.logical_and(x>self._ui_x_lim[0], x<self._ui_x_lim[1])
-#            data_lims.append(_np.nanmin(y[lgc]), _np.nanmax(y[lgc]))
-        
         data_lims = []
-        data_lims.append(self.mpl_ax.yaxis.get_data_interval())
-        for la in self.linked_y_ax:
-            data_lims.append(la.mpl_ax.yaxis.get_data_interval())
+        axes = [self]
+        axes.extend(self.linked_y_ax)
+        for ax in axes:
+            data_sets = []
+            data_sets.extend(self.curves[:])
+            data_sets.extend(self.markers[:])
+            for data_set in data_sets:
+                x = data_set.full_x_data
+                y = data_set.full_y_data
+                if self._ui_x_lim[0] is not None:
+                    lgc_lo = x >= self._ui_x_lim[0]
+                else:
+                    lgc_lo = _np.ones(x.shape, dtype = bool)
+                if self._ui_x_lim[1] is not None:
+                    lgc_hi = x <= self._ui_x_lim[1]
+                else:
+                    lgc_hi = _np.ones(x.shape, dtype = bool)
+                lgc = _np.logical_and(lgc_lo, lgc_hi)
+                if _np.any(lgc):
+                    data_lims.append([_np.nanmin(y[lgc]), _np.nanmax(y[lgc])])
+                else:
+                    data_lims.append(ax.mpl_ax.yaxis.get_data_interval())
+        if len(data_lims) < 1:
+            data_lims = [ax.mpl_ax.yaxis.get_data_interval()]
         data_lims = _np.array(data_lims)
-        data_lim = [_np.min(data_lims[:,0]), _np.max(data_lims[:,1])]
+        data_lim = [_np.min(data_lims[:,0]), _np.max(data_lims[:,1])]    
+        
+        # #Get the data limits on current and linked axes
+        # data_lims = []
+        # data_lims.append(self.mpl_ax.yaxis.get_data_interval())
+        # for la in self.linked_y_ax:
+        #     data_lims.append(la.mpl_ax.yaxis.get_data_interval())
+        # data_lims = _np.array(data_lims)
+        # data_lim = [_np.min(data_lims[:,0]), _np.max(data_lims[:,1])]
+        
         #Automatically select candidates for the limits and tick mark spacing
         [lim_c, tick_c, n_tick_c] = _utl.find_candidate_lim_and_tick(lim, \
             tick, data_lim, self.y_scale, self._y_scale_log_base, self.exceed_lim)
@@ -1523,24 +1569,6 @@ class Axes(_Data_Axes_Base):
         data_sets.extend(self.curves[:])
         data_sets.extend(self.markers[:])
         for data_set in data_sets:
-            #Get the data set
-            if hasattr(data_set, 'get_offsets'):
-                #PathCollections, which are produced from mpl_ax.scatter(),
-                #do not have get_xdata() or get_ydata() methods, so we need to 
-                #use special techniques to get the data
-                data = data_set.get_offsets()
-                x_data = data[:,0]
-                y_data = data[:,1]
-            else:
-                #Everything else seems to have the get_xdata() and get_ydata()
-                #methods
-                x_data = data_set.get_xdata()
-                y_data = data_set.get_ydata()
-            #Save the full data set before clipping 
-            if not hasattr(data_set, 'full_x_data'):
-                data_set.full_x_data = x_data
-            if not hasattr(data_set, 'full_y_data'):
-                data_set.full_y_data = y_data
             #Create a copy of the data, since we will add a data point each 
             #time the curve exceeds a limit.
             x_c = _np.copy(data_set.full_x_data)
@@ -2767,7 +2795,7 @@ class Axes(_Data_Axes_Base):
         for xi, yi in zip(x, y):
             #Plot data
             #(See the axes clipping methods for why clip_on = False.)
-            self.curves.extend(self.mpl_ax.plot(xi, yi, label = labels[i], \
+            curve = self.mpl_ax.plot(xi, yi, label = labels[i], \
                 linestyle = curve_styles[i], \
                 linewidth = curve_widths[i], \
                 color = curve_colors[i], \
@@ -2776,7 +2804,12 @@ class Axes(_Data_Axes_Base):
                 markerfacecolor = marker_colors[i], \
                 markeredgewidth = marker_edge_widths[i], \
                 markeredgecolor = marker_edge_colors[i], \
-                clip_on = False, scalex = False, scaley = False, zorder = 3))
+                clip_on = False, scalex = False, scaley = False, zorder = 3)[0]
+            #Store the full data on the curve object since the curve might be
+            #clipped later.
+            curve.full_x_data = curve.get_xdata()
+            curve.full_y_data = curve.get_ydata()
+            self.curves.append(curve)
             i = i + 1
         #Update the auto color index, in case further curves are plotted on 
         #this set of axes
@@ -2852,14 +2885,17 @@ class Axes(_Data_Axes_Base):
         for xi, yi in zip(x, y):
             #Plot data
             #(See the axes clipping methods for why clip_on = False.)
-            self.markers.extend(self.mpl_ax.plot(xi, yi, label = labels[i], \
+            marker = self.mpl_ax.plot(xi, yi, label = labels[i], \
                 linestyle = 'none', \
                 marker = shapes[i], \
                 markersize = sizes[i], \
                 markerfacecolor = colors[i], \
                 markeredgewidth = edge_widths[i], \
                 markeredgecolor = edge_colors[i], \
-                clip_on = False, scalex = False, scaley = False, zorder = 3))
+                clip_on = False, scalex = False, scaley = False, zorder = 3)[0]
+            marker.full_x_data = marker.get_xdata()
+            marker.full_y_data = marker.get_ydata()
+            self.markers.append(marker)
             i = i + 1
         self.marker_color_ndx = self.marker_color_ndx + i
             
