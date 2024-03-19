@@ -1621,20 +1621,21 @@ class Axes(_Data_Axes_Base):
             #(Creating duplicate data points outside the limits
             #is crucial if the curve exits the plotting region with only one
             #or two data points and returns within the plotting region.)
-            def insert_pt_outside_lim(x, y, outside_lim):
-                # outside_lim_pad = _np.hstack([ [False], outside_lim, [False] ])  # padding
-                # d = _np.diff(outside_lim_pad.astype(int))
-                # o_ndx = _np.where(d == 1)[0]
-                cross_ndx = _np.where(_np.diff(outside_lim))[0]
-                o_ndx = _np.concatenate((cross_ndx[outside_lim[cross_ndx]], \
-                    cross_ndx[~outside_lim[cross_ndx]] + 1))
-                x = _np.insert(x, o_ndx, x[o_ndx])
-                y = _np.insert(y, o_ndx, y[o_ndx])
-                return(x, y)
-            outside_lim = x < lims[0]
-            [x, y] = insert_pt_outside_lim(x, y, outside_lim)
-            outside_lim = x > lims[1]
-            [x, y] = insert_pt_outside_lim(x, y, outside_lim)
+            #We only want to add a data point if lines are being drawn between 
+            #the data points.
+            if hasattr(line_style, 'lower'):
+                if line_style.lower() != 'none':
+                    def insert_pt_outside_lim(x, y, outside_lim):
+                        cross_ndx = _np.where(_np.diff(outside_lim))[0]
+                        o_ndx = _np.concatenate((cross_ndx[outside_lim[cross_ndx]], \
+                            cross_ndx[~outside_lim[cross_ndx]] + 1))
+                        x = _np.insert(x, o_ndx, x[o_ndx])
+                        y = _np.insert(y, o_ndx, y[o_ndx])
+                        return(x, y)
+                    outside_lim = x < lims[0]
+                    [x, y] = insert_pt_outside_lim(x, y, outside_lim)
+                    outside_lim = x > lims[1]
+                    [x, y] = insert_pt_outside_lim(x, y, outside_lim)
             #Find the data outside the limits.
             outside_lims = [x < lims[0], x > lims[1]]
         
