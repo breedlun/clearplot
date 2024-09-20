@@ -577,6 +577,7 @@ class _Data_Axes_Base(_Axes_Base):
         #Store info in case other methods, such as the colorbar, need to know
         im_obj.im_type = im_type
         im_obj._ui_c_lim = ui_c_lim
+        im_obj._c_scale = c_scale
         im_obj.parent_ax = self
         
         #Set the color map limits 
@@ -3369,6 +3370,7 @@ class Axes(_Data_Axes_Base):
                                         cmap = c_map, norm = norm, shading = 'auto')
         im_obj.parent_ax = self
         im_obj._ui_c_lim = ui_c_lim
+        im_obj._c_scale = c_scale
         #A high resolution is neeeded for saving rasterized images, or else 
         #the image placement will slightly be slightly off for some reason.
         self.parent_fig.dpmm = 10.0
@@ -3519,6 +3521,7 @@ class Axes(_Data_Axes_Base):
             #Store info in case other methods, such as the colorbar, need to 
             #know
             b_obj._ui_c_lim = ui_c_lim
+            b_obj._c_scale = c_scale
             b_obj.parent_ax = self
         elif plot_type == 'intensity map':
             #Plot the background image
@@ -3532,10 +3535,11 @@ class Axes(_Data_Axes_Base):
             cl_obj = self.mpl_ax.contour(x, y, z, cl_levels, cmap = c_map, \
                 linewidths = cl_width, linestyles = cl_style)
             cl_obj._ui_c_lim = ui_c_lim
+            cl_obj._c_scale = c_scale
             cl_obj.parent_ax = self
             b_obj = None
         else:
-            #Color contour lines accordin to some other scheme
+            #Color contour lines according to some other scheme
             cl_obj = self.mpl_ax.contour(x, y, z, cl_levels, colors = cl_colors, \
                 linewidths = cl_width, linestyles = cl_style)
         

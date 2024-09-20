@@ -41,7 +41,8 @@ class Color_Bar(_axes._Axes_Base):
             Lower and upper limits.  If None is input instead of a float, then 
             the corresponding limit will be automatically selected.
         scale : [ 'linear' | 'log' ], optional
-            Color bar scaling.  The default is 'linear'.
+            Color bar scaling.  The default is to adopt the data object's 
+            color scale.
         """
         self.data_objs = _utl.adjust_list_depth(data_obj, 1)
         self.data_ax = []
@@ -59,7 +60,7 @@ class Color_Bar(_axes._Axes_Base):
         #Use the user input color limits specified when the data object was 
         #added to the data axes as the default
         self._ui_lim = kwargs.pop('lim', data_obj._ui_c_lim)
-        self._ui_scale = kwargs.pop('scale', 'linear')
+        self._ui_scale = kwargs.pop('scale', data_obj._c_scale)
         #Set the half width for the linear scaled region within symlog (or 
         #similar) axis scalings.
         self._lin_half_width = 1.0
