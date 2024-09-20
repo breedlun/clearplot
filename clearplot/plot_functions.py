@@ -668,16 +668,17 @@ def plot_intensity_map(filename, x, y, z, x_label = None, y_label = None, **kwar
     c_orient = kwargs.pop('c_orient', 'v')
     c_label = kwargs.pop('c_label', None)
     c_tick = kwargs.pop('c_tick', None)
+    c_lim = kwargs.pop('c_lim', [None, None])
     c_scale = kwargs.pop('c_scale', 'linear')
     
     [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
     
-    im = ax.plot_intensity_map(x, y, z, c_scale = c_scale, **kwargs)
+    im = ax.plot_intensity_map(x, y, z, c_scale = c_scale, c_lim = c_lim, **kwargs)
     
     if c_bar:
         #Place color bar
         c_bar = fig.add_color_bar(im, label = c_label, tick = c_tick, \
-            orient = c_orient, scale = c_scale)
+            lim = c_lim, orient = c_orient, scale = c_scale)
 
     #Update figure
     fig.auto_adjust_layout()
