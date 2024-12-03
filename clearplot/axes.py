@@ -921,7 +921,8 @@ class Axes(_Data_Axes_Base):
         self.markers = []
         self.bars = []
         self.boxes = []
-        self.violins = []            
+        self.violins = []
+        self.filled_regions = []          
             
         if self.shared_x_ax is not None:
             self.mpl_ax.yaxis.set_ticks_position('right')
@@ -2730,7 +2731,7 @@ class Axes(_Data_Axes_Base):
         self.filled_regions.append(span)
         return(span)
     
-    def fill_between_y(self, x, y_lo, y_hi, label = None, **kwargs):
+    def fill_between_y_curves(self, x, y_lo, y_hi, label = None, **kwargs):
         """
         Fills the vertical space between two curves
 
@@ -2743,26 +2744,36 @@ class Axes(_Data_Axes_Base):
         y_hi : numpy array
             y-coordinaets of upper filled region boundary
         label : string, optional
-            Label for filled region The default is None.
+            Label for filled region.  The default is None.
         color : 1x3 list, optional
             Color of filled region.  RGB values should be between 0 and 1.
+        alpha : float
+            Transparency of filled region.  The default is 0.5.
+        edge_color : 1x3 list, optional
+            Color of rectangle edges.  RGB values should be between 0 and 1.
+        edge_width : float, optional
+            Width of rectangle edges, in points.
+        edge_style : string, optional
+            Style of edges.  Valid styles include '-', '--', '-.', ':'.
 
         Returns
         -------
         filled_region : filled_region_object.
 
         """
-        color = kwargs.pop('color', [0.8,0.8,0.8])
+        color = kwargs.pop('color', _cp.colors.c_lists['std'][self.color_ndx])
+        alpha = kwargs.pop('alpha', 0.4)
         edge_width = kwargs.pop('edge_width', 0.0)
         edge_color = kwargs.pop('edge_color', [0,0,0])
         edge_style = kwargs.pop('edge_style', '-')
         filled_region = self.mpl_ax.fill_between(x, y_hi, y_lo, \
-            facecolor = color, edgecolor = edge_color, linewidth = edge_width, \
-            linestyle = edge_style, **kwargs)
+            facecolor = color, alpha = alpha, edgecolor = edge_color, \
+            linewidth = edge_width, linestyle = edge_style, label = label, \
+            **kwargs)
         self.filled_regions.append(filled_region)
         return(filled_region)
     
-    def fill_between_x(self, x_lo, x_hi, y, label = None, **kwargs):
+    def fill_between_x_curves(self, x_lo, x_hi, y, label = None, **kwargs):
         """
         Fills the horizontal space between two curves
 
@@ -2775,22 +2786,32 @@ class Axes(_Data_Axes_Base):
         y : numpy array
             y-coordinates of left/right filled region boundary
         label : string, optional
-            Label for filled region The default is None.
+            Label for filled region.  The default is None.
         color : 1x3 list, optional
             Color of filled region.  RGB values should be between 0 and 1.
+        alpha : float
+            Transparency of filled region.  The default is 0.5.
+        edge_color : 1x3 list, optional
+            Color of rectangle edges.  RGB values should be between 0 and 1.
+        edge_width : float, optional
+            Width of rectangle edges, in points.
+        edge_style : string, optional
+            Style of edges.  Valid styles include '-', '--', '-.', ':'.
 
         Returns
         -------
         filled_region : filled_region_object.
 
         """
-        color = kwargs.pop('color', [0.8,0.8,0.8])
+        color = kwargs.pop('color', _cp.colors.c_lists['std'][self.color_ndx])
+        alpha = kwargs.pop('alpha', 0.4)
         edge_width = kwargs.pop('edge_width', 0.0)
         edge_color = kwargs.pop('edge_color', [0,0,0])
         edge_style = kwargs.pop('edge_style', '-')
         filled_region = self.mpl_ax.fill_betweenx(y, x_hi, x_lo, \
-            facecolor = color, edgecolor = edge_color, linewidth = edge_width, \
-            linestyle = edge_style, **kwargs)
+            facecolor = color, alpha = alpha, edgecolor = edge_color, \
+            linewidth = edge_width, linestyle = edge_style, label = label, \
+            **kwargs)
         self.filled_regions.append(filled_region)
         return(filled_region)
             
