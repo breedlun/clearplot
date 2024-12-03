@@ -2806,7 +2806,8 @@ class Axes(_Data_Axes_Base):
                 markerfacecolor = marker_colors[i], \
                 markeredgewidth = marker_edge_widths[i], \
                 markeredgecolor = marker_edge_colors[i], \
-                clip_on = False, scalex = False, scaley = False, zorder = 3)[0]
+                clip_on = False, scalex = False, scaley = False, \
+                zorder = 3, **kwargs)[0]
             #Store the full data on the curve object since the curve might be
             #clipped later.
             curve.full_x_data = curve.get_xdata()
@@ -2894,7 +2895,8 @@ class Axes(_Data_Axes_Base):
                 markerfacecolor = colors[i], \
                 markeredgewidth = edge_widths[i], \
                 markeredgecolor = edge_colors[i], \
-                clip_on = False, scalex = False, scaley = False, zorder = 3)[0]
+                clip_on = False, scalex = False, scaley = False, \
+                zorder = 3, **kwargs)[0]
             marker.full_x_data = marker.get_xdata()
             marker.full_y_data = marker.get_ydata()
             self.markers.append(marker)
@@ -2966,7 +2968,7 @@ class Axes(_Data_Axes_Base):
                 elinewidth = bar_line_widths[i], \
                 capthick = cap_line_widths[i], \
                 capsize = cap_lengths[i], \
-                linestyle = 'none', zorder = 3)
+                linestyle = 'none', zorder = 3, **kwargs)
             i = i + 1
         #Update the auto color index, in case further curves are plotted on 
         #this set of axes
@@ -3032,7 +3034,7 @@ class Axes(_Data_Axes_Base):
                 linestyle = edge_styles[i], \
                 linewidth = edge_widths[i], \
                 edgecolor = edge_colors[i], \
-                clip_on = True, align = align, zorder = 2))
+                clip_on = True, align = align, zorder = 2, **kwargs))
             i = i + 1
         #Update the auto color index, in case further curves are plotted on 
         #this set of axes
@@ -3116,7 +3118,7 @@ class Axes(_Data_Axes_Base):
             #Plot data
             self.violins.append(self.mpl_ax.violinplot(yi, positions = xi, \
                 widths = body_widths[i], showmeans = show_means, \
-                showmedians = show_medians, showextrema = show_extrema))
+                showmedians = show_medians, showextrema = show_extrema, **kwargs))
             #As I mention in https://github.com/matplotlib/matplotlib/pull/3875
             #I cannot set the alpha value for facecolor and edgecolor 
             #independently.  Hopefully this will get fixed soon.
@@ -3242,7 +3244,8 @@ class Axes(_Data_Axes_Base):
         for xi, yi in zip(x, y):
             #Plot data
             self.boxes.append(self.mpl_ax.boxplot(yi, positions = xi, \
-                widths = box_widths[i], notch = True, patch_artist = True))
+                widths = box_widths[i], notch = True, patch_artist = True, \
+                **kwargs))
             for box in self.boxes[i]['boxes']:
                 _plt.setp(box, \
                     facecolor = box_colors[i], \
@@ -3367,7 +3370,8 @@ class Axes(_Data_Axes_Base):
         #add_image cannot handle log scaled x and/or y axes.
         #(Rasterize the output to avoid thin white lines between the quads)
         im_obj = self.mpl_ax.pcolormesh(x, y, z, rasterized = True, \
-                                        cmap = c_map, norm = norm, shading = 'auto')
+                                        cmap = c_map, norm = norm, \
+                                        shading = 'auto', **kwargs)
         im_obj.parent_ax = self
         im_obj._ui_c_lim = ui_c_lim
         im_obj._c_scale = c_scale
@@ -3517,7 +3521,8 @@ class Axes(_Data_Axes_Base):
         
         #Generate background
         if plot_type == 'filled':
-            b_obj = self.mpl_ax.contourf(x, y, z, cl_levels, cmap = c_map)
+            b_obj = self.mpl_ax.contourf(x, y, z, cl_levels, cmap = c_map, \
+                                         **kwargs)
             #Store info in case other methods, such as the colorbar, need to 
             #know
             b_obj._ui_c_lim = ui_c_lim
@@ -3526,7 +3531,7 @@ class Axes(_Data_Axes_Base):
         elif plot_type == 'intensity map':
             #Plot the background image
             b_obj = self.plot_intensity_map(x, y, z, c_map = c_map, \
-                c_lim = c_lim, interp = im_interp)
+                c_lim = c_lim, interp = im_interp, **kwargs)
 
             
         #Generate contour lines
