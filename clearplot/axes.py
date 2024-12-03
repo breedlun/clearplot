@@ -2078,6 +2078,17 @@ class Axes(_Data_Axes_Base):
             bars = _np.array([])
             labels = _np.array([])
         return(bars, labels)
+    
+    def _get_unique_filled_regions(self):
+        if len(self.filled_regions) > 0:
+            labels = []
+            for filled_region in self.filled_regions:
+                labels.append(filled_region.get_label())
+            filled_regions = self.filled_regions
+        else:
+            filled_regions = _np.array([])
+            labels = _np.array([])
+        return(filled_regions, labels)
         
     def add_legend(self, artists = None, loc = 'best', **kwargs):
         """
@@ -2105,14 +2116,17 @@ class Axes(_Data_Axes_Base):
             [curves, curve_labels] = self._get_unique_curves()
             [markers, marker_labels] = self._get_unique_markers()
             [bars, bar_labels] = self._get_unique_bars()
+            [filled_regions, filled_region_labels] = self._get_unique_filled_regions()
             artists = []
             artists.extend(curves)
             artists.extend(markers)
             artists.extend(bars)
+            artists.extend(filled_regions)
             labels = []
             labels.extend(curve_labels)
             labels.extend(marker_labels)
             labels.extend(bar_labels)
+            labels.extend(filled_region_labels)
         else:
             labels = []
             for artist in artists:
@@ -2678,6 +2692,7 @@ class Axes(_Data_Axes_Base):
         span = self.mpl_ax.axhspan(y[0], y[1], facecolor = color, \
             edgecolor = edge_color, linewidth = edge_width, \
             linestyle = edge_style, **kwargs)
+        self.filled_regions.append(span)
         return(span)
         
     def add_v_rect(self, x, **kwargs):
@@ -2712,7 +2727,72 @@ class Axes(_Data_Axes_Base):
         span = self.mpl_ax.axvspan(x[0], x[1], facecolor = color, \
             edgecolor = edge_color, linewidth = edge_width, \
             linestyle = edge_style, **kwargs)
+        self.filled_regions.append(span)
         return(span)
+    
+    def fill_between_y(self, x, y_lo, y_hi, label = None, **kwargs):
+        """
+        Fills the vertical space between two curves
+
+        Parameters
+        ----------
+        x : numpy array
+            x-coordinates of lower/upper filled region boundary
+        y_lo : numpy array
+            y-coordinates of lower filled region boundary
+        y_hi : numpy array
+            y-coordinaets of upper filled region boundary
+        label : string, optional
+            Label for filled region The default is None.
+        color : 1x3 list, optional
+            Color of filled region.  RGB values should be between 0 and 1.
+
+        Returns
+        -------
+        filled_region : filled_region_object.
+
+        """
+        color = kwargs.pop('color', [0.8,0.8,0.8])
+        edge_width = kwargs.pop('edge_width', 0.0)
+        edge_color = kwargs.pop('edge_color', [0,0,0])
+        edge_style = kwargs.pop('edge_style', '-')
+        filled_region = self.mpl_ax.fill_between(x, y_hi, y_lo, \
+            facecolor = color, edgecolor = edge_color, linewidth = edge_width, \
+            linestyle = edge_style, **kwargs)
+        self.filled_regions.append(filled_region)
+        return(filled_region)
+    
+    def fill_between_x(self, x_lo, x_hi, y, label = None, **kwargs):
+        """
+        Fills the horizontal space between two curves
+
+        Parameters
+        ----------
+        x_lo : numpy array
+            x-coordinates of left filled region boundary
+        x_hi : numpy array
+            x-coordinaets of right filled region boundary
+        y : numpy array
+            y-coordinates of left/right filled region boundary
+        label : string, optional
+            Label for filled region The default is None.
+        color : 1x3 list, optional
+            Color of filled region.  RGB values should be between 0 and 1.
+
+        Returns
+        -------
+        filled_region : filled_region_object.
+
+        """
+        color = kwargs.pop('color', [0.8,0.8,0.8])
+        edge_width = kwargs.pop('edge_width', 0.0)
+        edge_color = kwargs.pop('edge_color', [0,0,0])
+        edge_style = kwargs.pop('edge_style', '-')
+        filled_region = self.mpl_ax.fill_betweenx(y, x_hi, x_lo, \
+            facecolor = color, edgecolor = edge_color, linewidth = edge_width, \
+            linestyle = edge_style, **kwargs)
+        self.filled_regions.append(filled_region)
+        return(filled_region)
             
     def plot(self, x, y, labels = [None], **kwargs):
         """
