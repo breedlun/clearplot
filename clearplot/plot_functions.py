@@ -46,7 +46,7 @@ def _setup_plot(x_label, y_label, **kwargs):
 #        ax.label_x(x_label[0], x_label[1])
 #    if isinstance(y_label[0], str):
 #        ax.label_y(y_label[0], y_label[1])
-    return(fig, ax)
+    return(fig, ax, kwargs)
 
 def plot(filename, x, y, labels = [None], \
     x_label = None, y_label = None, **kwargs):
@@ -102,7 +102,7 @@ def plot(filename, x, y, labels = [None], \
     legend : bool, optional
         Specifies whether to display a legend for the curves.
     legend_loc : 1x2 list or string, optional
-        Legend location.  For the proper syntax, see the matplotlib 
+        Legend location.  For the proper syntax, see the axes.add_legend() 
         documentation for the legend 'loc' keyword argument.
     legend_kwargs : dict, optional
         Keyword arguments to customize the legend appearance.  This is passed 
@@ -140,10 +140,9 @@ def plot(filename, x, y, labels = [None], \
     """
     legend = kwargs.pop('legend', None)
     legend_loc = kwargs.pop('legend_loc', 'best')
-    legend_outside_ax = kwargs.pop('legend_outside_ax', False)
     legend_kwargs = kwargs.pop('legend_kwargs', dict())
 
-    [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
+    [fig, ax, kwargs] = _setup_plot(x_label, y_label, **kwargs)
     
     ax.plot(x, y, labels = labels, **kwargs)
     
@@ -223,12 +222,8 @@ def plot_markers(filename, x, y, labels = [None], \
     legend : bool, optional
         Specifies whether to display a legend for the curves.
     legend_loc : 1x2 list or string, optional
-        Legend location.  For the proper syntax, see the matplotlib 
+        Legend location.  For the proper syntax, see the axes.add_legend() 
         documentation for the legend 'loc' keyword argument.
-    legend_outside_ax : bool, optional
-        Specifies whether to place the legend outside of the data axes.  If 
-        True then the `legend_loc` sets the legend position within the axes.  
-        If False, then `legend_loc` sets the legend postion outside the axes.
     legend_kwargs : dict, optional
         Keyword arguments to customize the legend appearance.  This is passed 
         directly into the matplotlib legend function.  See the matplotlib 
@@ -265,10 +260,9 @@ def plot_markers(filename, x, y, labels = [None], \
     """
     legend = kwargs.pop('legend', None)
     legend_loc = kwargs.pop('legend_loc', 'best')
-    legend_outside_ax = kwargs.pop('legend_outside_ax', False)
     legend_kwargs = kwargs.pop('legend_kwargs', dict())
 
-    [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
+    [fig, ax, kwargs] = _setup_plot(x_label, y_label, **kwargs)
     
     ax.plot_markers(x, y, labels = labels, **kwargs)
     
@@ -279,8 +273,7 @@ def plot_markers(filename, x, y, labels = [None], \
         else:
             legend = False 
     if legend:
-        ax.add_legend(loc = legend_loc, \
-            outside_ax = legend_outside_ax, **legend_kwargs)
+        ax.add_legend(loc = legend_loc, **legend_kwargs)
 
 #    # Catch unexpected keyword arguments
 #    if kwargs:
@@ -347,7 +340,7 @@ def plot_bars(filename, x, y, labels = [None], \
     legend : bool, optional
         Specifies whether to display a legend for the bars.
     legend_loc : 1x2 list or string, optional
-        Legend location.  For the proper syntax, see the matplotlib 
+        Legend location.  For the proper syntax, see the axes.add_legend() 
         documentation for the legend 'loc' keyword argument.
     legend_kwargs : dict, optional
         Keyword arguments to customize the legend appearance.  This is passed 
@@ -381,10 +374,9 @@ def plot_bars(filename, x, y, labels = [None], \
     """
     legend = kwargs.pop('legend', None)
     legend_loc = kwargs.pop('legend_loc', 'best')
-    legend_outside_ax = kwargs.pop('legend_outside_ax', False)
     legend_kwargs = kwargs.pop('legend_kwargs', dict())
 
-    [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
+    [fig, ax, kwargs] = _setup_plot(x_label, y_label, **kwargs)
     
     ax.plot_bars(x, y, labels = labels, **kwargs)
     
@@ -479,7 +471,7 @@ def plot_box_and_whiskers(filename, x, y, \
         Box objects
     """
 
-    [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
+    [fig, ax, kwargs] = _setup_plot(x_label, y_label, **kwargs)
     
     ax.plot_box_and_whiskers(x, y, **kwargs)
     
@@ -558,7 +550,7 @@ def plot_violins(filename, x, y, x_label = None, y_label = None, **kwargs):
     violins : list
         Violin objects
     """
-    [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
+    [fig, ax, kwargs] = _setup_plot(x_label, y_label, **kwargs)
     
     ax.plot_violins(x, y, **kwargs)
 
@@ -671,7 +663,7 @@ def plot_intensity_map(filename, x, y, z, x_label = None, y_label = None, **kwar
     c_lim = kwargs.pop('c_lim', [None, None])
     c_scale = kwargs.pop('c_scale', 'linear')
     
-    [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
+    [fig, ax, kwargs] = _setup_plot(x_label, y_label, **kwargs)
     
     im = ax.plot_intensity_map(x, y, z, c_scale = c_scale, c_lim = c_lim, **kwargs)
     
@@ -794,7 +786,7 @@ def plot_contours(filename, x, y, z, x_label = None, y_label = None, **kwargs):
     c_tick = kwargs.pop('c_tick', None)
     c_scale = kwargs.pop('c_scale', 'linear')
     
-    [fig, ax] = _setup_plot(x_label, y_label, **kwargs)
+    [fig, ax, kwargs] = _setup_plot(x_label, y_label, **kwargs)
     
     [bg, cl] = ax.plot_contours(x, y, z, c_scale = c_scale, **kwargs)
     
