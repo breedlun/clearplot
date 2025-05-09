@@ -21,4 +21,4 @@ Z = (Z1 - Z2) * 2
 pf.plot_contours('contour_plot-background_image', X, Y, Z, \
     x_label = ['\tau_1', 'kg'], y_label = ['\tau_2', 'kg'], \
     x_lim = [-1, 2], x_tick = 0.5, y_lim = [-1, 2], y_tick = 0.5, \
-    c_label = ['E', 'kJ'], plot_type = 'intensity map', im_interp = 'bilinear')
+    c_label = ['E', 'kJ'], plot_type = 'intensity map')

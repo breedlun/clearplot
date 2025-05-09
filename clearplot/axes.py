@@ -1186,17 +1186,17 @@ class Axes(_Data_Axes_Base):
         axes.extend(self.linked_x_ax)
         for ax in axes:
             data_sets = []
-            data_sets.extend(self.curves[:])
-            data_sets.extend(self.markers[:])
+            data_sets.extend(ax.curves[:])
+            data_sets.extend(ax.markers[:])
             for data_set in data_sets:
                 x = data_set.full_x_data
                 y = data_set.full_y_data
-                if self._ui_y_lim[0] is not None:
-                    lgc_lo = y > self._ui_y_lim[0]
+                if ax._ui_y_lim[0] is not None:
+                    lgc_lo = y > ax._ui_y_lim[0]
                 else:
                     lgc_lo = _np.ones(y.shape, dtype = bool)
-                if self._ui_y_lim[1] is not None:
-                    lgc_hi = y < self._ui_y_lim[1]
+                if ax._ui_y_lim[1] is not None:
+                    lgc_hi = y < ax._ui_y_lim[1]
                 else:
                     lgc_hi = _np.ones(y.shape, dtype = bool)
                 lgc = _np.logical_and(lgc_lo, lgc_hi)
@@ -1370,17 +1370,17 @@ class Axes(_Data_Axes_Base):
         axes.extend(self.linked_y_ax)
         for ax in axes:
             data_sets = []
-            data_sets.extend(self.curves[:])
-            data_sets.extend(self.markers[:])
+            data_sets.extend(ax.curves[:])
+            data_sets.extend(ax.markers[:])
             for data_set in data_sets:
                 x = data_set.full_x_data
                 y = data_set.full_y_data
-                if self._ui_x_lim[0] is not None:
-                    lgc_lo = x >= self._ui_x_lim[0]
+                if ax._ui_x_lim[0] is not None:
+                    lgc_lo = x >= ax._ui_x_lim[0]
                 else:
                     lgc_lo = _np.ones(x.shape, dtype = bool)
-                if self._ui_x_lim[1] is not None:
-                    lgc_hi = x <= self._ui_x_lim[1]
+                if ax._ui_x_lim[1] is not None:
+                    lgc_hi = x <= ax._ui_x_lim[1]
                 else:
                     lgc_hi = _np.ones(x.shape, dtype = bool)
                 lgc = _np.logical_and(lgc_lo, lgc_hi)
@@ -3632,7 +3632,7 @@ class Axes(_Data_Axes_Base):
         elif plot_type == 'intensity map':
             #Plot the background image
             b_obj = self.plot_intensity_map(x, y, z, c_map = c_map, \
-                c_lim = c_lim, interp = im_interp, **kwargs)
+                c_lim = c_lim, **kwargs)
 
             
         #Generate contour lines
