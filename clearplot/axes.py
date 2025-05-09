@@ -1192,11 +1192,11 @@ class Axes(_Data_Axes_Base):
                 x = data_set.full_x_data
                 y = data_set.full_y_data
                 if ax._ui_y_lim[0] is not None:
-                    lgc_lo = y > ax._ui_y_lim[0]
+                    lgc_lo = y >= ax._ui_y_lim[0]
                 else:
                     lgc_lo = _np.ones(y.shape, dtype = bool)
                 if ax._ui_y_lim[1] is not None:
-                    lgc_hi = y < ax._ui_y_lim[1]
+                    lgc_hi = y <= ax._ui_y_lim[1]
                 else:
                     lgc_hi = _np.ones(y.shape, dtype = bool)
                 lgc = _np.logical_and(lgc_lo, lgc_hi)
