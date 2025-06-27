@@ -24,12 +24,19 @@ class _Axes_Base(object):
         self.parent_fig = fig
         self.parent_fig.axes.append(self)
         self._ui_pos = kwargs.pop('position', None)
-        scale_plot = kwargs.pop('scale_plot', 1.0)
+        self._scale_plot = kwargs.pop('scale_plot', 1.0)
         #Define a scaling dimension for the plot.  This dimension is used in a 
         #number of places to scale the distances between different objects.  
         #Under default settings, the scaling dimension corresponds to the 
         #number of millimeters between tick marks.  
-        self.sdim = 20.0 * scale_plot
+        self.sdim = 20.0 * self._scale_plot
+        #Set the font size
+        self.font_size = kwargs.pop('font_size', _mpl.rcParams['font.size'])
+        #Put remaining kwargs onto the object.  This allows child classes 
+        #derived from this parent class to call this parent initialization 
+        #routine, and then work with self.kwargs which does not have the
+        #keyword arguments that were 'consumed' by this initialization routine.
+        self.kwargs = kwargs
     
     @property    
     def position(self):
@@ -445,7 +452,11 @@ class _Axes_Base(object):
 
 class _Data_Axes_Base(_Axes_Base):   
     
-    def add_title(self, text, **kwargs):
+    def __init__(self, fig, **kwargs):
+        #Start by running parent class's initialization routine
+        super().__init__(fig, **kwargs)
+    
+    def add_title(self, text, font_size = None, **kwargs):
         """
         Adds a title above axes.
         
@@ -458,8 +469,10 @@ class _Data_Axes_Base(_Axes_Base):
             `matplotlib documentation <http://matplotlib.org/api/axes_api.html#matplotlib.axes.Axes.set_title>`__
             for further details
         """
+        if font_size is None:
+            font_size = self.font_size
         raw_text = _utl.raw_string(text)
-        self.mpl_ax.set_title('$' + raw_text + '$', **kwargs)    
+        self.mpl_ax.set_title('$' + raw_text + '$', fontsize = font_size, **kwargs)    
     
     def add_image(self, im, **kwargs):
         """
@@ -616,16 +629,9 @@ class Invisible_Axes(_Data_Axes_Base):
         -------
         axes object
         """
-        self.parent_fig = fig
-        self.parent_fig.axes.append(self)
-        self._ui_pos = kwargs.pop('position', None)
-        scale_plot = kwargs.pop('scale_plot', 1.0)
-        #Define a scaling dimension for the plot.  This dimension is used in a 
-        #number of places to scale the distances between different objects.  
-        #Under default settings, the scaling dimension corresponds to the 
-        #number of millimeters between tick marks.  
-        self.sdim = 20.0 * scale_plot
-        size = kwargs.pop('size', _np.array([100, 100]))
+        #Start by running parent class's initialization routine
+        super().__init__(fig, **kwargs)
+        size = self.kwargs.pop('size', _np.array([100, 100]))
         if self._ui_pos is None:
             position = _np.array([30, 30])
         else:
@@ -633,12 +639,12 @@ class Invisible_Axes(_Data_Axes_Base):
         #Generate matplotlib axes object
         fig_size = fig.size
         rect_nfc = _np.hstack([position / fig_size, size / fig_size])
-        self.mpl_ax = _plt.axes(rect_nfc, **kwargs)
+        self.mpl_ax = _plt.axes(rect_nfc, **self.kwargs)
         #Make the axes invisible 
         self.mpl_ax.set_axis_off()
         #Define how much the data min/max may exceed an axis limit (as a 
         #percentage of the tick mark spacing)        
-        self.exceed_lim = 0.02 
+        self.exceed_lim = 0.02
         
     @property
     def x_lim(self):
@@ -741,24 +747,15 @@ class Axes(_Data_Axes_Base):
             will be constrained to have the same limits and tick mark spacings.
             By default, the new axes will be placed to the right of the 
             original axes.
-        """      
-        self.parent_fig = fig
-        self.parent_fig.axes.append(self)
-        self._ui_pos = kwargs.pop('position', None)
-        scale_plot = kwargs.pop('scale_plot', 1.0)
-        #Define a scaling dimension for the plot.  This dimension is used in a 
-        #number of places to scale the distances between different objects.  
-        #Under default settings, the scaling dimension corresponds to the 
-        #number of millimeters between tick marks.  
-        self.sdim = 20.0 * scale_plot
+        """
+        #Start by running parent class's initialization routine
+        super().__init__(fig, **kwargs)
         #Define how much the data min/max may exceed an axis limit (as a 
         #percentage of the tick mark spacing)        
         self.exceed_lim = 0.02 
-        #Set the font size
-        self.font_size = kwargs.pop('font_size', _mpl.rcParams['font.size'])
         #Set the physical distance between tick marks
-        self._x_tick_mm = 20 * scale_plot
-        self._y_tick_mm = 20 * scale_plot
+        self._x_tick_mm = 20 * self._scale_plot
+        self._y_tick_mm = 20 * self._scale_plot
         
         #Set the log base for log scaled axes
         self._x_scale_log_base = 10.0
@@ -789,14 +786,14 @@ class Axes(_Data_Axes_Base):
         self.marker_color_ndx = 0
         self.err_color_ndx = 0        
         
-        self.shared_x_ax = kwargs.pop('share_x_ax', None)
-        self.shared_y_ax = kwargs.pop('share_y_ax', None)
+        self.shared_x_ax = self.kwargs.pop('share_x_ax', None)
+        self.shared_y_ax = self.kwargs.pop('share_y_ax', None)
         #Create a set to store the linked x and y axes.  (Sets make it easy
         #to have a list of unique items.)
         self.linked_x_ax = set()
-        link_x_ax = kwargs.pop('link_x_ax', None)
+        link_x_ax = self.kwargs.pop('link_x_ax', None)
         self.linked_y_ax = set()
-        link_y_ax = kwargs.pop('link_y_ax', None)
+        link_y_ax = self.kwargs.pop('link_y_ax', None)
         fig_size = fig.size          
                  
         if self.shared_x_ax is not None:
@@ -885,26 +882,26 @@ class Axes(_Data_Axes_Base):
             #Generate matplotlib axes object
             rect_nfc = _np.hstack([position / fig_size, size / fig_size])
             self.mpl_ax = fig.mpl_fig.add_axes(rect_nfc, sharex = link_mpl_x, \
-                sharey = link_mpl_y, **kwargs)
+                sharey = link_mpl_y, **self.kwargs)
         
         #Set tick mark properties: fontsize, remove tick marks from top 
         #and right of plot            
         self.mpl_ax.xaxis.set_tick_params(which = 'major', \
             labelsize = self.font_size, top = False, \
-            size = _mpl.rcParams['xtick.major.size'] * scale_plot, \
-            pad = _mpl.rcParams['xtick.major.pad'] * scale_plot)
+            size = _mpl.rcParams['xtick.major.size'] * self._scale_plot, \
+            pad = _mpl.rcParams['xtick.major.pad'] * self._scale_plot)
         self.mpl_ax.yaxis.set_tick_params(which = 'major', \
             labelsize = self.font_size, right = False, \
-            size = _mpl.rcParams['ytick.major.size'] * scale_plot, \
-            pad = _mpl.rcParams['ytick.major.pad'] * scale_plot)
+            size = _mpl.rcParams['ytick.major.size'] * self._scale_plot, \
+            pad = _mpl.rcParams['ytick.major.pad'] * self._scale_plot)
         self.mpl_ax.xaxis.set_tick_params(which = 'minor', \
             labelsize = self.font_size, top = False, \
-            size = _mpl.rcParams['xtick.minor.size'] * scale_plot, \
-            pad = _mpl.rcParams['xtick.minor.pad'] * scale_plot)
+            size = _mpl.rcParams['xtick.minor.size'] * self._scale_plot, \
+            pad = _mpl.rcParams['xtick.minor.pad'] * self._scale_plot)
         self.mpl_ax.yaxis.set_tick_params(which = 'minor', \
             labelsize = self.font_size, right = False, \
-            size = _mpl.rcParams['ytick.minor.size'] * scale_plot, \
-            pad = _mpl.rcParams['ytick.minor.pad'] * scale_plot)
+            size = _mpl.rcParams['ytick.minor.size'] * self._scale_plot, \
+            pad = _mpl.rcParams['ytick.minor.pad'] * self._scale_plot)
             
         #Instantiate the x and y labels       
         self.x_label_obj = _axis_label.Axis_Label(self, 0)
@@ -961,7 +958,7 @@ class Axes(_Data_Axes_Base):
         self.mpl_ax.spines['y_zero'] = _mpl_Spine(self.mpl_ax, 'top', \
             _mpl_Path(([[ 0., 0.], [ 0.,  0.]]), None), \
             linestyle = (0, (3, 3)), linewidth = 1.0, facecolor = [0,0,0], \
-            clip_on = True, clip_box = self.mpl_ax.bbox, zorder = 0) 
+            clip_on = True, clip_box = self.mpl_ax.bbox, zorder = 0)
         
     @property
     def x_scale(self):
