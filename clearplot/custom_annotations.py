@@ -43,6 +43,7 @@ import numpy as _np
 _dflt_head_length = round(72.0/25.4 * 7.0, 4)
 _dflt_head_width = round(72.0/25.4 * 7.0 * 0.4, 4)
 _dflt_length = 72.0/25.4 * 20
+_dflt_line_width = 0.75
 
 class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
     """
@@ -50,7 +51,7 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
     """
     def __init__(self, beginarrow = None, endarrow = None, 
         head_length = _dflt_head_length, head_width = _dflt_head_width, \
-        monolithic = False, length = 0):
+        length = 0, line_width = _dflt_line_width, monolithic = False):
         """
         The arrows are drawn if *beginarrow* and/or *endarrow* are
         true. *head_length* and *head_width* determines the size
@@ -64,10 +65,11 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
         self.fillend = True
         self.monolithic = monolithic
         self.length = length
+        self.line_width = line_width
         super(_Slick_Arrow, self).__init__()
 
     def _gen_arrow_path(self, x_a, x_b, head_width, head_length, length, \
-        monolithic = False):
+        line_width = _dflt_line_width, monolithic = False):
         """
         Returns the path for the arrowhead or a monolithic, straight, arrow.
         
@@ -82,7 +84,9 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
         head_length: float
             Arrowhead length, in points (1/72")
         length: float
-            Arrow length from tip to tail, in points *1/72")
+            Arrow length from tip to tail, in points (1/72")
+        line_width : float, optional
+            Line width of arrow tail, in points (1/72")
         monolithic: bool, optional
             Specifies whether to make the arrow a combination of a line and
             a patch, or to make it a sinle monolithic patch
@@ -99,8 +103,6 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
             n = 12
             #Define the total number of points needed to construct the patch
             m = n + 4
-            #Specify the line width of the arrow tail (in points)
-            line_width = 0.75
             
             #Construct the arrow in clockwise fashion
             #Tip
@@ -154,9 +156,10 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
 
         return(path)
 
-    def transmute(self, path, mutation_size, line_width):
+    def transmute(self, path, mutation_size, linewidth):
         """
-        Generates the proper arrow head path and scales it.
+        Core of the _Slick_Arrow class.  Calls functions to generate the 
+        proper arrow path and scales it.
         
         Parameters
         ----------
@@ -164,9 +167,11 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
             The path along which the arrow will be drawn
         muatation_size: float
             The amount the arrow head will be scaled
-        line_width: float
+        linewidth: float
             May be used to adjust the the path so that it does not pass beyond 
-            the given points.
+            the given points. (This input is required by the ArrowStyle class.
+            I am not sure what exactly it is supposed to do, so I am not using
+            it below.)
             
         Returns
         -------
@@ -180,6 +185,7 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
         head_length = self.head_length * mutation_size
         head_width = self.head_width * mutation_size
         length = self.length * mutation_size
+        line_width = self.line_width * mutation_size #(Not =linewidth)
 
         #Construct the output lists
         path_list = [path]
@@ -192,7 +198,8 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
             x0 = path.vertices[0]
             x1 = path.vertices[1]
             ah_path = self._gen_arrow_path(x1, x0, head_width, \
-                head_length, length, monolithic = self.monolithic)
+                head_length, length, line_width = line_width, \
+                monolithic = self.monolithic)
             path_list.append(ah_path)
             fillable_list.append(True)
 
@@ -203,7 +210,8 @@ class _Slick_Arrow(_mpl.patches.ArrowStyle._Base):
             x2 = path.vertices[-2]
             x3 = path.vertices[-1]
             ah_path = self._gen_arrow_path(x2, x3, head_width, \
-                head_length, length, monolithic = self.monolithic)
+                head_length, length, line_width = line_width, \
+                monolithic = self.monolithic)
             path_list.append(ah_path)
             fillable_list.append(True)                                 
 
@@ -216,7 +224,8 @@ class Slick_Arrow_A(_Slick_Arrow):
     """
 
     def __init__(self, head_length = _dflt_head_length, \
-        head_width = _dflt_head_width, length = _dflt_length):
+        head_width = _dflt_head_width, length = _dflt_length, \
+        line_width = _dflt_line_width):
         """
         Instantiates an arrow with a head at its beginning point.
         
@@ -228,11 +237,14 @@ class Slick_Arrow_A(_Slick_Arrow):
             width of the arrow head, in points (1/72")
         length : float, optional
             length of the arrow from tip to tail, in points (1/72")
+        line_width : float, optional
+            Line width of arrow tail, in points (1/72")
         """
 
         super(Slick_Arrow_A, self).__init__(
               beginarrow=True, endarrow=False,
-              head_length=head_length, head_width=head_width, length = length)
+              head_length=head_length, head_width=head_width, \
+              length = length, line_width = line_width)
 
 _mpl.patches.ArrowStyle._style_list["<(-"] = Slick_Arrow_A
 
@@ -242,7 +254,8 @@ class Slick_Arrow_B(_Slick_Arrow):
     """
 
     def __init__(self, head_length = _dflt_head_length, \
-        head_width = _dflt_head_width, length = _dflt_length):
+        head_width = _dflt_head_width, length = _dflt_length, \
+        line_width = _dflt_line_width):
         """
         Instantiates an arrow with a head at its end point.
         
@@ -254,11 +267,14 @@ class Slick_Arrow_B(_Slick_Arrow):
             width of the arrow head, in points (1/72")
         length : float, optional
             length of the arrow from tip to tail, in points (1/72")
+        line_width : float, optional
+            Line width of arrow tail, in points (1/72")
         """
 
         super(Slick_Arrow_B, self).__init__(
             beginarrow=False, endarrow=True,
-            head_length=head_length, head_width=head_width, length = length)
+            head_length=head_length, head_width=head_width, \
+            length = length, line_width = line_width)
 
 _mpl.patches.ArrowStyle._style_list["-)>"] = Slick_Arrow_B
 
@@ -268,7 +284,8 @@ class Slick_Arrow_AB(_Slick_Arrow):
     """
 
     def __init__(self, head_length = _dflt_head_length, \
-        head_width = _dflt_head_width, length = _dflt_length):
+        head_width = _dflt_head_width, length = _dflt_length, \
+        line_width = _dflt_line_width):
         """
         Instantiates an arrow with heads at its beginning and end points.  
         
@@ -280,11 +297,14 @@ class Slick_Arrow_AB(_Slick_Arrow):
             width of the arrow head, in points (1/72")
         length : float, optional
             length of the arrow from tip to tail, in points (1/72")
+        line_width : float, optional
+            Line width of arrow tail, in points (1/72")
         """
 
         super(Slick_Arrow_AB, self).__init__(
             beginarrow=True, endarrow=True,
-            head_length=head_length, head_width=head_width, length = length)
+            head_length=head_length, head_width=head_width, \
+            length = length, line_width = line_width)
 
 _mpl.patches.ArrowStyle._style_list["<(-)>"] = Slick_Arrow_AB
 
@@ -294,7 +314,8 @@ class Axis_Arrow(_Slick_Arrow):
     """
 
     def __init__(self, head_length = _dflt_head_length, \
-        head_width = _dflt_head_width, length = _dflt_length):
+        head_width = _dflt_head_width, length = _dflt_length, \
+        line_width = _dflt_line_width):
         """
         Parameters
         ----------
@@ -304,11 +325,13 @@ class Axis_Arrow(_Slick_Arrow):
           width of the arrow head, in points (1/72")
         length : float, optional
             length of the arrow from tip to tail, in points (1/72")
+        line_width : float, optional
+            Line width of arrow tail, in points (1/72")
         """
 
         super(Axis_Arrow, self).__init__( \
             beginarrow=False, endarrow=True, \
             head_length=head_length, head_width=head_width, \
-            monolithic = True, length = length)
+            monolithic = True, length = length, line_width = line_width)
 
 _mpl.patches.ArrowStyle._style_list["=)>"] = Axis_Arrow

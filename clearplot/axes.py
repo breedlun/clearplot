@@ -367,7 +367,8 @@ class _Axes_Base(object):
 #        return(patch_obj)
 
     def add_arrow(self, style_str, x, cs, orient, length, \
-        head_length = 7.0, head_aspect_ratio = 3.0, color = [0, 0, 0]):
+        head_length = 7.0, head_aspect_ratio = 3.0, line_width = 0.75, \
+        color = [0, 0, 0]):
         """
         Creates an arrow with a curved back. The arrow can be placed
         relative to several coordinate systems, yet it retains it's shape, even 
@@ -387,9 +388,11 @@ class _Axes_Base(object):
         length : float, optional
             Length of the arrow, in mm
         head_length = float, optional
-            Length of the arrowhead
+            Length of the arrowhead, in mm
         head_aspect_ratio : float, optional
             Length/width ratio of the arrowhead
+        line_width : float, optional
+            Line width of arrow tail, in points
         color : 1x3 list, optional
             RGB value for the arrow
         
@@ -409,7 +412,9 @@ class _Axes_Base(object):
         #annotations can retain their shape even when the figure or axes are
         #resized)
         arrowstyle_str = style_str + ', head_width = ' + str(head_width_pts) + \
-            ', head_length = ' + str(head_length_pts) + ', length = ' + str(length * 72/25.4)
+            ', head_length = ' + str(head_length_pts) + \
+            ', length = ' + str(length * 72/25.4) + \
+            ', line_width = ' + str(line_width)
         #Generate arrow
         arrow = self.annotate('', x_offset, 'offset mm', x_2 = x, cs_2 = cs, \
             arrowprops = dict(arrowstyle = arrowstyle_str, mutation_scale = 1.0, \
@@ -447,7 +452,7 @@ class _Axes_Base(object):
         arrowhead : annotation object
         """
         arrowhead = self.add_arrow('-)>', x, cs, orient, 0, \
-            length, aspect_ratio, color)
+            length, head_aspect_ratio = aspect_ratio, color = color)
         return(arrowhead)
 
 class _Data_Axes_Base(_Axes_Base):   

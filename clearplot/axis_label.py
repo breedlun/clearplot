@@ -79,8 +79,8 @@ class Axis_Label(object):
 #            self._arrow_bool = arrow_bool
 #            self.place_label()
         
-    def gen_arrow(self, x, cs, length = 'auto', \
-            head_length = 'auto', head_aspect_ratio = 3.0, color = [0,0,0]):
+    def gen_arrow(self, x, cs, length = None, \
+            head_length = None, head_aspect_ratio = 3.0, color = [0,0,0]):
         """
         Creates an arrow whose head has a curved back.  The arrow can be placed
         relative to several coordinate systems, yet it retains it's shape, even 
@@ -96,6 +96,10 @@ class Axis_Label(object):
             information.
         length: float, optional
             Length of the arrow from tip to tail in mm
+        head_length = float, optional
+            Length of the arrowhead, in mm
+        head_aspect_ratio : float, optional
+            Length/width ratio of the arrowhead
         color: 1x3 list, optional
             RGB value for the arrow
             
@@ -103,12 +107,13 @@ class Axis_Label(object):
         -------
         arrow: annotation object
         """
-        if length == 'auto':
+        if length is None:
             length = self.sdim
-        if head_length == 'auto':
+        if head_length is None:
             head_length = 7.0 * self.sdim / 20.0
         arrow = self.parent_ax.add_arrow('=)>', x, cs, \
-            self.orient, length, head_length, head_aspect_ratio, color)
+            self.orient, length, head_length = head_length, \
+            head_aspect_ratio = head_aspect_ratio, color = color)
         return(arrow)
     
     def gen_label(self, str_list, font_size = _mpl.rcParams['font.size']):
