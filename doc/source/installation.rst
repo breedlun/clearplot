@@ -23,13 +23,13 @@ Hard (Manual) Way
 
     a.  Find where Matplotlib stores its True Type fonts.  In a python interpreter, type the following two commands: ``import matplotlib``, ``matplotlib.matplotlib_fname()``.  On a mac, you should get something like ``.../site-packages/matplotlib/mpl-data/matplotlibrc``.  The True Type fonts are stored in ``.../site-packages/matplotlib/mpl-data/fonts/ttf/``.
     
-    b.  Grab the fonts in the directories inside ``clearplot/Font_Files/`` and place them in: ``.../python3.8/site-packages/matplotlib/mpl-data/fonts/ttf/``.
+    b.  Grab the fonts in the directories inside ``clearplot/true_type_fonts/`` and place them in: ``.../python3.13/site-packages/matplotlib/mpl-data/fonts/ttf/``.
     
     c.  Find where Matplotlib stores its cache files.  In a python interpreter, enter ``matplotlib.get_cachedir()``.  On a mac, you should get something like ``/Users/[username]/.matplotlib``.
     
-    d.  Go to ``/Users/[username]/.matplotlib`` and delete ``fontList.cache``.  Next time matplotlib is imported the cache file will be rebuilt.
+    d.  Go to ``/Users/[username]/.matplotlib`` and delete ``fontList-v390.cache``.  Next time matplotlib is imported the cache file will be rebuilt.
     
-    e.  If you run into trouble, or want more information, see `this post <http://blog.olgabotvinnik.com/post/35807476900/how-to-set-helvetica-as-the-default-sans-serif-font-in>`__.
+    e.  If you run into trouble, or want more information, see `this post <https://olgabotvinnik.com/blog/how-to-set-helvetica-as-the-default-sans-serif-font-in/>`__.
 
 Optional Additional Steps
 -------------------------
