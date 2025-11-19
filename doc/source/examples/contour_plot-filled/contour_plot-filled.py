@@ -15,5 +15,5 @@ Z1 = np.exp(-X**2 - Y**2)
 Z2 = np.exp(-(X - 1)**2 - (Y - 1)**2)
 Z = (Z1 - Z2) * 2
 
-pf.plot_contours('contour_plot-filled.png', X, Y, Z, ['\tau_1', 'kg'], \
-    ['\tau_2', 'kg'], x_tick = 0.5, y_tick = 0.5, c_label = ['E', 'kJ']);
+pf.plot_contours('contour_plot-filled.png', X, Y, Z, [r'\tau_1', 'kg'], \
+    [r'\tau_2', 'kg'], x_tick = 0.5, y_tick = 0.5, c_label = ['E', 'kJ']);

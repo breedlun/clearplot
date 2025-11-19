@@ -34,12 +34,12 @@ for i in range(1, len(ndx_list) + 1):
 
 #Plot curve
 [fig, ax, curves] = pf.plot('', data[:,0], data[:,1], \
-	x_label = ['\varepsilon', '\%'], y_label = ['\sigma', 'GPa'])
+	x_label = [r'\varepsilon', r'\%'], y_label = [r'\sigma', 'GPa'])
 ax.label_curve(curves[0], labels, ndx = ndx_list, angles = 60)
 ax.plot_markers(data[ndx_list,0], data[ndx_list,1], colors = [0,0,0])
 fig.save('curve_and_image_sequence-a.png');
 #Plot image sequence
 [fig, ax, im_obj] = pf.show_im('curve_and_image_sequence-b.png', \
-    im_seq, scale_im = 0.3,  c_label = ['\bar{\varepsilon}^p', '\%'], \
+    im_seq, scale_im = 0.3,  c_label = [r'\bar{\varepsilon}^p', r'\%'], \
     c_lim = [0, 100], c_tick = 25, b_labels = True, im_interp = 'bicubic', \
     c_bar = True);

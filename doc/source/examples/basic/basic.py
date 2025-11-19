@@ -11,5 +11,5 @@ x = np.arange(0,10,0.01)
 y = np.sqrt(x)
 
 pf.plot('basic.png', x, y, \
-	x_label = ['\phi', '\%'], y_label = ['\psi', 'GPa'], \
+	x_label = [r'\phi', r'\%'], y_label = [r'\psi', 'GPa'], \
     x_lim = [None, 16], x_tick = 4);

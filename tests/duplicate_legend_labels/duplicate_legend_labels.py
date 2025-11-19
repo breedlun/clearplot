@@ -26,5 +26,5 @@ pf.plot('duplicate_legend_labels', \
     curve_colors = [[1,0,0], [0,1,0], [0,1,0], [0,0,1], [0,0,1], [0,0,1]],\
     curve_widths = [1,2,2,3,3,3], \
     curve_styles = ['-', '--', '--', ':', ':', ':'],\
-    labels = ['\Omega_1', '\Omega_2', '\Omega_2', \
-    '\Omega_3', '\Omega_3', '\Omega_3'], legend = True)
+    labels = [r'\Omega_1', r'\Omega_2', r'\Omega_2', \
+    r'\Omega_3', r'\Omega_3', r'\Omega_3'], legend = True)

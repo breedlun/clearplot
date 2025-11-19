@@ -1,9 +1,22 @@
 Version History
 ===============
 
+version 1.3
+
+1. Revised legend placement to enable a greater variety of legend locations outside the plot axes.  The new input syntax, unfortunately, is not backwards compatible with the old syntax for placing a legend outside the axes.
+2. Added the ability to fill the vertical or horizontal region defined by two curves.
+3. Revised automatic selection of axis limits when the limits for the orthogonal axis have already been set.
+4. Revised curve clipping routine to properly handle a curve that exits and reenters the plotting region with only one or two points outside the plotting region.
+5. Fixed a bug that prohibited user specified tick mark spacings with log scaled axes.
+6. Fixed several bugs related to new symlog capability.
+7. Fixed a bug that prohibited user specified tick mark spacings with log scaled axes.
+8. Revised curve clipping routine to properly handle a curve that exits and re-enters the plotting region with only one or two points outside the plotting region.
+9. Revised curve clipping routine to avoid adding data points at intersections with axis limits if the linestyle is 'none'.
+10. Made a number of minor revisions to remain compatible with the latest versions of python, numpy, and matplotlib.
+
 version 1.2.2
 
-1. Added the ability to specify symlog scaled axes.
+1. Added the ability to specify symlog scaled axes that span both negative and positive values.
 2. Modified axes.plot_intensity_map() to use pcolormesh instead of add_image since pcolormesh can handle nonlinearly scaled x and y axes.
 3. Fixed a bug in the developmental plot_surface() function.
 

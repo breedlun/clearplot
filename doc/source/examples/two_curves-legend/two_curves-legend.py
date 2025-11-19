@@ -13,5 +13,5 @@ xb = xa
 yb = 3.0 * (xb/10)**3 - 2.0 * (xb/10)**2
 
 [fig, ax, curves] = pf.plot('two_curves-legend.png', [xa, xb], [ya, yb], \
-    labels = ['\kappa_y', '\kappa_z'], \
-    x_label = ['\zeta_{yz}', 'in'], y_label = ['\kappa_j', 'lbf'])
+    labels = [r'\kappa_y', r'\kappa_z'], \
+    x_label = [r'\zeta_{yz}', 'in'], y_label = [r'\kappa_j', 'lbf'])

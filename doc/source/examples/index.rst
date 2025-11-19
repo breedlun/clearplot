@@ -87,6 +87,8 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 	
 	./log_log_plot/log_log_plot.rst
 	
+	./symlog_linear_plot/symlog_linear_plot.rst
+	
 	./arrows-custom_tick_labels/arrows-custom_tick_labels.rst
 	
 	./vertically_stacked/vertically_stacked.rst
@@ -94,6 +96,8 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 	./LaTeX_typesetting/LaTeX_typesetting.rst
 	
 	./error_bars/error_bars.rst
+	
+	./fill_between_curves/fill_between_curves.rst
 	
 	./bar_plot/bar_plot.rst
 	
@@ -193,6 +197,17 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
 .. raw:: html
 
     <div class='figure align-center'>
+    <a href=./symlog_linear_plot/symlog_linear_plot.html>
+    <img src=../_images/symlog_linear_plot.png>
+    <span class='figure-label'>
+    <p>Symlog Linear Plot</p>
+    </span>
+    </a>
+    </div>
+    
+.. raw:: html
+
+    <div class='figure align-center'>
     <a href=./arrows-custom_tick_labels/arrows-custom_tick_labels.html>
     <img src=../_images/arrows-custom_tick_labels.png>
     <span class='figure-label'>
@@ -230,6 +245,17 @@ These examples serve to showcase clearplot's capabilities, help new users get cl
     <img src=../_images/error_bars.png>
     <span class='figure-label'>
     <p>Error Bars</p>
+    </span>
+    </a>
+    </div>
+    
+.. raw:: html
+
+    <div class='figure align-center'>
+    <a href=./fill_between_curves/fill_between_curves.html>
+    <img src=../_images/fill_between_curves.png>
+    <span class='figure-label'>
+    <p>Fill Between Curves</p>
     </span>
     </a>
     </div>

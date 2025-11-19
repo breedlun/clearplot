@@ -27,7 +27,7 @@ im_obj = ax.add_image(im13a, \
     x = np.array([50,50+im13a.shape[1]]), y = np.array([50,50+im13a.shape[0]]))
 ax.x_tick = 100
 ax.y_tick = 100
-fig.add_color_bar(im_obj, label = ['\omega', '\%'], position = [50, 210], \
+fig.add_color_bar(im_obj, label = [r'\omega', r'\%'], position = [50, 210], \
     orient = 'h', lim = [0,200], tick = 50)
 fig.auto_adjust_layout()
 fig.save('add_RGB_image_to_plot')

@@ -34,12 +34,12 @@ fig_size = np.array([680.0, 380.0]) / clearplot.params.dpmm
 fig = figure.Figure(size = fig_size)
 #Create mechanical response plot
 [fig, ax, curves] = pf.plot('', data_a[:,0], data_a[:,1], \
-	x_label = ['\varepsilon', '\%'], y_label = ['\sigma', 'GPa'], \
+	x_label = [r'\varepsilon', r'\%'], y_label = [r'\sigma', 'GPa'], \
     fig = fig, ax_pos = [35.0, 23.0])
 ax.plot_markers(x_b, y_b, colors = [1,1,1], edge_widths = [2], sizes = [8])
 #Create image plot
 [fig, im_ax, imgs] = pf.show_im('', im[:, cols], scale_im = 1.15, \
-    c_label = ['\bar{\varepsilon}^p', '\%'], c_lim = [0, 100], c_tick = 25, \
+    c_label = [r'\bar{\varepsilon}^p', r'\%'], c_lim = [0, 100], c_tick = 25, \
     c_bar = True, fig = fig, ax_pos = [140.0, 18.0], im_interp = 'bicubic')
 #Save the first image of the video (for the website)
 fig.save('video.png')

@@ -29,7 +29,7 @@ Primary Features
 - Axes labels are automatically offset from axes according to the width and height of the text.
 - Curves can be labeled with text and a leader line.  Labels can be placed interactively, or by inputting the position of the text and the root of the leader line.
 - Arrow heads can be placed on curves to indicate directionality.  Arrow heads can be placed interactively, or by inputting the arrow head position(s).
-- Individual axes may be on a linear scale or a log scale.
+- Individual axes may be on a linear scale, log scale, or a symlog scale.
 - Support for bar plots, box and whisker plots, and violin plots.
 - Support for several types of contour plots.
 - Horizontal and/or vertical error bars can be placed on data points.

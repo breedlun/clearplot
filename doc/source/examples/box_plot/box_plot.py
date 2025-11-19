@@ -18,4 +18,4 @@ data = np.loadtxt(path, delimiter = ',')
 pf.plot_box_and_whiskers('box_plot.png', \
     [np.array([1]), np.array([2]), np.array([3]), np.array([4])], \
     [data[:,0], data[:,1], data[:,2], data[:,3]], \
-    ['\mathsf{Long\;Label}'], ['\varphi','km']);
+    [r'\mathsf{Group\;\#}'], [r'\varphi','km']);

@@ -15,7 +15,7 @@ yb = np.array([2, 4, 3, 5.5])
 yb_err = np.array([yb / 20.0, yb / 10.0])
 
 [fig, ax, bars] = pf.plot_bars('', [xa, xb], [ya, yb], \
-    labels = ['\alpha', '\beta'], x_label = ['N'], y_label = ['d-D'], \
+    labels = [r'\alpha', r'\beta'], x_label = ['N'], y_label = ['d-D'], \
     widths = 0.75)
 ax.plot_error_bars([xa, xb], [ya, yb], y_err = [ya_err, yb_err])
 fig.save('bar_plot.png')

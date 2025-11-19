@@ -21,6 +21,6 @@ Z = Z - np.min(Z) + 0.01
 
 #Plot the matrix as an image
 pf.plot_intensity_map('intensity_map-log_scale.png', X, Y, Z, \
-    x_label = ['\tau_1', 'kg'], y_label = ['\tau_2', 'kg'], \
+    x_label = [r'\tau_1', 'kg'], y_label = [r'\tau_2', 'kg'], \
     x_lim = [-1, 2], x_tick = 0.5, y_lim = [-1, 2], y_tick = 0.5, \
     c_label = ['E', 'kJ'], c_scale = 'log', c_lim = [1e-2, 1e2])

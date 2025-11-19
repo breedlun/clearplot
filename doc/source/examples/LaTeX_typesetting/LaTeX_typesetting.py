@@ -12,10 +12,10 @@ x = np.arange(0,10,0.01)
 y = np.sqrt(x)
 
 pf.plot('math_text_typesetting.png', x, y, \
-    x_label = ['\int_0^x \exp\left[\hat{x}\right]\,\mathrm{d}\hat{x}'], \
-    y_label = ['\frac{P}{A}', 'GPa'])
+    x_label = [r'\int_0^x \exp\left[\hat{x}\right]\,\mathrm{d}\hat{x}'], \
+    y_label = [r'\dfrac{P}{A}', 'GPa'])
     
 clearplot.params.use_latex(True)
 [fig, ax, curves] = pf.plot('LaTeX_typesetting.png', x, y, \
-    x_label = ['\int_0^x \exp\left[\hat{x}\right]\,\mathrm{d}\hat{x}'], \
-    y_label = ['\displaystyle \dfrac{P}{A}', 'GPa'])
+    x_label = [r'\int_0^x \exp\left[\hat{x}\right]\,\mathrm{d}\hat{x}'], \
+    y_label = [r'\displaystyle \dfrac{P}{A}', 'GPa'])

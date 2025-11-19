@@ -14,6 +14,6 @@ ya = np.sqrt(xa)
 xb = xa
 yb = np.log(xa + 1.0)
 [fig, ax, curves] = pf.plot('', [xa, xb], [ya, yb], \
-	labels = ['\Omega_1', '\Omega_2'], legend = False)
+	labels = [r'\Omega_1', r'\Omega_2'], legend = False)
 ax.label_curves(pick = 'text')
 fig.save('manually_picked_label_text')

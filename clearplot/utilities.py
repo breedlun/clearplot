@@ -462,24 +462,23 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
         A list of number of tick marks candidates
     """
     ui_lim = adjust_depth(ui_lim, 1)
-    #If there isn't any data on the axes, just act as if the user specified
-    #some limits
+    #If there isn't any data on the axes, just act as if there is some data
     if (data_lim[0] == _np.inf) or (data_lim[1] == _np.inf):
         if ui_lim[0] is None and ui_lim[1] is None:
             if ax_scale == 'log' or ax_scale == 'symlog':
-                ui_lim = [ax_log_base**(-5),1.0]
+                data_lim = [ax_log_base**(-5),1.0]
             else:
-                ui_lim = [0.0, 1.0]          
+                data_lim = [0.0, 1.0]          
         elif ui_lim[0] is None:
             if ui_tick is not None:                
-                ui_lim[0] = ui_lim[1] - 5.0 * ui_tick
+                data_lim[0] = ui_lim[1] - 5.0 * ui_tick
             else:
-                ui_lim[0] = ui_lim[1] - 1.0
+                data_lim[0] = ui_lim[1] - 1.0
         elif ui_lim[1] is None:
             if ui_tick is not None:                
-                ui_lim[1] = ui_lim[0] + 5.0 * ui_tick
+                data_lim[1] = ui_lim[0] + 5.0 * ui_tick
             else:
-                ui_lim[1] = ui_lim[0] + 1.0
+                data_lim[1] = ui_lim[0] + 1.0
 
     #Combine the user input limits and the data limits into one list
     #so that it is easy to get the range
@@ -608,7 +607,8 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
         else:
             tick_c = _np.array([float(ui_tick)])
             
-        #Initialize the limit candidates with the user input limits
+        #Initialize the limit candidates with the user input limits, if 
+        #supplied.  If not supplied, this should be the data limits.
         lim_c = _np.array([lim])      
         #Automatically round limits to the closest power of 10
         if ui_lim[0] is None:
@@ -622,25 +622,7 @@ def find_candidate_lim_and_tick(ui_lim, ui_tick, data_lim, \
                 exp = _np.floor(_np.log(_np.abs(lim[1])) / _np.log(ax_log_base))
             else:
                 exp = _np.ceil(_np.log(_np.abs(lim[1])) / _np.log(ax_log_base))
-        # if _np.all(lim >= 0):              
-        #     #If limits were not specified, round limits to match tick mark spacing
-        #     if ui_lim[0] is None:
-        #         exp = _np.floor(_np.log(data_lim[0]) / _np.log(ax_log_base))
-        #         lim_c[0][0] = ax_log_base**exp
-        #     if ui_lim[1] is None:
-        #         exp = _np.ceil(_np.log(data_lim[1]) / _np.log(ax_log_base))
-        #         lim_c[0][1] = ax_log_base**exp
-        # elif _np.all(lim <= 0):
-        #     #If limits were not specified, round limits to match tick mark spacing
-        #     if ui_lim[0] is None:
-        #         exp = _np.ceil(_np.log(-data_lim[0]) / _np.log(ax_log_base))
-        #         lim_c[0][0] = -ax_log_base**exp
-        #     if ui_lim[1] is None:
-        #         exp = _np.floor(_np.log(-data_lim[1]) / _np.log(ax_log_base))
-        #         lim_c[0][1] = -ax_log_base**exp
-        # else:
-        #     raise ValueError("""You cannot have a logarithmic axis that spans 
-        #         across negative and positive numbers""")
+            lim_c[0][1] = _np.sign(data_lim[1]) * ax_log_base**exp
 
         #Calculate the number of tick marks
         #(abs and sign functions are needed to accommodate symlog axes)

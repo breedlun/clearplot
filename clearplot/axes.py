@@ -231,8 +231,8 @@ class _Axes_Base(object):
         Parameters
         ----------
         x : 1x2 numpy array
-            Coordinates of the text in mm, relative to the axes lower left 
-            corner.
+            Coordinates of lower left corner of text box in mm, relative to the 
+            lower left corner of axes.
         txt : string
             Text to add to the figure
         font_size : float
@@ -1374,6 +1374,7 @@ class Axes(_Data_Axes_Base):
             data_sets = []
             data_sets.extend(ax.curves[:])
             data_sets.extend(ax.markers[:])
+            data_sets.extend(ax.filled_regions[:])
             for data_set in data_sets:
                 x = data_set.full_x_data
                 y = data_set.full_y_data
@@ -2692,11 +2693,15 @@ class Axes(_Data_Axes_Base):
         color = kwargs.pop('color', [0.8,0.8,0.8])
         edge_color = kwargs.pop('edge_color', [0,0,0])
         edge_style = kwargs.pop('edge_style', '-')
-        span = self.mpl_ax.axhspan(y[0], y[1], facecolor = color, \
+        rect = self.mpl_ax.axhspan(y[0], y[1], facecolor = color, \
             edgecolor = edge_color, linewidth = edge_width, \
             linestyle = edge_style, **kwargs)
-        self.filled_regions.append(span)
-        return(span)
+        #Forgo adding the rectangle object to the filled region list since
+        #the rectangle corner x-coordinates are axis fractions.
+        # self.filled_regions.append(rect)
+        # self.filled_regions[-1].full_x_data = rect.get_corners()[:,0]
+        # self.filled_regions[-1].full_y_data = rect.get_corners()[:,1]
+        return(rect)
         
     def add_v_rect(self, x, **kwargs):
         """
@@ -2727,11 +2732,15 @@ class Axes(_Data_Axes_Base):
         color = kwargs.pop('color', [0.8,0.8,0.8])
         edge_color = kwargs.pop('edge_color', [0,0,0])
         edge_style = kwargs.pop('edge_style', '-')
-        span = self.mpl_ax.axvspan(x[0], x[1], facecolor = color, \
+        rect = self.mpl_ax.axvspan(x[0], x[1], facecolor = color, \
             edgecolor = edge_color, linewidth = edge_width, \
             linestyle = edge_style, **kwargs)
-        self.filled_regions.append(span)
-        return(span)
+        #Forgo adding the rectangle object to the filled region list since
+        #the rectangle corner y-coordinates are axis fractions.
+        # self.filled_regions.append(rect)
+        # self.filled_regions[-1].full_x_data = rect.get_corners()[:,0]
+        # self.filled_regions[-1].full_y_data = rect.get_corners()[:,1]
+        return(rect)
     
     def fill_between_y_curves(self, x, y_lo, y_hi, label = None, **kwargs):
         """
@@ -2773,6 +2782,8 @@ class Axes(_Data_Axes_Base):
             linewidth = edge_width, linestyle = edge_style, label = label, \
             **kwargs)
         self.filled_regions.append(filled_region)
+        self.filled_regions[-1].full_x_data = filled_region.get_paths()[0].vertices[:,0]
+        self.filled_regions[-1].full_y_data = filled_region.get_paths()[0].vertices[:,1]
         return(filled_region)
     
     def fill_between_x_curves(self, x_lo, x_hi, y, label = None, **kwargs):
@@ -2815,6 +2826,8 @@ class Axes(_Data_Axes_Base):
             linewidth = edge_width, linestyle = edge_style, label = label, \
             **kwargs)
         self.filled_regions.append(filled_region)
+        self.filled_regions[-1].full_x_data = filled_region.get_paths()[0].vertices[:,0]
+        self.filled_regions[-1].full_y_data = filled_region.get_paths()[0].vertices[:,1]
         return(filled_region)
             
     def plot(self, x, y, labels = [None], **kwargs):
@@ -3337,9 +3350,6 @@ class Axes(_Data_Axes_Base):
         flier_edge_colors] = self._marker_preprocessor(flier_shapes, \
         flier_sizes, flier_colors, flier_edge_widths, flier_edge_colors, C)
         
-        #Set the axis data types
-#        self.x_data_type    
-        
         #Cycle thru the pairs of data in x and y
         #Set the color/style/marker iterator to zero
         i = 0
@@ -3348,7 +3358,7 @@ class Axes(_Data_Axes_Base):
             #Plot data
             self.boxes.append(self.mpl_ax.boxplot(yi, positions = xi, \
                 widths = box_widths[i], notch = True, patch_artist = True, \
-                **kwargs))
+                manage_ticks = False, **kwargs))
             for box in self.boxes[i]['boxes']:
                 _plt.setp(box, \
                     facecolor = box_colors[i], \
@@ -3386,15 +3396,12 @@ class Axes(_Data_Axes_Base):
         #Set the limits and ticks
         self._select_and_set_x_lim_and_tick(self._ui_x_lim, self._ui_x_tick)
         self._select_and_set_y_lim_and_tick(self._ui_y_lim, self._ui_y_tick)
-        #Boxplot resets the x-axis limits and tick marks.  This issue has been 
-        #reported (https://github.com/matplotlib/matplotlib/issues/2921), but 
-        #until it is fixed, it is important to set the limits and ticks after 
-        #the data has been plotted. (If the ticks labels are set to None, the 
-        #self.x_tick_label setter does nothing.)
         if self._ui_x_tick_labels is None:
-            formatter = _mpl.ticker.ScalarFormatter()
-            self.x_tick_labels = map(lambda x: formatter.format_data(x), self.x_tick_list)
-            self._ui_tick_labels = None
+            #Convert x values into a tick list.
+            x_tick_list = []
+            for x_i in x:
+                x_tick_list.append(x_i[0])
+            self.x_tick_list = x_tick_list
         return(self.boxes[j:j+i])
 
     def plot_intensity_map(self, x, y, z, **kwargs):
