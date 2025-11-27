@@ -2,12 +2,13 @@ Release Checklist
 =================
 
 1. Update the version history in `doc/source/version_history.rst`.
-2. Update version in `clearplot/__init__.py`, `doc/source/conf.py`, and `setup.py`.
+2. Update version in `clearplot/__init__.py`, `doc/source/conf.py`, and `pyproject.toml`.
 3. Run the tests in `tests/` and examples in `doc/source/examples/run_examples.py`.  Visually verify that the tests and examples look correct.  (Eventually we could automate the verification by comparing raster images.)
 4. Verify the documentation builds correctly.  Execute `make html` in the `doc` directory and visually verify the html files look right.
 5. Tag the new version using `git tag "new_version"`.
 6. Merge your changes with the master branch on github.
 7. Create a new release on github.
-8. Test the PyPI submission using `python setup.py sdist upload -r pypitest`.
+8. Optional: create a virtual environment to test the PyPI submission within.  You will need the build package and twine package.
+8. Test the PyPI submission using `python setup.py sdist upload -r pypitest`. 
 9. Download and install the package from the PyPI test server using `pip install -i https://testpypi.python.org/pypi clearplot`.  This is important to do, because the official PyPI server will not allow you to change a package in any way unless you create a new version number.
 10. Upload the official PyPI submission using `python setup.py sdist upload -r pypi`.

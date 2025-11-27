@@ -477,7 +477,7 @@ class _Data_Axes_Base(_Axes_Base):
         if font_size is None:
             font_size = self.font_size
         raw_text = _utl.raw_string(text)
-        self.mpl_ax.set_title('$' + raw_text + '$', fontsize = font_size, **kwargs)    
+        self.mpl_ax.set_title(r'$' + raw_text + r'$', fontsize = font_size, **kwargs)    
     
     def add_image(self, im, **kwargs):
         """
@@ -1796,7 +1796,7 @@ class Axes(_Data_Axes_Base):
             set_tick_labels = []
             for label in labels:
                 txt = _utl.raw_string(label)
-                set_tick_labels.append('$\sf{' + txt + '}$')
+                set_tick_labels.append(r'$\sf{' + txt + r'}$')
             self.mpl_ax.set_xticklabels(set_tick_labels)
 
     @property
@@ -1814,7 +1814,7 @@ class Axes(_Data_Axes_Base):
             set_tick_labels = []
             for label in labels:
                 txt = _utl.raw_string(label)
-                set_tick_labels.append('$\sf{' + txt + '}$')
+                set_tick_labels.append(r'$\sf{' + txt + r'}$')
             self.mpl_ax.set_yticklabels(set_tick_labels)
 
     def _data_preprocessor(self, x, y, x_y_equal_length, n_dim):
@@ -2145,7 +2145,7 @@ class Axes(_Data_Axes_Base):
         raw_labels = _utl.flatten(labels[:])
         for i, el in enumerate(raw_labels):
             if el[0] != '$':
-                raw_labels[i] = '$' + _utl.raw_string(el) + '$'
+                raw_labels[i] = r'$' + _utl.raw_string(el) + r'$'
         #Replace underscore with a space
         loc.replace('_', ' ')
         #Matplotlib's behavior for placing legends is a bit confusing.  
@@ -2475,7 +2475,7 @@ class Axes(_Data_Axes_Base):
 
         for n, t in enumerate(labels):
             #Convert the label text to raw LaTeX format
-            labels[n] = '$' + _utl.raw_string(t) + '$'
+            labels[n] = r'$' + _utl.raw_string(t) + r'$'
     
         if labeling_curves:       
             c = -1

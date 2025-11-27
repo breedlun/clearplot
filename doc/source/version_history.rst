@@ -1,7 +1,11 @@
 Version History
 ===============
 
-version 1.3
+version 1.3.1
+1. Switched from setup.py to pyproject.toml to make distribution files compatible with pypi's current (Nov. 2025) standards.
+2. Replaced the font installation step with the matplotlib version 3.3+ ability to register fonts at runtime that are not in the user, system, or matplotlib font directories.
+
+version 1.3.0
 
 1. Revised legend placement to enable a greater variety of legend locations outside the plot axes.  The new input syntax, unfortunately, is not backwards compatible with the old syntax for placing a legend outside the axes.
 2. Added the ability to fill the vertical or horizontal region defined by two curves.
@@ -76,7 +80,7 @@ version 1.0.6
 
 version 1.0.5
 
-1. Switch the matplotlib backend from Qt4Agg to TkAgg, since TkAgg is the only interactive backend that is supposed to work "out of the box" with matplotlib, as of matplotlib version 1.5.0.  If you wish to avoid the TkAgg/Spyder figure window size bug detailed `here <https://github.com/spyder-ide/spyder/issues/1651>`__ follow the `optional additional steps <./installation.html#optional-additional-steps>`_ to use the QtAgg backend in Spyder.
+1. Switch the matplotlib backend from Qt4Agg to TkAgg, since TkAgg is the only interactive backend that is supposed to work "out of the box" with matplotlib, as of matplotlib version 1.5.0.  
 
 version 1.0.4
 
