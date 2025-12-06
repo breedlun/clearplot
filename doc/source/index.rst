@@ -14,7 +14,7 @@ Over time, we have also revamped matplotlib's user interface, and added a few ne
 Contents
 --------
 
-.. toctree::
+.. toctree:: :maxdepth: 3
 	
     ./installation
     ./examples/index
