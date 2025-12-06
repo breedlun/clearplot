@@ -1,0 +1,6 @@
+sphinx>=1.3
+#matplotlib and numpy are only needed during the documentation build process so we can 
+#import the clearplot modules and read in the docstrings.  We, therefore, do not need a 
+#recent version of these modules.
+matplotlib
+numpy
