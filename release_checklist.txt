@@ -7,7 +7,7 @@ Release Checklist
 4. Verify the documentation builds correctly.  Execute `make html` in the `doc` directory and visually verify the html files look right.
 5. Tag the new version using `git tag "new_version"`.
 6. Merge your changes with the master branch on github.
-7. Create a new release on github.
+7. Create a new release on github. 
 8. Optional: create a virtual environment to test the PyPI submission within.  You will need the build package and twine package.
 8. Test the PyPI submission using `python setup.py sdist upload -r pypitest`. 
 9. Download and install the package from the PyPI test server using `pip install -i https://testpypi.python.org/pypi clearplot`.  This is important to do, because the official PyPI server will not allow you to change a package in any way unless you create a new version number.
