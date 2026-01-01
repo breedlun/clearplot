@@ -6,9 +6,12 @@ Release Checklist
 3. Run the tests in `tests/` and examples in `doc/source/examples/run_examples.py`.  Visually verify that the tests and examples look correct.  (Eventually we could automate the verification by comparing raster images.)
 4. Verify the documentation builds correctly.  Execute `make html` in the `doc` directory and visually verify the html files look right.
 5. Tag the new version using `git tag "new_version"`.
-6. Merge your changes with the master branch on github.
-7. Create a new release on github. 
-8. Optional: create a virtual environment to test the PyPI submission within.  
-8. Test the PyPI submission using `python -m twine upload --verbose --repository testpypi dist/*`.  This is important to do, because the official PyPI server will not allow you to change a package in any way unless you create a new version number.
-9. Download and install the package from the TestPyPI test server using `pip install --index-url https://test.pypi.org/simple/ clearplot`.  
-10. Upload the official PyPI submission using `python setup.py sdist upload -r pypi`.
+6. Merge your changes with the master branch on github. 
+7. Push the tag to github using `git push origin "new_version"`.
+8. Create a new release on github. 
+9. Optional: create a virtual environment to test the PyPI submission within.  
+10. Test the PyPI submission using `python -m twine upload --verbose --repository testpypi dist/*`.  This is important to do, because the official PyPI server will not allow you to change a package in any way unless you create a new version number.
+11. Download and install the package from the TestPyPI test server using `pip install --index-url https://test.pypi.org/simple/ clearplot`.  
+12. Verify the package imports properly using `python -c "import clearplot; print('clearplot installation location = ' + clearplot.__file__); print('clearplot version = ' + clearplot.__version__);"`
+13. Remove the package using `pip uninstall clearplot`.
+14. Upload the official PyPI submission using `python -m twine upload dist/*`.
