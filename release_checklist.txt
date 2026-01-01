@@ -8,7 +8,7 @@ Release Checklist
 5. Tag the new version using `git tag "new_version"`.
 6. Merge your changes with the master branch on github.
 7. Create a new release on github. 
-8. Optional: create a virtual environment to test the PyPI submission within.  You will need the build package and twine package.
-8. Test the PyPI submission using `python setup.py sdist upload -r pypitest`. 
-9. Download and install the package from the PyPI test server using `pip install -i https://testpypi.python.org/pypi clearplot`.  This is important to do, because the official PyPI server will not allow you to change a package in any way unless you create a new version number.
+8. Optional: create a virtual environment to test the PyPI submission within.  
+8. Test the PyPI submission using `python -m twine upload --verbose --repository testpypi dist/*`.  This is important to do, because the official PyPI server will not allow you to change a package in any way unless you create a new version number.
+9. Download and install the package from the TestPyPI test server using `pip install --index-url https://test.pypi.org/simple/ clearplot`.  
 10. Upload the official PyPI submission using `python setup.py sdist upload -r pypi`.

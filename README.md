@@ -22,7 +22,7 @@ Clearplot can be cited using a DOI provided through Zenodo: [![DOI]()]()
 Dependencies
 ------------
 
-- Python 2.7 or 3.6 (Other python versions may be compatible, but they have not been tested.)
+- Python 3.11 (Other python versions may be compatible, but they have not been tested.)
 
 - [numpy](http://www.numpy.org/)
 
