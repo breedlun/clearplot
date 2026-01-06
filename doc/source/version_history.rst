@@ -2,6 +2,7 @@ Version History
 ===============
 
 version 1.3.1
+
 1. Switched from setup.py to pyproject.toml to make distribution files compatible with pypi's current (Nov. 2025) standards.
 2. Replaced the font installation step with the matplotlib version 3.3+ ability to register fonts at runtime that are not in the user, system, or matplotlib font directories.
 

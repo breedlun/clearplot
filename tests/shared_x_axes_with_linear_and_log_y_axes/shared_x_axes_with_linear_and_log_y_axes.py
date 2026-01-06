@@ -16,12 +16,12 @@ xb = np.linspace(1, 4, 10)
 yb = 10.0**xb
 fig = cpfig.Figure()
 ax1 = fig.add_axes()
-ax1.x_label = ['x1']
-ax1.y_label = ['y1']
+ax1.x_label = ['x']
+ax1.y_label = ['y_1']
 ax1.plot(xa, ya)
 ax2 = fig.add_axes(share_x_ax = ax1)
 ax2.y_scale = 'log'
-ax2.y_label = ['y2']
+ax2.y_label = ['y_2']
 ax2.plot(xb, yb)
 fig.auto_adjust_layout()
 fig.save('shared_x_axes_with_linear_and_log_y_axes')
